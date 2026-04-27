@@ -80,6 +80,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
+        configuration.setAllowedHeaders(Arrays.asList(
+        	    "Authorization", 
+        	    "Content-Type", 
+        	    "X-Requested-With", 
+        	    "Accept", 
+        	    "Origin", 
+        	    "Access-Control-Request-Method", 
+        	    "Access-Control-Request-Headers"
+        ));
+        
         // Define a origem exata do seu Front-end
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); 
         

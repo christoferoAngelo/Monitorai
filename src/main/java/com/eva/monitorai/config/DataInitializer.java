@@ -46,7 +46,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setEmail("admin@vitrine.com");
             // Criptografa a senha antes de salvar
             admin.setSenha(passwordEncoder.encode("admin123"));
-            admin.setRole("ROLE_ADMIN"); 
+            admin.setRole("ADMIN"); 
 
             usuarioRepository.save(admin);
             

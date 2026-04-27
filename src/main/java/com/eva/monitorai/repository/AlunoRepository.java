@@ -1,5 +1,0 @@
-package com.eva.monitorai.repository;
-
-public class AlunoRepository {
-
-}

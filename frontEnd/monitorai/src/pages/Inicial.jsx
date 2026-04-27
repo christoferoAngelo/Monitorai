@@ -8,22 +8,24 @@ function Inicial() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Busca os dados do usuário logado no Back-end
-    const fetchUsuario = async () => {
-      try {
-        const response = await api.get('/auth/me');
-        setUsuario(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar dados do usuário", error);
-        handleLogout(); // Se der erro no token, desloga por segurança
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsuario();
-  }, []);
-
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+        api.get('/auth/me')
+           .then(res => {
+              console.log("DADOS DO USUARIO:", res.data);
+               setUsuario(res.data);
+               setLoading(false); // <--- Importante!
+           })
+           .catch(err => {
+               console.error(err);
+               localStorage.removeItem('token'); // Se deu erro, o token pode estar podre
+               navigate('/');
+           });
+    } else {
+        navigate('/');
+    }
+}, [navigate]);
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove o token
     navigate('/'); // Volta para o login
