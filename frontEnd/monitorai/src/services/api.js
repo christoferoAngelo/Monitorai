@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api', // URL padrão do Spring Boot
+  baseURL: 'http://localhost:8080/', // URL padrão do Spring Boot
 });
 
 // Isso aqui vai enviar o Token JWT automaticamente em cada requisição depois do login
