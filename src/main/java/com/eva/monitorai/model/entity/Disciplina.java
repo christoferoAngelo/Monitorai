@@ -1,9 +1,15 @@
 package com.eva.monitorai.model.entity;
 
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+// imports usados para o relacionamento entre Curso e Disciplina
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
 
 //Disciplina é igual matéria (Banco de dados, Programação Linear, ETC)
 
@@ -13,6 +19,11 @@ public class Disciplina {
     private Long id;
     private String nome;
     private String codigo; // Ex: MAT101
+    
+ // Muitas disciplinas pertencem a um curso
+    @ManyToOne
+    @JoinColumn(name = "curso_id") // JoinColumn cria no bd curso_id
+    private Curso curso;
     
 	public Disciplina() {
 
@@ -44,6 +55,13 @@ public class Disciplina {
 		this.codigo = codigo;
 	}
     
-    
+	// Relacionamento entre Curso e Disciplina - Getter e Setter
+	public Curso getCurso() {
+	    return curso;
+	}
+
+	public void setCurso(Curso curso) {
+	    this.curso = curso;
+	}
     
 }
