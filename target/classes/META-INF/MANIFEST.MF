@@ -1,5 +1,9 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
 Build-Jdk-Spec: 21
+=======
+Build-Jdk-Spec: 25
+>>>>>>> 493a51f89e11d166c03f9553dbb101c0db7826bb
 Implementation-Title: Monitorai
 Implementation-Version: 0.0.1-SNAPSHOT
 Created-By: Maven Integration for Eclipse

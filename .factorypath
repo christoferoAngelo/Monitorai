@@ -1,4 +1,7 @@
 <factorypath>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" enabled="true" runInBatchMode="false"/>
+<<<<<<< HEAD
     <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="false" runInBatchMode="false"/>
+=======
+>>>>>>> 493a51f89e11d166c03f9553dbb101c0db7826bb
 </factorypath>
