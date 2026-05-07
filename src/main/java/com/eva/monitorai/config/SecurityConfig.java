@@ -48,6 +48,9 @@ public class SecurityConfig {
 	        .authorizeHttpRequests(auth -> auth
 	        	    // 1. Libera preflight de CORS
 	        	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+	        	    
+	        	    // Libera cursos
+	        	    .requestMatchers("/cursos/**").permitAll()
 
 	        	    // 2. Libera rotas públicas de login e registro
 	        	    .requestMatchers("/auth/**").permitAll()
@@ -58,7 +61,7 @@ public class SecurityConfig {
 	        	    .requestMatchers("/monitor/**").hasAnyRole("MONITOR", "ADMIN") 
 	        	    
 	        	    // 4. Qualquer outra requisição precisa apenas estar logado (ex: portal do aluno)
-	        	    .anyRequest().authenticated()
+	        	    //.anyRequest().authenticated()
 	        	);
 	    
 	    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

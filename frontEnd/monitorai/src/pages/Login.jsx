@@ -25,6 +25,7 @@ function Login() {
       api.defaults.headers.common['Authorization'] = `Bearer ${tokenGerado}`;
 
       navigate('/dashboard');
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       alert("Usuário ou senha inválidos");
     }

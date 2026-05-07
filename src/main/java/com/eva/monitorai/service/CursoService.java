@@ -1,18 +1,13 @@
 package com.eva.monitorai.service;
-<<<<<<< HEAD
 import com.eva.monitorai.dto.*;
-=======
->>>>>>> 493a51f89e11d166c03f9553dbb101c0db7826bb
+
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
-=======
 import com.eva.monitorai.dto.CursoDTO;
->>>>>>> 493a51f89e11d166c03f9553dbb101c0db7826bb
 import com.eva.monitorai.model.entity.Curso;
 import com.eva.monitorai.repository.CursoRepository;
 
