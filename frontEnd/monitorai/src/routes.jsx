@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import Inicial from './pages/Inicial'; // Importe aqui
+import Inicial from './pages/Inicial'; 
 import Curso from './pages/Curso'; 
 
 const PrivateRoute = ({ children }) => {

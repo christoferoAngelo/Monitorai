@@ -1,5 +1,7 @@
 package com.eva.monitorai.dto;
 
+// objeto para cursos
+
 public class CursoDTO {
 
     private Long id;

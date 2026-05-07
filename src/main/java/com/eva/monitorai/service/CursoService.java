@@ -11,7 +11,9 @@ import com.eva.monitorai.dto.CursoDTO;
 import com.eva.monitorai.model.entity.Curso;
 import com.eva.monitorai.repository.CursoRepository;
 
-// Service responsável pela lógica de negócio
+// Service responsável pela lógica de negócio (Cursos)
+
+
 @Service
 public class CursoService {
 

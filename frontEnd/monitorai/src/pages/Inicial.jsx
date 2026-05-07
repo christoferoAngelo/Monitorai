@@ -54,13 +54,14 @@ function Inicial() {
           {usuario?.role}
         </span></p>
 		
-		<button
-		  type="button"
-		  onClick={() => salvarCurso(new Event("submit"))}
-		>
-		  Testar Criar
-		</button>
-		
+      </div>
+	  
+	  
+	  <button onClick={() => navigate("/cursos")}>
+	      Gerenciar Cursos
+	  </button>
+	  
+	  
 	  
       <button 
         onClick={handleLogout}
