@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -78,8 +79,32 @@ public class UsuarioController {
         usuario.setRole(dto.getRole());
         usuario.setRa(dto.getRa());
         
-        // Obs: Como o DTO não tem senha, se você for salvar essa entidade no banco,
-        // precisará lidar com a senha separadamente para não sobrescrever com null.
         return usuario;
     }
+    
+    @GetMapping("/buscar")
+    public List<UsuarioDTO> buscarUsuarios(@RequestParam String termo) {
+
+        List<Usuario> usuarios = repository.findAll();
+
+        return usuarios.stream()
+                .filter(u ->
+
+                        (u.getUsername() != null &&
+                         u.getUsername().toLowerCase().contains(termo.toLowerCase()))
+
+                        ||
+
+                        (u.getEmail() != null &&
+                         u.getEmail().toLowerCase().contains(termo.toLowerCase()))
+
+                        ||
+
+                        (u.getRa() != null &&
+                         u.getRa().contains(termo))
+                )
+                .map(this::converterParaDTO)
+                .collect(Collectors.toList());
+    }
+
 }

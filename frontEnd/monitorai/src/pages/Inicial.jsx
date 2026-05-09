@@ -76,6 +76,10 @@ function Inicial() {
 		   <button onClick={() => navigate("/disciplinas")}>
 		   	       Gerenciar Disciplinas
 		   	     </button> <br></br>
+        
+        <button onClick={() => navigate("/monitorias")}>
+		   	       Gerenciar Monitorias
+		   	     </button> <br></br>
 		   
 		  
          </>

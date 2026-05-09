@@ -41,12 +41,7 @@ public class UsuarioService {
 
         // Se quem mandou o JSON não enviou a role, define como Aluno por padrão
         if (usuario.getRole() == null || usuario.getRole().isBlank()) {
-            usuario.setRole("ROLE_ALUNO");
-        } else {
-            // Garante que a role venha com o prefixo correto, caso o front mande só "MONITOR"
-            if (!usuario.getRole().startsWith("ROLE_")) {
-                usuario.setRole("ROLE_" + usuario.getRole().toUpperCase());
-            }
+            usuario.setRole("ALUNO");
         }
 
         usuario.setSenha(encoder.encode(usuario.getSenha()));

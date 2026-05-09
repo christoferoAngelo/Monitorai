@@ -26,112 +26,196 @@ public class MonitoriaService {
 
     @Autowired
     private DisciplinaRepository disciplinaRepository;
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Criar monitoria
-    public Monitoria criarMonitoria(MonitoriaDTO dto) {
+    // =========================================
+    // CRIAR MONITORIA
+    // =========================================
 
-        Monitor monitor = monitorRepository.findById(dto.getMonitorId())
-                .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
+public Monitoria criarMonitoria(MonitoriaDTO dto) {
 
-        Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+    // BUSCA USUÁRIO
+    Usuario usuario = usuarioRepository.findById(dto.getMonitorId())
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // PROMOVE usuário para ROLE_MONITOR
-        Usuario usuario = monitor.getUsuario();
+    // BUSCA DISCIPLINA
+    Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
+            .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
-        usuario.setRole("ROLE_MONITOR");
+    // PROMOVE PARA MONITOR
+    usuario.setRole("MONITOR");
 
-        usuarioRepository.save(usuario);
+    usuarioRepository.save(usuario);
 
-        // CRIA MONITORIA
-        Monitoria monitoria = new Monitoria();
+    // VERIFICA SE JÁ EXISTE MONITOR
+    Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId())
+            .orElse(null);
 
-        monitoria.setMonitor(monitor);
-        monitoria.setDisciplina(disciplina);
-        monitoria.setDiaSemana(dto.getDiaSemana());
-        monitoria.setHorarioInicio(dto.getHorarioInicio());
-        monitoria.setHorarioFim(dto.getHorarioFim());
-        monitoria.setSala(dto.getSala());
-        monitoria.setSemestreReferencia(dto.getSemestreReferencia());
-        monitoria.setAtiva(true);
+    // SE NÃO EXISTIR, CRIA
+    if (monitor == null) {
 
-        return monitoriaRepository.save(monitoria);
+        monitor = new Monitor();
+
+        monitor.setUsuario(usuario);
+        monitor.setDisciplina(disciplina);
+        monitor.setAtivo(true);
+
+        monitor = monitorRepository.save(monitor);
     }
-    // Listar todas
+
+    // CRIA MONITORIA
+    Monitoria monitoria = new Monitoria();
+
+    monitoria.setMonitor(monitor);
+    monitoria.setDisciplina(disciplina);
+    monitoria.setDiaSemana(dto.getDiaSemana());
+    monitoria.setHorarioInicio(dto.getHorarioInicio());
+    monitoria.setHorarioFim(dto.getHorarioFim());
+    monitoria.setSala(dto.getSala());
+    monitoria.setSemestreReferencia(dto.getSemestreReferencia());
+    monitoria.setAtiva(true);
+
+    return monitoriaRepository.save(monitoria);
+}
+
+    // =========================================
+    // LISTAR TODAS
+    // =========================================
+
     public List<Monitoria> listarTodas() {
         return monitoriaRepository.findAll();
     }
 
-    // Buscar por ID
+    // =========================================
+    // BUSCAR POR ID
+    // =========================================
+
     public Monitoria buscarPorId(Long id) {
+
         return monitoriaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Monitoria não encontrada"));
     }
 
-    // Deletar
-    public void deletar(Long id) {
-        monitoriaRepository.deleteById(id);
-    }
+    // =========================================
+    // LISTAR APENAS ATIVAS
+    // =========================================
 
-    // Listar ativas
     public List<Monitoria> listarAtivas() {
         return monitoriaRepository.findByAtivaTrue();
     }
 
-    // Atualizar
-    public Monitoria atualizar(Long id, MonitoriaDTO dto) {
+    // =========================================
+    // ATUALIZAR MONITORIA
+    // =========================================
+
+public Monitoria atualizar(Long id, MonitoriaDTO dto) {
+
+    Monitoria monitoria = buscarPorId(id);
+
+    Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
+            .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+
+    // =====================================
+    // VERIFICA SE TROCOU O MONITOR
+    // =====================================
+
+    if (!monitoria.getMonitor().getUsuario().getId().equals(dto.getMonitorId())) {
+
+        trocarMonitor(id, dto.getMonitorId());
+
+        // Atualiza objeto após troca
+        monitoria = buscarPorId(id);
+    }
+
+    // =====================================
+    // ATUALIZA DADOS
+    // =====================================
+
+    monitoria.setDisciplina(disciplina);
+    monitoria.setDiaSemana(dto.getDiaSemana());
+    monitoria.setHorarioInicio(dto.getHorarioInicio());
+    monitoria.setHorarioFim(dto.getHorarioFim());
+    monitoria.setSala(dto.getSala());
+    monitoria.setSemestreReferencia(dto.getSemestreReferencia());
+
+    return monitoriaRepository.save(monitoria);
+}
+
+    // =========================================
+    // DESATIVAR MONITORIA
+    // =========================================
+
+    public void deletar(Long id) {
 
         Monitoria monitoria = buscarPorId(id);
 
-        Monitor monitor = monitorRepository.findById(dto.getMonitorId())
-                .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
+        monitoria.setAtiva(false);
 
-        Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
-
-        monitoria.setMonitor(monitor);
-        monitoria.setDisciplina(disciplina);
-        monitoria.setDiaSemana(dto.getDiaSemana());
-        monitoria.setHorarioInicio(dto.getHorarioInicio());
-        monitoria.setHorarioFim(dto.getHorarioFim());
-        monitoria.setSala(dto.getSala());
-        monitoria.setSemestreReferencia(dto.getSemestreReferencia());
-
-        return monitoriaRepository.save(monitoria);
+        monitoriaRepository.save(monitoria);
     }
-    
-    public Monitoria trocarMonitor(Long monitoriaId, Long novoMonitorId) {
+
+    // =========================================
+    // TROCAR MONITOR
+    // =========================================
+
+    public Monitoria trocarMonitor(Long monitoriaId, Long novoUsuarioId) {
 
         // Busca monitoria
         Monitoria monitoria = monitoriaRepository.findById(monitoriaId)
                 .orElseThrow(() -> new RuntimeException("Monitoria não encontrada"));
 
-        // Monitor antigo
+        // =====================================
+        // MONITOR ANTIGO
+        // =====================================
+
         Monitor monitorAntigo = monitoria.getMonitor();
 
-        // Novo monitor
-        Monitor novoMonitor = monitorRepository.findById(novoMonitorId)
-                .orElseThrow(() -> new RuntimeException("Novo monitor não encontrado"));
-
-        // REBAIXA monitor antigo
         Usuario usuarioAntigo = monitorAntigo.getUsuario();
 
-        usuarioAntigo.setRole("ROLE_ALUNO");
+        usuarioAntigo.setRole("ALUNO");
 
         usuarioRepository.save(usuarioAntigo);
 
-        // PROMOVE novo monitor
+        // =====================================
+        // NOVO USUÁRIO
+        // =====================================
 
-        Usuario usuarioNovo = novoMonitor.getUsuario();
+        Usuario usuarioNovo = usuarioRepository.findById(novoUsuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        usuarioNovo.setRole("ROLE_MONITOR");
+        usuarioNovo.setRole("MONITOR");
 
         usuarioRepository.save(usuarioNovo);
 
+        // =====================================
+        // PROCURA MONITOR
+        // =====================================
+
+        Monitor novoMonitor = monitorRepository.findByUsuarioId(usuarioNovo.getId())
+                .orElse(null);
+
+        // =====================================
+        // SE NÃO EXISTIR, CRIA
+        // =====================================
+
+        if (novoMonitor == null) {
+
+            novoMonitor = new Monitor();
+
+            novoMonitor.setUsuario(usuarioNovo);
+
+            novoMonitor.setDisciplina(monitoria.getDisciplina());
+
+            novoMonitor.setAtivo(true);
+
+            novoMonitor = monitorRepository.save(novoMonitor);
+        }
+
+        // =====================================
         // ATUALIZA MONITORIA
+        // =====================================
 
         monitoria.setMonitor(novoMonitor);
 

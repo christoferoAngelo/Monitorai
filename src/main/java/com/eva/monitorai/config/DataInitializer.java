@@ -54,6 +54,8 @@ public class DataInitializer implements CommandLineRunner {
             // Criptografa a senha antes de salvar
             aluno1.setSenha(passwordEncoder.encode("123"));
             aluno1.setRole("ALUNO"); 
+            aluno1.setRa("123456789010");
+            
 
             Usuario aluno2 = new Usuario();
             aluno2.setUsername("ciclano");
@@ -61,6 +63,7 @@ public class DataInitializer implements CommandLineRunner {
             // Criptografa a senha antes de salvar
             aluno2.setSenha(passwordEncoder.encode("123"));
             aluno2.setRole("ALUNO"); 
+            aluno2.setRa("123456789011");
             
             Usuario monitor = new Usuario();
             monitor.setUsername("monitorildo");
@@ -68,6 +71,7 @@ public class DataInitializer implements CommandLineRunner {
             // Criptografa a senha antes de salvar
             monitor.setSenha(passwordEncoder.encode("123"));
             monitor.setRole("MONITOR"); 
+            monitor.setRa("123456789012");
             
             usuarioRepository.save(aluno1);
             usuarioRepository.save(aluno2);

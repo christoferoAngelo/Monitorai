@@ -1,60 +1,84 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Login from './pages/Login';
-import Inicial from './pages/Inicial'; 
+import Inicial from './pages/Inicial';
 import Curso from './pages/Curso';
 import Aluno from './pages/Aluno';
 import Disciplina from './pages/Disciplina';
-
+import Monitoria from './pages/Monitoria';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem('token');
-    return isAuthenticated ? children : <Navigate to="/" />;
+
+    return isAuthenticated
+        ? children
+        : <Navigate to="/" />;
 };
 
 function AppRoutes() {
+
     return (
         <Routes>
+
+            {/* LOGIN */}
             <Route path="/" element={<Login />} />
 
-            <Route 
-                path="/dashboard" 
+            {/* DASHBOARD */}
+            <Route
+                path="/dashboard"
                 element={
                     <PrivateRoute>
-                        <Inicial /> {/* Use o componente aqui */}
-					
+                        <Inicial />
                     </PrivateRoute>
-                } 
+                }
             />
-			
-            <Route 
-                path="/cursos" 
+
+            {/* CURSOS */}
+            <Route
+                path="/cursos"
                 element={
                     <PrivateRoute>
                         <Curso />
                     </PrivateRoute>
-                } 
+                }
             />
-			
-			<Route 
-			                path="/disciplinas" 
-			                element={
-			                    <PrivateRoute>
-			                        <Disciplina />
-			                    </PrivateRoute>
-			                } 
-			            />
 
-            <Route 
-                path="/alunos" 
+            {/* DISCIPLINAS */}
+            <Route
+                path="/disciplinas"
+                element={
+                    <PrivateRoute>
+                        <Disciplina />
+                    </PrivateRoute>
+                }
+            />
+
+            {/* ALUNOS */}
+            <Route
+                path="/alunos"
                 element={
                     <PrivateRoute>
                         <Aluno />
                     </PrivateRoute>
-                } 
+                }
             />
 
+            {/* MONITORIAS */}
+            <Route
+                path="/monitorias"
+                element={
+                    <PrivateRoute>
+                        <Monitoria />
+                    </PrivateRoute>
+                }
+            />
 
-            <Route path="*" element={<h1>Página não encontrada (404)</h1>} />
+            {/* 404 */}
+            <Route
+                path="*"
+                element={<h1>Página não encontrada (404)</h1>}
+            />
+
         </Routes>
     );
 }

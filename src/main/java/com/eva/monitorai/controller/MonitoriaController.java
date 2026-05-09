@@ -44,12 +44,12 @@ public class MonitoriaController {
         return monitoriaService.atualizar(id, dto);
     }
     
-    @PutMapping("/{monitoriaId}/trocar-monitor/{novoMonitorId}")
+    @PutMapping("/{monitoriaId}/trocar-monitor/{novoUsuarioId}")
     public Monitoria trocarMonitor(
             @PathVariable Long monitoriaId,
-            @PathVariable Long novoMonitorId) {
+            @PathVariable Long novoUsuarioId) {
 
-        return monitoriaService.trocarMonitor(monitoriaId, novoMonitorId);
+        return monitoriaService.trocarMonitor(monitoriaId, novoUsuarioId);
     }
 
     // Deletar
@@ -63,4 +63,6 @@ public class MonitoriaController {
     public List<Monitoria> listarAtivas() {
         return monitoriaService.listarAtivas();
     }
+    
+    
 }
