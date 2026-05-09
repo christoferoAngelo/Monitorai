@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', // URL padrão do Spring Boot
+  baseURL: 'http://localhost:8080', 
 });
 
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`; // Injeta o token aqui!
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });

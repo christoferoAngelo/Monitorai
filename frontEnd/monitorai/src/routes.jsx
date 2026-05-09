@@ -1,7 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Inicial from './pages/Inicial'; 
-import Curso from './pages/Curso'; 
+import Curso from './pages/Curso';
+import Aluno from './pages/Aluno';
+
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -23,14 +25,24 @@ function AppRoutes() {
                 } 
             />
 			
-			<Route 
-			    path="/cursos" 
-			    element={
-			        <PrivateRoute>
-			            <Curso />
-			        </PrivateRoute>
-			    } 
-			/>
+            <Route 
+                path="/cursos" 
+                element={
+                    <PrivateRoute>
+                        <Curso />
+                    </PrivateRoute>
+                } 
+            />
+
+            <Route 
+                path="/alunos" 
+                element={
+                    <PrivateRoute>
+                        <Aluno />
+                    </PrivateRoute>
+                } 
+            />
+
 
             <Route path="*" element={<h1>Página não encontrada (404)</h1>} />
         </Routes>

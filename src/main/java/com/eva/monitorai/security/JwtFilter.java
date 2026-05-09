@@ -44,7 +44,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     String path = request.getServletPath();
 
-    // 2. CORREÇÃO: Pula o filtro SÓ no login e register.
     // Se o path for "/auth/me", ele NÃO vai entrar aqui e vai continuar para validar o token.
     if (path.equals("/auth/login") || path.equals("/auth/register")) {
         filterChain.doFilter(request, response);
@@ -55,7 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
     String token = null;
     String username = null;
 
-    // 3. Agora o código abaixo vai rodar para o /auth/me!
+
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
         token = authHeader.substring(7);
         username = jwtUtil.extrairUsername(token);

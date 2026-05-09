@@ -56,11 +56,19 @@ function Inicial() {
 		
       </div>
 	  
-	  
-	  <button onClick={() => navigate("/cursos")}>
-	      Gerenciar Cursos
-	  </button>
-	  
+	  {
+      //só adm poder acessar
+       usuario?.role === 'ADMIN' && (
+         <>
+           <button onClick={() => navigate("/cursos")}>
+             Gerenciar Cursos
+           </button> <br></br>
+           <button onClick={() => navigate("/alunos")}>
+             Gerenciar Alunos
+           </button> <br></br>
+         </>
+       )
+    }
 	  
 	  
       <button 

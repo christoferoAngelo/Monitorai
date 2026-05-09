@@ -48,7 +48,7 @@ public class SecurityConfig {
 	        .authorizeHttpRequests(auth -> auth
 	        	    // 1. Libera preflight de CORS
 	        	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	        	    
+	        	    	
 	        	    // Libera cursos
 	        	    .requestMatchers("/cursos/**").permitAll()
 
@@ -58,6 +58,7 @@ public class SecurityConfig {
 	        	    // 3. Rotas específicas por Role
 	        	    // (O Spring vai procurar por ROLE_ADMIN, ROLE_MONITOR, ROLE_ALUNO)
 	        	    .requestMatchers("/admin/**").hasRole("ADMIN")
+	        	    .requestMatchers("/usuarios/**").hasRole("ADMIN")
 	        	    .requestMatchers("/monitor/**").hasAnyRole("MONITOR", "ADMIN") 
 	        	    
 	        	    // 4. Qualquer outra requisição precisa apenas estar logado (ex: portal do aluno)
