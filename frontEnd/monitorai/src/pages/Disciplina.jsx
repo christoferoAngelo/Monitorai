@@ -1,3 +1,5 @@
+
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -10,41 +12,48 @@ export default function Disciplina() {
   const [codigo, setCodigo] = useState("");
   const [cursoId, setCursoId] = useState("");
   const [monitorId, setMonitorId] = useState("");
+  const [monitores, setMonitores] = useState([]);
+
 
   const [editandoId, setEditandoId] = useState(null);
 
   const API = "http://localhost:8080/disciplinas";
   const API_CURSOS = "http://localhost:8080/cursos";
+  const API_MONITORES = "http://localhost:8080/disciplinas/monitores";
 
   // =====================================
-  // CARREGAR DISCIPLINAS
+  // FUNÇÃO ÚNICA PARA CARREGAR DADOS
   // =====================================
 
-  async function carregarDisciplinas() {
+  async function carregarDados() {
     try {
-      const response = await axios.get(API);
-      setDisciplinas(response.data);
+      const [disciplinasRes, cursosRes] = await Promise.all([
+        axios.get(API),
+        axios.get(API_CURSOS)
+      ]);
+      setDisciplinas(disciplinasRes.data);
+      setCursos(cursosRes.data);
     } catch (error) {
-      console.error("Erro ao carregar disciplinas:", error);
+      console.error("Erro ao carregar dados:", error);
     }
   }
-
-  // =====================================
-  // CARREGAR CURSOS
-  // =====================================
-
-  async function carregarCursos() {
+  
+  async function carregarMonitores() {
     try {
-      const response = await axios.get(API_CURSOS);
-      setCursos(response.data);
+      const response = await axios.get(API_MONITORES);
+      setMonitores(response.data);
     } catch (error) {
-      console.error("Erro ao carregar cursos:", error);
+      console.error("Erro ao carregar monitores:", error);
     }
   }
+  
+  // =====================================
+  // USEEFFECT
+  // =====================================
 
   useEffect(() => {
-    carregarDisciplinas();
-    carregarCursos();
+    carregarDados();
+	carregarMonitores();
   }, []);
 
   // =====================================
@@ -57,7 +66,7 @@ export default function Disciplina() {
     const dados = {
       nome,
       codigo,
-      cursoId: Number(cursoId), // 🔥 IMPORTANTE
+      cursoId: Number(cursoId),
       monitorId: monitorId ? Number(monitorId) : null,
     };
 
@@ -71,7 +80,7 @@ export default function Disciplina() {
       }
 
       limparFormulario();
-      carregarDisciplinas();
+      carregarDados();
 
     } catch (error) {
       console.error("Erro ao salvar disciplina:", error);
@@ -98,7 +107,7 @@ export default function Disciplina() {
     try {
       await axios.delete(`${API}/${id}`);
       alert("Disciplina deletada!");
-      carregarDisciplinas();
+      carregarDados();
     } catch (error) {
       console.error("Erro ao deletar disciplina:", error);
     }
@@ -141,17 +150,16 @@ export default function Disciplina() {
           placeholder="Código"
           value={codigo}
           onChange={(e) => setCodigo(e.target.value)}
+		  disabled 
         />
 
         <br /><br />
 
-        {/* 🔥 SELECT DE CURSOS */}
         <select
           value={cursoId}
           onChange={(e) => setCursoId(e.target.value)}
         >
           <option value="">Selecione um curso</option>
-
           {cursos.map((curso) => (
             <option key={curso.id} value={curso.id}>
               {curso.nome}
@@ -161,12 +169,17 @@ export default function Disciplina() {
 
         <br /><br />
 
-        <input
-          type="number"
-          placeholder="ID do Monitor (opcional)"
-          value={monitorId}
-          onChange={(e) => setMonitorId(e.target.value)}
-        />
+		<select
+		  value={monitorId}
+		  onChange={(e) => setMonitorId(e.target.value)}
+		>
+		  <option value="">Selecione um monitor (opcional)</option>
+		  {monitores.map((monitor) => (
+		    <option key={monitor.id} value={monitor.id}>
+		      {monitor.username}
+		    </option>
+		  ))}
+		</select>
 
         <br /><br />
 
@@ -189,20 +202,11 @@ export default function Disciplina() {
             marginBottom: "10px",
           }}
         >
-
           <p><strong>ID:</strong> {disciplina.id}</p>
           <p><strong>Nome:</strong> {disciplina.nome}</p>
           <p><strong>Código:</strong> {disciplina.codigo}</p>
-
-          <p>
-            <strong>Curso ID:</strong>{" "}
-            {disciplina.cursoId}
-          </p>
-
-          <p>
-            <strong>Monitor ID:</strong>{" "}
-            {disciplina.monitorId}
-          </p>
+          <p><strong>Curso:</strong> {disciplina.cursoNome || "Nenhum"}</p>
+          <p><strong>Monitor:</strong> {disciplina.monitorNome || "Nenhum"}</p>
 
           <button onClick={() => editarDisciplina(disciplina)}>
             Editar
@@ -214,7 +218,6 @@ export default function Disciplina() {
           >
             Deletar
           </button>
-
         </div>
       ))}
     </div>

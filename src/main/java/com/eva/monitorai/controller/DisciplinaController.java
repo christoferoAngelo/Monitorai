@@ -2,9 +2,11 @@ package com.eva.monitorai.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.eva.monitorai.dto.DisciplinaDTO;
+import com.eva.monitorai.model.entity.Usuario;
 import com.eva.monitorai.service.DisciplinaService;
 
 @RestController
@@ -75,5 +77,11 @@ public class DisciplinaController {
     ) {
 
         service.deletar(id);
+    }
+    
+    @GetMapping("/monitores")
+    public ResponseEntity<List<Usuario>> listarMonitores() {
+        List<Usuario> monitores = service.listarMonitores();
+        return ResponseEntity.ok(monitores);
     }
 }

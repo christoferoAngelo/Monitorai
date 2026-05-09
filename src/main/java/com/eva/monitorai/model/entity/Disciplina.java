@@ -1,67 +1,103 @@
 package com.eva.monitorai.model.entity;
 
-import jakarta.persistence.Entity;
-
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-// imports usados para o relacionamento entre Curso e Disciplina
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-
-
-//Disciplina é igual matéria (Banco de dados, Programação Linear, ETC)
+import jakarta.persistence.*;
 
 @Entity
 public class Disciplina {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
-    private String codigo; // Ex: MAT101
+
     
- // Muitas disciplinas pertencem a um curso
+    @Column(unique = true, nullable = false)  
+    private String codigo;  // código será gerado automaticamente
+
+    // =====================================
+    // RELACIONAMENTO COM CURSO
+    // =====================================
+
     @ManyToOne
-    @JoinColumn(name = "curso_id") // JoinColumn cria no bd curso_id
+    @JoinColumn(name = "curso_id")
     private Curso curso;
-    
-	public Disciplina() {
 
-	}
-	
-	public Disciplina(Long id, String nome, String codigo) {
-		super();
-		this.id = id;
-		this.nome = nome;
-		this.codigo = codigo;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getNome() {
-		return nome;
-	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public String getCodigo() {
-		return codigo;
-	}
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-    
-	// Relacionamento entre Curso e Disciplina - Getter e Setter
-	public Curso getCurso() {
-	    return curso;
-	}
+    // =====================================
+    // RELACIONAMENTO COM MONITOR
+    // =====================================
 
-	public void setCurso(Curso curso) {
-	    this.curso = curso;
-	}
+    @ManyToOne
+    @JoinColumn(name = "monitor_id")
+    private Usuario monitor;
+
     
+    // CONSTRUTORES
+    public Disciplina() {
+    }
+    
+    
+   
+    public Disciplina(Long id, String nome, String codigo) {
+        this.id = id;
+        this.nome = nome;
+        this.codigo = codigo;
+    }
+    
+    
+ // =====================================
+    // MÉTODO QUE GERA O CÓDIGO AUTOMATICAMENTE
+    // =====================================
+    
+    @PrePersist  // Esta anotação faz o método rodar ANTES de salvar no banco
+    public void gerarCodigo() {
+        // Se o código estiver vazio ou nulo, gera um novo
+        if (this.codigo == null || this.codigo.isEmpty()) {
+            // Gera código no formato: DISC + timestamp atual em milissegundos
+            // Exemplo: DISC20260509143022 (DISC + data/hora)
+            this.codigo = "DISC" + System.currentTimeMillis();
+        }
+    }
+    
+    // GETTER E SETTER
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+
+    public Usuario getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(Usuario monitor) {
+        this.monitor = monitor;
+    }
 }

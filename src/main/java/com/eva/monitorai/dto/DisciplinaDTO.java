@@ -9,8 +9,12 @@ public class DisciplinaDTO {
     private String codigo;
 
     private Long cursoId;
+    
+    private String cursoNome;
 
     private Long monitorId;
+    
+    private String monitorNome;
 
     public DisciplinaDTO() {
     }
@@ -68,4 +72,11 @@ public class DisciplinaDTO {
     public void setMonitorId(Long monitorId) {
         this.monitorId = monitorId;
     }
+    
+    public String getCursoNome() { return cursoNome; }
+    public void setCursoNome(String cursoNome) { this.cursoNome = cursoNome; }
+    
+    public String getMonitorNome() { return monitorNome; }
+    public void setMonitorNome(String monitorNome) { this.monitorNome = monitorNome; }
 }
+

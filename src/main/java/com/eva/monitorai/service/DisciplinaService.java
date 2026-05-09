@@ -37,17 +37,22 @@ public class DisciplinaService {
     private DisciplinaDTO toDTO(Disciplina disciplina) {
 
         Long cursoId = disciplina.getCurso().getId();
-        Long monitorId = (disciplina.getMonitor() != null)
-                ? disciplina.getMonitor().getId()
-                : null;
+        String cursoNome = disciplina.getCurso().getNome();
+        Long monitorId = disciplina.getMonitor() != null ? disciplina.getMonitor().getId() : null;
+        String monitorNome = disciplina.getMonitor() != null ? disciplina.getMonitor().getUsername() : null;
 
-        return new DisciplinaDTO(
+        DisciplinaDTO dto = new DisciplinaDTO(
                 disciplina.getId(),
                 disciplina.getNome(),
                 disciplina.getCodigo(),
                 cursoId,
                 monitorId
         );
+        
+        dto.setCursoNome(cursoNome); 
+        dto.setMonitorNome(monitorNome);
+
+        return dto;
     }
 
     // =====================================
@@ -62,26 +67,16 @@ public class DisciplinaService {
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
 
-        // =========================
         // CURSO (OBRIGATÓRIO)
-        // =========================
-
         Curso curso = cursoRepository.findById(dto.getCursoId())
-                .orElseThrow(() ->
-                        new RuntimeException("Curso é obrigatório e não foi encontrado"));
+                .orElseThrow(() -> new RuntimeException("Curso é obrigatório e não foi encontrado"));
 
         disciplina.setCurso(curso);
 
-        // =========================
         // MONITOR (OPCIONAL)
-        // =========================
-
         if (dto.getMonitorId() != null) {
-
             Usuario monitor = usuarioRepository.findById(dto.getMonitorId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Monitor não encontrado"));
-
+                    .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
             disciplina.setMonitor(monitor);
         }
 
@@ -104,11 +99,8 @@ public class DisciplinaService {
     // =====================================
 
     public DisciplinaDTO buscarPorId(Long id) {
-
         Disciplina disciplina = repository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Disciplina não encontrada"));
-
+                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
         return toDTO(disciplina);
     }
 
@@ -117,15 +109,12 @@ public class DisciplinaService {
     // =====================================
 
     public DisciplinaDTO criar(DisciplinaDTO dto) {
-
         if (repository.existsByCodigo(dto.getCodigo())) {
             throw new RuntimeException("Já existe uma disciplina com esse código");
         }
 
         Disciplina disciplina = toEntity(dto);
-
         Disciplina salva = repository.save(disciplina);
-
         return toDTO(salva);
     }
 
@@ -134,36 +123,25 @@ public class DisciplinaService {
     // =====================================
 
     public DisciplinaDTO atualizar(Long id, DisciplinaDTO dto) {
-
         Disciplina disciplina = repository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Disciplina não encontrada"));
+                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
 
-        // CURSO (pode trocar)
         if (dto.getCursoId() != null) {
-
             Curso curso = cursoRepository.findById(dto.getCursoId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Curso não encontrado"));
-
+                    .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
             disciplina.setCurso(curso);
         }
 
-        // MONITOR (opcional)
         if (dto.getMonitorId() != null) {
-
             Usuario monitor = usuarioRepository.findById(dto.getMonitorId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Monitor não encontrado"));
-
+                    .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
             disciplina.setMonitor(monitor);
         }
 
         Disciplina atualizada = repository.save(disciplina);
-
         return toDTO(atualizada);
     }
 
@@ -173,5 +151,13 @@ public class DisciplinaService {
 
     public void deletar(Long id) {
         repository.deleteById(id);
+    }
+    
+    public List<Usuario> listarMonitores() {
+        // Busca todos os usuários com role de monitor
+        // Se não tiver o método findByRole, faz assim:
+        return usuarioRepository.findAll().stream()
+            .filter(u -> "MONITOR".equals(u.getRole()))
+            .collect(Collectors.toList());
     }
 }

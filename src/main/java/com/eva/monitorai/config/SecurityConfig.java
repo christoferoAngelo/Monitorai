@@ -51,6 +51,9 @@ public class SecurityConfig {
 	        	    	
 	        	    // Libera cursos
 	        	    .requestMatchers("/cursos/**").permitAll()
+	        	    
+	        	 // Libera cursos
+	        	    .requestMatchers("/disciplinas/**").permitAll()
 
 	        	    // 2. Libera rotas públicas de login e registro
 	        	    .requestMatchers("/auth/**").permitAll()

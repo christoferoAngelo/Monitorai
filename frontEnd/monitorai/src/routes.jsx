@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Inicial from './pages/Inicial'; 
 import Curso from './pages/Curso';
 import Aluno from './pages/Aluno';
+import Disciplina from './pages/Disciplina';
 
 
 const PrivateRoute = ({ children }) => {
@@ -33,6 +34,15 @@ function AppRoutes() {
                     </PrivateRoute>
                 } 
             />
+			
+			<Route 
+			                path="/disciplinas" 
+			                element={
+			                    <PrivateRoute>
+			                        <Disciplina />
+			                    </PrivateRoute>
+			                } 
+			            />
 
             <Route 
                 path="/alunos" 

@@ -35,7 +35,7 @@ function Inicial() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>Painel Principal</h1>
+      <h1>Painel</h1>
       
       <div style={{ 
         backgroundColor: '#f4f4f4', 
@@ -56,34 +56,46 @@ function Inicial() {
 		
       </div>
 	  
+	  
+	  
 	  {
-      //só adm poder acessar
+    //  só adm poder acessar
        usuario?.role === 'ADMIN' && (
          <>
+		 
+			 
            <button onClick={() => navigate("/cursos")}>
              Gerenciar Cursos
            </button> <br></br>
+		  
+		   
            <button onClick={() => navigate("/alunos")}>
              Gerenciar Alunos
            </button> <br></br>
+		   
+		   <button onClick={() => navigate("/disciplinas")}>
+		   	       Gerenciar Disciplinas
+		   	     </button> <br></br>
+		   
+		  
          </>
        )
     }
 	  
 	  
-      <button 
-        onClick={handleLogout}
-        style={{
-          backgroundColor: '#dc3545',
-          color: 'white',
-          border: 'none',
-          padding: '10px 20px',
-          borderRadius: '5px',
-          cursor: 'pointer'
-        }}
-      >
-        Sair do Sistema
-      </button>
+	<button 
+	       onClick={handleLogout}
+	       style={{
+	         backgroundColor: '#dc3545',
+	         color: 'white',
+	         border: 'none',
+	         padding: '10px 20px',
+	         borderRadius: '5px',
+	         cursor: 'pointer'
+	       }}
+	     >
+	       Sair do Sistema
+	     </button>
     </div>
   );
 }
