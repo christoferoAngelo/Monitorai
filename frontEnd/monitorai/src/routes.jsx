@@ -6,6 +6,7 @@ import Curso from './pages/Curso';
 import Aluno from './pages/Aluno';
 import Disciplina from './pages/Disciplina';
 import Monitoria from './pages/Monitoria';
+import RegistrarRelatorio from './pages/RegistrarRelatorio';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -78,6 +79,8 @@ function AppRoutes() {
                 path="*"
                 element={<h1>Página não encontrada (404)</h1>}
             />
+
+        <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
 
         </Routes>
     );

@@ -1,11 +1,13 @@
 package com.eva.monitorai.dto;
 
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class RelatorioMonitoriaDTO {
 
     private Long monitoriaId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd") // Garante que o Java entenda o formato do input HTML date
     private LocalDate data;
 
     private Integer quantidadeAlunos;

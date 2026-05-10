@@ -80,7 +80,14 @@ function Inicial() {
         <button onClick={() => navigate("/monitorias")}>
 		   	       Gerenciar Monitorias
 		   	     </button> <br></br>
-		   
+		   { (usuario?.role === 'ADMIN' || usuario?.role === 'MONITOR') && (
+    <button 
+      onClick={() => navigate("/relatorios/novo")}
+      style={{ backgroundColor: '#28a745', color: 'white', marginTop: '10px' }}
+    >
+      {usuario?.role === 'ADMIN' ? "Gerenciar Relatórios (Geral)" : "Registrar Minha Atividade"}
+    </button>
+)}
 		  
          </>
        )

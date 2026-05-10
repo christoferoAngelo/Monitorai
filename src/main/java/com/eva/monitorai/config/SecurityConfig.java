@@ -62,7 +62,8 @@
 		        	    // (O Spring vai procurar por ROLE_ADMIN, ROLE_MONITOR, ROLE_ALUNO)
 		        	    .requestMatchers("/admin/**").hasRole("ADMIN")
 		        	    .requestMatchers("/usuarios/**").hasRole("ADMIN")
-		        	    .requestMatchers("/monitorias/**").hasRole("ADMIN") 	    
+		        	    .requestMatchers("/monitorias/**").hasRole("ADMIN") 	
+		        	    .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MONITOR")
 		        	    // 4. Qualquer outra requisição precisa apenas estar logado (ex: portal do aluno)
 		        	    //.anyRequest().authenticated()
 		        	);
