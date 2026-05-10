@@ -1,5 +1,6 @@
 package com.eva.monitorai.controller;
 
+import com.eva.monitorai.dto.PerfilDTO;
 import com.eva.monitorai.dto.UsuarioDTO;
 import com.eva.monitorai.model.entity.Usuario;
 import com.eva.monitorai.repository.UsuarioRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -106,5 +108,40 @@ public class UsuarioController {
                 .map(this::converterParaDTO)
                 .collect(Collectors.toList());
     }
+    
+    @GetMapping("/me/salvos")
+    public ResponseEntity<?> listarSalvos(
+            Authentication auth
+    ){
+
+        String username = auth.getName();
+
+        Usuario usuario = repository.findByUsername(username)
+                .orElseThrow();
+
+        return ResponseEntity.ok(usuario.getMateriaisSalvos());
+    }
+    
+    @GetMapping("/me/perfil")
+    public ResponseEntity<?> meuPerfil(
+            Authentication auth
+    ){
+
+        String username = auth.getName();
+
+        Usuario usuario = repository.findByUsername(username)
+                .orElseThrow();
+
+        PerfilDTO perfil = new PerfilDTO(
+                usuario.getUsername(),
+                usuario.getEmail(),
+                usuario.getRole(),
+                usuario.getRa(),
+                usuario.getMateriaisSalvos()
+        );
+
+        return ResponseEntity.ok(perfil);
+    }
+    
 
 }

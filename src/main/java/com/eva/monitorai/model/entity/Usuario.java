@@ -6,11 +6,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 @Table(name = "usuarios")
@@ -35,6 +42,14 @@ public class Usuario {
     @JsonIgnore
 	@ManyToMany(mappedBy = "curtidas")
 	private Set<Material> materiaisCurtidos = new HashSet<>();
+    
+    @ManyToMany
+    @JoinTable(
+        name = "usuario_salvos",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "material_id")
+    )
+    private Set<Material> materiaisSalvos = new HashSet<>();
 	
     // Construtores
 	
@@ -99,6 +114,14 @@ public class Usuario {
 
 	public void setRa(String ra) {
 		this.ra = ra;
+	}
+	
+	public Set<Material> getMateriaisSalvos() {
+	    return materiaisSalvos;
+	}
+
+	public void setMateriaisSalvos(Set<Material> materiaisSalvos) {
+	    this.materiaisSalvos = materiaisSalvos;
 	}
 	
 }

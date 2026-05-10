@@ -102,4 +102,49 @@ public class MaterialController {
 
         return ResponseEntity.ok(response);
     }
+    
+    @PostMapping("/{id}/salvar")
+    public ResponseEntity<?> salvarMaterial(
+            @PathVariable Long id,
+            Authentication auth
+    ){
+
+        String username = auth.getName();
+
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow();
+
+        Material material = materialRepository.findById(id)
+                .orElseThrow();
+
+        usuario.getMateriaisSalvos().add(material);
+
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Material salvo");
+    }
+    
+    
+    @DeleteMapping("/{id}/salvar")
+    public ResponseEntity<?> removerSalvo(
+            @PathVariable Long id,
+            Authentication auth
+    ){
+
+        String username = auth.getName();
+
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow();
+
+        Material material = materialRepository.findById(id)
+                .orElseThrow();
+
+        usuario.getMateriaisSalvos().remove(material);
+
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Material removido dos salvos");
+    }
+
+    
 }
