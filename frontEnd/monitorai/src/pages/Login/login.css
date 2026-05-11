@@ -1,0 +1,302 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* RESET GLOBAL: Garante que padding e border não aumentem o tamanho total dos elementos */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  width: 100%;
+  --login-accent: #8b5cf6;
+  --login-accent-hover: #7c3aed;
+  --login-accent-bg: rgba(139, 92, 246, 0.1);
+  --login-border: rgba(255, 255, 255, 0.5);
+  --login-shadow: 
+    0 20px 40px -10px rgba(0, 0, 0, 0.1),
+    0 10px 15px -5px rgba(0, 0, 0, 0.05);
+  --text-h: #111827;
+  --text: #4b5563;
+  --bg-color: #f3f4f6;
+}
+
+/* Força o body e html a ocuparem 100% da tela, tirando as barras pretas */
+html, body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--bg-color);
+}
+
+.loginPage {
+  width: 100%; /* Garante a largura total */
+  min-height: 100svh; /* Usa 100% da altura da tela */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px; /* Como temos o box-sizing ali em cima, isso não gera mais rolagem! */
+  background-color: var(--bg-color);
+  
+  /* Efeito Aurora / Mesh Gradient de fundo */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.3) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(56, 189, 248, 0.3) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+.loginShell {
+  width: 100%;
+  max-width: 440px;
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animação suave de entrada */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loginCard {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--login-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  box-shadow: var(--login-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 32px 28px;
+  transition: all 0.3s ease;
+}
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.loginBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--login-accent-bg);
+  color: var(--login-accent-hover);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  margin-bottom: 8px;
+}
+
+.loginTitle {
+  margin: 12px 0 8px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  color: var(--text-h);
+}
+
+.loginSubtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loginGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 460px) {
+  .loginGrid { grid-template-columns: 1fr 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-h);
+  text-align: left;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--text-h);
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  /* Removido o box-sizing daqui pois agora ele é global lá no topo */
+  transition: all 0.2s ease;
+}
+
+.field input::placeholder {
+  color: #9ca3af;
+}
+
+.field input:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.field input:focus {
+  background: #ffffff;
+  border-color: var(--login-accent);
+  box-shadow: 0 0 0 4px var(--login-accent-bg);
+}
+
+.primaryButton {
+  margin-top: 8px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, var(--login-accent) 0%, #6d28d9 100%);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.primaryButton:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(139, 92, 246, 0.4);
+  filter: brightness(1.05);
+}
+
+.primaryButton:active { 
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.primaryButton:focus-visible { 
+  outline: 3px solid var(--login-accent-bg); 
+  outline-offset: 2px; 
+}
+
+.loginFooter {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.linkButton {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+}
+
+.linkButton:hover {
+  color: var(--login-accent-hover);
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.linkButton:focus-visible {
+  outline: 2px solid var(--login-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Container de Feedback - O segredo da animação de altura suave
+   ========================================================================== */
+.feedbackContainer {
+  display: grid;
+  /* Começa com altura 0 (0fr) */
+  grid-template-rows: 0fr; 
+  /* Anima a mudança no grid-template-rows */
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin 0.4s ease;
+  overflow: hidden; /* Garante que o conteúdo não vaze enquanto a altura é 0 */
+  visibility: hidden; /* Esconde para leitores de tela quando zerado */
+  opacity: 0;
+  margin: 0;
+}
+
+/* Quando tem erro ou sucesso, expandimos o grid row para 1fr */
+.feedbackContainer.show {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  margin-top: 4px;    /* Espaçamento sutil acima do balão */
+  margin-bottom: 8px; /* Espaçamento sutil abaixo (empurrando o botão) */
+  
+  /* Transição de entrada mais lenta e com efeito mola na opacidade */
+  transition: 
+    grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.4s ease,
+    opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* O conteúdo interno precisa de min-height: 0 para o truque do grid funcionar */
+.feedbackContent {
+  min-height: 0;
+}
+
+/* ==========================================================================
+   Estilização dos Balões (Mantendo o estilo Glassmorphism)
+   ========================================================================== */
+.errorMessage, .successMessage {
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  
+  /* Animação interna de escala para dar um "pop" */
+  transform: scale(0.9);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Quando o container pai aparece, fazemos o pop interno */
+.feedbackContainer.show .errorMessage,
+.feedbackContainer.show .successMessage {
+  transform: scale(1);
+}
+
+.errorMessage {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+}
+
+.successMessage {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+}

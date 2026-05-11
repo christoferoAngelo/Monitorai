@@ -38,6 +38,12 @@ public class UsuarioService {
         if (repository.findByEmail(usuario.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado");
         }
+        
+        if (repository.findByRa(usuario.getRa()).isPresent()) {
+            throw new RuntimeException("Ra já cadastrado");
+        }
+        
+        
 
         // Se quem mandou o JSON não enviou a role, define como Aluno por padrão
         if (usuario.getRole() == null || usuario.getRole().isBlank()) {

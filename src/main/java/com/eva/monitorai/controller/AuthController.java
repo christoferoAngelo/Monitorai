@@ -64,25 +64,39 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
-        // 1. Validação de existência
+        // 1. Validação de Duplicidade
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-            return ResponseEntity.badRequest().body("Erro: Usuário já existe!");
+            return ResponseEntity.badRequest().body("Nome de usuário já está em uso!");
         }
 
-        // 2. Validação do tamanho do RA
-        if (usuario.getRa() == null || usuario.getRa().length() != 13) {
-            return ResponseEntity.badRequest().body("Erro: O RA deve conter exatamente 13 dígitos.");
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            return ResponseEntity.badRequest().body("Este e-mail já está cadastrado!");
         }
 
-        // 3. Encriptar senha
+        if (usuario.getRa() != null && usuarioRepository.existsByRa(usuario.getRa())) {
+            return ResponseEntity.badRequest().body("Este RA já está cadastrado!");
+        }
+
+        // 2. Validação de E-mail Institucional
+        String email = usuario.getEmail();
+        if (email == null || (!email.endsWith("@aluno.cps.sp.gov.br") && !email.endsWith("@fatec.sp.gov.br"))) {
+            return ResponseEntity.badRequest().body("Use um e-mail institucional (@aluno.cps.sp.gov.br ou @fatec.sp.gov.br).");
+        }
+
+        // 3. Validação do RA (Tamanho e Apenas Números)
+        if (usuario.getRa() == null || !usuario.getRa().matches("\\d{13}")) {
+            return ResponseEntity.badRequest().body("O RA deve conter exatamente 13 dígitos numéricos.");
+        }
+
+        // 4. Encriptar senha e salvar
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         
-        if (usuario.getRole() == null) {
+        if (usuario.getRole() == null || usuario.getRole().isBlank()) {
             usuario.setRole("ALUNO");
         }
 
         usuarioRepository.save(usuario);
-        return ResponseEntity.ok("Usuário registrado com sucesso! RA: " + usuario.getRa());
+        return ResponseEntity.ok("Usuário registrado com sucesso!");
     }
 
     @PostMapping("/login")
