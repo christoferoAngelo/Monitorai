@@ -16,8 +16,6 @@ public class MonitoriaDTO {
 
     private String sala;
 
-    private String semestreReferencia;
-
     public MonitoriaDTO() {
     }
 
@@ -67,13 +65,5 @@ public class MonitoriaDTO {
 
     public void setSala(String sala) {
         this.sala = sala;
-    }
-
-    public String getSemestreReferencia() {
-        return semestreReferencia;
-    }
-
-    public void setSemestreReferencia(String semestreReferencia) {
-        this.semestreReferencia = semestreReferencia;
     }
 }
