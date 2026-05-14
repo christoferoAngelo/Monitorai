@@ -1,6 +1,7 @@
 package com.eva.monitorai.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.eva.monitorai.dto.MaterialDTO;
 import com.eva.monitorai.exception.MaterialNotFoundException;
 import com.eva.monitorai.exception.UsuarioNotFoundException;
 import com.eva.monitorai.model.entity.Material;
 import com.eva.monitorai.model.entity.Usuario;
 import com.eva.monitorai.repository.MaterialRepository;
 import com.eva.monitorai.repository.UsuarioRepository;
+import com.eva.monitorai.service.MaterialService;
 
 @RestController
 @RequestMapping("/materiais")
@@ -25,7 +28,33 @@ public class MaterialController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private MaterialService materialService; // Injetado aqui!
 
+
+    // =========================================
+    // POSTAR NOVO MATERIAL (VÍDEO)
+    // =========================================
+    @PostMapping
+    public ResponseEntity<Material> criarMaterial(
+            @RequestBody MaterialDTO dto,
+            Authentication auth
+    ) {
+        String username = auth.getName();
+        Material novo = materialService.criarMaterialVideo(dto, username);
+        return ResponseEntity.ok(novo);
+    }
+
+    // =========================================
+    // LISTAR MATERIAIS DO MONITOR LOGADO
+    // =========================================
+    @GetMapping("/meus")
+    public ResponseEntity<List<Material>> listarMeusMateriais(Authentication auth) {
+        String username = auth.getName();
+        List<Material> lista = materialService.listarMateriaisDoMonitor(username);
+        return ResponseEntity.ok(lista);
+    }
 
     // CURTIR / DESCURTIR
     @PostMapping("/{id}/curtir")

@@ -16,9 +16,24 @@ public class Material {
     private String titulo;
 
     @Column(columnDefinition = "TEXT")
-    private String conteudo;
+    private String conteudo; // Pode ser usado pra uma descrição do vídeo/material
 
-    // usuários que curtiram
+    @Column(nullable = false)
+    private String url; // Aqui vai o link do YouTube
+
+    @Enumerated(EnumType.STRING)
+    private TipoMaterial tipo; // VIDEO, DOCUMENTO, QUIZ
+
+    // Qual monitor postou isso?
+    @ManyToOne
+    @JoinColumn(name = "monitor_id")
+    private Monitor autor;
+
+    // Para qual disciplina é esse material?
+    @ManyToOne
+    @JoinColumn(name = "disciplina_id")
+    private Disciplina disciplina;
+
     @ManyToMany
     @JoinTable(
         name = "material_curtidas",
@@ -26,7 +41,6 @@ public class Material {
         inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private Set<Usuario> curtidas = new HashSet<>();
-
 
     // CONSTRUTORES
 
@@ -73,4 +87,38 @@ public class Material {
     public void setCurtidas(Set<Usuario> curtidas) {
         this.curtidas = curtidas;
     }
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public TipoMaterial getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoMaterial tipo) {
+		this.tipo = tipo;
+	}
+
+	public Monitor getAutor() {
+		return autor;
+	}
+
+	public void setAutor(Monitor autor) {
+		this.autor = autor;
+	}
+
+	public Disciplina getDisciplina() {
+		return disciplina;
+	}
+
+	public void setDisciplina(Disciplina disciplina) {
+		this.disciplina = disciplina;
+	}
+    
+    
 }

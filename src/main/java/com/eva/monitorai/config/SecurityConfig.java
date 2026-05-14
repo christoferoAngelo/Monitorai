@@ -66,6 +66,7 @@
 		        	    .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MONITOR")
 		        	    // 4. Qualquer outra requisição precisa apenas estar logado (ex: portal do aluno)
 		        	    //.anyRequest().authenticated()
+		        	    .requestMatchers("/materiais/**").hasRole("MONITOR")
 		        	);
 		    
 		    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

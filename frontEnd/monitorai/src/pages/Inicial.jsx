@@ -92,6 +92,20 @@ function Inicial() {
          </>
        )
     }
+
+    {
+        // Menu exclusivo do Monitor
+        usuario?.role === 'MONITOR' && (
+          <>
+             <button 
+               onClick={() => navigate("/meus-materiais")}
+               style={{ backgroundColor: '#8b5cf6', color: 'white', marginBottom: '10px' }}
+             >
+               Gerenciar Meus Materiais
+             </button> <br></br>
+          </>
+        )
+      }
 	  
 	  
 	<button 
