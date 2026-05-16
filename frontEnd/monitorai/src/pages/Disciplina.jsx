@@ -10,7 +10,7 @@ export default function Disciplina() {
 
   const [nome, setNome] = useState("");
   const [codigo, setCodigo] = useState("");
-  const [cursoId, setCursoId] = useState("");
+  const [cursosIds, setCursosIds] = useState([]);
   const [monitorId, setMonitorId] = useState("");
   const [monitores, setMonitores] = useState([]);
 
@@ -63,12 +63,14 @@ export default function Disciplina() {
   async function salvarDisciplina(e) {
     e.preventDefault();
 
-    const dados = {
-      nome,
-      codigo,
-      cursoId: Number(cursoId),
-      monitorId: monitorId ? Number(monitorId) : null,
-    };
+	const dados = {
+	  nome,
+	  codigo,
+	  cursosIds,
+	  monitorId: monitorId
+	    ? Number(monitorId)
+	    : null,
+	};
 
     try {
       if (editandoId) {
@@ -94,7 +96,7 @@ export default function Disciplina() {
   function editarDisciplina(disciplina) {
     setNome(disciplina.nome);
     setCodigo(disciplina.codigo);
-    setCursoId(disciplina.cursoId);
+    setCursosIds(disciplina.cursosIds || []);
     setMonitorId(disciplina.monitorId);
     setEditandoId(disciplina.id);
   }
@@ -120,7 +122,7 @@ export default function Disciplina() {
   function limparFormulario() {
     setNome("");
     setCodigo("");
-    setCursoId("");
+   setCursosIds([]);
     setMonitorId("");
     setEditandoId(null);
   }
@@ -155,17 +157,31 @@ export default function Disciplina() {
 
         <br /><br />
 
-        <select
-          value={cursoId}
-          onChange={(e) => setCursoId(e.target.value)}
-        >
-          <option value="">Selecione um curso</option>
-          {cursos.map((curso) => (
-            <option key={curso.id} value={curso.id}>
-              {curso.nome}
-            </option>
-          ))}
-        </select>
+		<select
+		  multiple
+		  value={cursosIds}
+		  onChange={(e) => {
+
+		    const valores = Array
+		      .from(e.target.selectedOptions)
+		      .map(option => Number(option.value));
+
+		    setCursosIds(valores);
+		  }}
+		>
+
+		  {
+		    cursos.map((curso) => (
+		      <option
+		        key={curso.id}
+		        value={curso.id}
+		      >
+		        {curso.nome}
+		      </option>
+		    ))
+		  }
+
+		</select>
 
         <br /><br />
 

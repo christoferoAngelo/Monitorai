@@ -6,6 +6,8 @@ export default function Curso() {
   const [nome, setNome] = useState("");
   const [filtro, setFiltro] = useState("");
   const [editandoId, setEditandoId] = useState(null);
+  const [disciplinas, setDisciplinas] = useState([]);
+  const [cursoSelecionado, setCursoSelecionado] = useState(null);
 
 
   const API = "http://localhost:8080/cursos";
@@ -98,8 +100,35 @@ export default function Curso() {
     setNome(curso.nome);
     setEditandoId(curso.id);
   }
+  
+  
+  
+  // =========================
+    // ABRIR CURSO
+    // =========================
+  
+  async function abrirCurso(curso) {
 
-  //oi//
+    try {
+
+      const response = await axios.get(
+        `http://localhost:8080/disciplinas/curso/${curso.id}`
+      );
+
+      setDisciplinas(response.data);
+
+      setCursoSelecionado(curso);
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao carregar disciplinas:",
+        error
+      );
+    }
+  }
+
+  
   // =========================
   // DELETE
   // =========================
@@ -170,6 +199,13 @@ export default function Curso() {
           <button onClick={() => editarCurso(curso)}>
             Editar
           </button>
+		  
+		  <button
+		    onClick={() => abrirCurso(curso)}
+		    style={{ marginLeft: "10px" }}
+		  >
+		    Ver Disciplinas
+		  </button>
 
           <button
             onClick={() => deletarCurso(curso.id)}
@@ -177,8 +213,52 @@ export default function Curso() {
           >
             Deletar
           </button>
+		  
         </div>
       ))}
+	  
+	  <hr />
+
+	  {
+	    cursoSelecionado && (
+	      <div>
+
+	        <h2>
+	          Disciplinas de {cursoSelecionado.nome}
+	        </h2>
+
+	        {
+	          disciplinas.map((disciplina) => (
+
+	            <div
+	              key={disciplina.id}
+	              style={{
+	                border: "1px solid #999",
+	                padding: "10px",
+	                marginBottom: "10px",
+	              }}
+	            >
+
+	              <p>
+	                <strong>Nome:</strong>
+	                {" "}
+	                {disciplina.nome}
+	              </p>
+
+	              <p>
+	                <strong>Código:</strong>
+	                {" "}
+	                {disciplina.codigo}
+	              </p>
+
+	            </div>
+	          ))
+	        }
+
+	      </div>
+	    )
+	  }
+	  
     </div>
   );
 }

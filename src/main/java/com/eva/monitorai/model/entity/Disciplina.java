@@ -1,5 +1,7 @@
 package com.eva.monitorai.model.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -19,9 +21,8 @@ public class Disciplina {
     // RELACIONAMENTO COM CURSO
     // =====================================
 
-    @ManyToOne
-    @JoinColumn(name = "curso_id")
-    private Curso curso;
+    @ManyToMany(mappedBy = "disciplinas")
+    private List<Curso> cursos;
 
     // =====================================
     // RELACIONAMENTO COM MONITOR
@@ -85,12 +86,12 @@ public class Disciplina {
         this.codigo = codigo;
     }
 
-    public Curso getCurso() {
-        return curso;
+    public List<Curso> getCursos() {
+        return cursos;
     }
 
-    public void setCurso(Curso curso) {
-        this.curso = curso;
+    public void setCursos(List<Curso> cursos) {
+        this.cursos = cursos;
     }
 
     public Usuario getMonitor() {

@@ -1,5 +1,5 @@
 package com.eva.monitorai.service;
-import com.eva.monitorai.dto.*;
+import com.eva.monitorai.model.entity.Disciplina;
 
 
 import java.util.List;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.eva.monitorai.dto.CursoDTO;
 import com.eva.monitorai.model.entity.Curso;
+import com.eva.monitorai.model.entity.Disciplina;
 import com.eva.monitorai.repository.CursoRepository;
 
 // Service responsável pela lógica de negócio (Cursos)
@@ -108,9 +109,27 @@ public class CursoService {
         return toDTO(repository.save(curso));
     }
 
-    // Remove um curso
     public void deletar(Long id) {
+
+        System.out.println("ENTROU NO DELETE");
+
+        Curso curso = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Curso não encontrado"));
+
+        System.out.println("CURSO ENCONTRADO");
+
+        curso.getDisciplinas().clear();
+
+        System.out.println("RELACIONAMENTOS LIMPOS");
+
+        repository.save(curso);
+
+        System.out.println("CURSO SALVO");
+
         repository.deleteById(id);
+
+        System.out.println("CURSO DELETADO");
     }
     
     // Filtrar por Curso

@@ -1,7 +1,9 @@
 package com.eva.monitorai.service;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
+
 
 import org.springframework.stereotype.Service;
 
@@ -30,30 +32,46 @@ public class DisciplinaService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // =====================================
-    // ENTITY -> DTO
-    // =====================================
+ // =====================================
+ // ENTITY -> DTO
+ // =====================================
 
-    private DisciplinaDTO toDTO(Disciplina disciplina) {
+ private DisciplinaDTO toDTO(Disciplina disciplina) {
 
-        Long cursoId = disciplina.getCurso().getId();
-        String cursoNome = disciplina.getCurso().getNome();
-        Long monitorId = disciplina.getMonitor() != null ? disciplina.getMonitor().getId() : null;
-        String monitorNome = disciplina.getMonitor() != null ? disciplina.getMonitor().getUsername() : null;
+     List<Long> cursosIds = disciplina
+             .getCursos()
+             .stream()
+             .map(Curso::getId)
+             .collect(Collectors.toList());
 
-        DisciplinaDTO dto = new DisciplinaDTO(
-                disciplina.getId(),
-                disciplina.getNome(),
-                disciplina.getCodigo(),
-                cursoId,
-                monitorId
-        );
-        
-        dto.setCursoNome(cursoNome); 
-        dto.setMonitorNome(monitorNome);
+     String cursoNome = disciplina
+             .getCursos()
+             .stream()
+             .map(Curso::getNome)
+             .collect(Collectors.joining(", "));
 
-        return dto;
-    }
+     Long monitorId = disciplina.getMonitor() != null
+             ? disciplina.getMonitor().getId()
+             : null;
+
+     String monitorNome = disciplina.getMonitor() != null
+             ? disciplina.getMonitor().getUsername()
+             : null;
+
+     DisciplinaDTO dto = new DisciplinaDTO(
+             disciplina.getId(),
+             disciplina.getNome(),
+             disciplina.getCodigo(),
+             cursosIds,
+             monitorId
+     );
+
+     dto.setCursoNome(cursoNome);
+
+     dto.setMonitorNome(monitorNome);
+
+     return dto;
+ }
 
     // =====================================
     // DTO -> ENTITY
@@ -67,20 +85,38 @@ public class DisciplinaService {
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
 
-        // CURSO (OBRIGATÓRIO)
-        Curso curso = cursoRepository.findById(dto.getCursoId())
-                .orElseThrow(() -> new RuntimeException("Curso é obrigatório e não foi encontrado"));
+     // CURSOS (OBRIGATÓRIO)
 
-        disciplina.setCurso(curso);
+        List<Curso> cursos = cursoRepository.findAllById(
+                dto.getCursosIds()
+        );
+
+        if (cursos.isEmpty()) {
+
+            throw new RuntimeException(
+                    "Pelo menos um curso deve ser informado"
+            );
+        }
+
+        disciplina.setCursos(cursos);
 
         // MONITOR (OPCIONAL)
+
         if (dto.getMonitorId() != null) {
-            Usuario monitor = usuarioRepository.findById(dto.getMonitorId())
-                    .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
+
+            Usuario monitor = usuarioRepository
+                    .findById(dto.getMonitorId())
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Monitor não encontrado"
+                            )
+                    );
+
             disciplina.setMonitor(monitor);
         }
 
         return disciplina;
+        
     }
 
     // =====================================
@@ -129,11 +165,16 @@ public class DisciplinaService {
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
 
-        if (dto.getCursoId() != null) {
-            Curso curso = cursoRepository.findById(dto.getCursoId())
-                    .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
-            disciplina.setCurso(curso);
-        }
+        if (dto.getCursosIds() != null &&
+        	    !dto.getCursosIds().isEmpty()) {
+
+        	    List<Curso> cursos =
+        	            cursoRepository.findAllById(
+        	                    dto.getCursosIds()
+        	            );
+
+        	    disciplina.setCursos(cursos);
+        	}
 
         if (dto.getMonitorId() != null) {
             Usuario monitor = usuarioRepository.findById(dto.getMonitorId())
@@ -159,5 +200,21 @@ public class DisciplinaService {
         return usuarioRepository.findAll().stream()
             .filter(u -> "MONITOR".equals(u.getRole()))
             .collect(Collectors.toList());
+    }
+    
+ // =====================================
+    // LISTAR POR CURSO >>> Abre um Curso -> Lista todas as disciplinas cadastradas
+    // =====================================
+    
+    
+    public List<DisciplinaDTO> listarPorCurso(
+            Long cursoId
+    ) {
+
+        return repository
+        		.buscarPorCurso(cursoId)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 }

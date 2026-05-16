@@ -84,4 +84,14 @@ public class DisciplinaController {
         List<Usuario> monitores = service.listarMonitores();
         return ResponseEntity.ok(monitores);
     }
+    
+    @GetMapping("/curso/{cursoId}")
+    public ResponseEntity<List<DisciplinaDTO>> listarPorCurso(
+            @PathVariable Long cursoId
+    ) {
+
+        return ResponseEntity.ok(
+                service.listarPorCurso(cursoId)
+        );
+    }
 }

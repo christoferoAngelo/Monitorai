@@ -17,10 +17,16 @@ public class Curso {
     private String nome;
     private String codigo; // Ex: ADS001
 
-    // Um curso tem várias disciplinas
-    @OneToMany(mappedBy = "curso")
+    @ManyToMany
+    @JoinTable(
+        name = "curso_disciplina",
+        joinColumns = @JoinColumn(name = "curso_id"),
+        inverseJoinColumns = @JoinColumn(name = "disciplina_id")
+    )
     @JsonIgnore // impede loop infinito na resposta da API
     private List<Disciplina> disciplinas;
+    
+    
 
     public Curso() {}
 
@@ -29,6 +35,8 @@ public class Curso {
         this.nome = nome;
         this.codigo = codigo;
     }
+    
+    
 
     public Long getId() {
         return id;

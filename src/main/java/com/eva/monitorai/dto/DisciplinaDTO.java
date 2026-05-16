@@ -1,5 +1,7 @@
 package com.eva.monitorai.dto;
 
+import java.util.List;
+
 public class DisciplinaDTO {
 
     private Long id;
@@ -8,7 +10,7 @@ public class DisciplinaDTO {
 
     private String codigo;
 
-    private Long cursoId;
+    private List<Long> cursosIds;
     
     private String cursoNome;
 
@@ -23,13 +25,13 @@ public class DisciplinaDTO {
             Long id,
             String nome,
             String codigo,
-            Long cursoId,
+            List<Long> cursosIds,
             Long monitorId
     ) {
         this.id = id;
         this.nome = nome;
         this.codigo = codigo;
-        this.cursoId = cursoId;
+        this.cursosIds = cursosIds;
         this.monitorId = monitorId;
     }
 
@@ -57,14 +59,14 @@ public class DisciplinaDTO {
         this.codigo = codigo;
     }
 
-    public Long getCursoId() {
-        return cursoId;
+    public List<Long> getCursosIds() {
+        return cursosIds;
     }
 
-    public void setCursoId(Long cursoId) {
-        this.cursoId = cursoId;
+    public void setCursosIds(List<Long> cursosIds) {
+        this.cursosIds = cursosIds;
     }
-
+    
     public Long getMonitorId() {
         return monitorId;
     }
