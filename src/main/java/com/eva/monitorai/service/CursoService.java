@@ -112,4 +112,14 @@ public class CursoService {
     public void deletar(Long id) {
         repository.deleteById(id);
     }
+    
+    // Filtrar por Curso
+    public List<CursoDTO> filtrarPorNome(String nome) {
+
+        return repository
+                .findByNomeContainingIgnoreCase(nome)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 }

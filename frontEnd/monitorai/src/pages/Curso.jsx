@@ -4,7 +4,9 @@ import axios from "axios";
 export default function Curso() {
   const [cursos, setCursos] = useState([]);
   const [nome, setNome] = useState("");
+  const [filtro, setFiltro] = useState("");
   const [editandoId, setEditandoId] = useState(null);
+
 
   const API = "http://localhost:8080/cursos";
 
@@ -12,6 +14,7 @@ export default function Curso() {
   // LISTAR CURSOS
   // =========================
   async function carregarCursos() {
+	
     try {
       const response = await axios.get(API);
       setCursos(response.data);
@@ -19,6 +22,34 @@ export default function Curso() {
       console.error("Erro ao carregar cursos:", error);
     }
   }
+  
+  async function filtrarCursos() {
+
+    try {
+
+      // se o filtro estiver vazio
+      if (filtro.trim() === "") {
+
+        carregarCursos();
+
+        return;
+      }
+
+      const response = await axios.get(
+        `${API}/filtro?nome=${filtro}`
+      );
+
+      setCursos(response.data);
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao filtrar cursos:",
+        error
+      );
+    }
+  }
+  
 
   useEffect(() => {
     async function fetchCursos() {
@@ -102,6 +133,24 @@ export default function Curso() {
       </form>
 
       <hr />
+	  
+	  <input
+	    type="text"
+	    placeholder="Filtrar por nome"
+	    value={filtro}
+	    onChange={(e) => setFiltro(e.target.value)}
+	  />
+
+	  <button onClick={filtrarCursos}>
+	    Filtrar
+	  </button>
+
+	  <button onClick={carregarCursos}>
+	    Limpar
+	  </button>
+
+	  <br />
+	  <br />
 
       <h2>Lista de Cursos</h2>
 

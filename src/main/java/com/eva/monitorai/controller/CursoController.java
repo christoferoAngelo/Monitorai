@@ -54,4 +54,16 @@ public class CursoController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    
+    // Filtrar por curso
+    
+    @GetMapping("/filtro")
+    public ResponseEntity<List<CursoDTO>> filtrarPorNome(
+            @RequestParam String nome
+    ) {
+
+        return ResponseEntity.ok(
+                service.filtrarPorNome(nome)
+        );
+    }
 }
