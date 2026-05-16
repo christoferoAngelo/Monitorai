@@ -59,24 +59,18 @@ public class DisciplinaService {
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
 
-        // Processamento Seguro dos Cursos Associados (Obrigatório ao menos 1)
-        if (dto.getCursosIds() == null || dto.getCursosIds().isEmpty()) {
-            throw new RuntimeException("Pelo menos um curso deve ser informado para a disciplina.");
+        // Processamento Seguro e flexível dos Cursos Associados
+        if (dto.getCursosIds() != null && !dto.getCursosIds().isEmpty()) {
+            List<Curso> cursosBuscados = cursoRepository.findAllById(dto.getCursosIds());
+            if (!cursosBuscados.isEmpty()) {
+                Set<Curso> cursosSet = new HashSet<>(cursosBuscados);
+                disciplina.setCursos(cursosSet);
+            }
         }
-
-        // Busca todos os cursos selecionados no banco e injeta na entidade como um Set
-        List<Curso> cursosBuscados = cursoRepository.findAllById(dto.getCursosIds());
-        if (cursosBuscados.isEmpty()) {
-            throw new RuntimeException("Nenhum curso válido foi encontrado para os IDs informados.");
-        }
-
-        Set<Curso> cursosSet = new HashSet<>(cursosBuscados);
-        disciplina.setCursos(cursosSet);
 
         // Processamento do Monitor Associado (Opcional)
         if (dto.getMonitorId() != null) {
-            Usuario monitor = usuarioRepository.findById(dto.getMonitorId())
-                    .orElseThrow(() -> new RuntimeException("Monitor não encontrado com o ID fornecido."));
+            Usuario monitor = usuarioRepository.findById(dto.getMonitorId()).orElse(null);
             disciplina.setMonitor(monitor);
         }
 
@@ -115,23 +109,52 @@ public class DisciplinaService {
     
     @Transactional
     public DisciplinaDTO criar(DisciplinaDTO dto) {
-        if (dto.getCodigo() != null && repository.existsByCodigo(dto.getCodigo())) {
-            throw new RuntimeException("Já existe uma disciplina cadastrada com esse código.");
+        // 1. Validação defensiva do código da disciplina
+        if (dto.getCodigo() != null && !dto.getCodigo().trim().isEmpty()) {
+            if (repository.existsByCodigo(dto.getCodigo())) {
+                throw new RuntimeException("Já existe uma disciplina cadastrada com esse código.");
+            }
         }
 
-        // Converte o DTO para Entity carregando os cursos do banco
-        Disciplina disciplina = toEntity(dto);
-        
-        // Força o salvamento na tabela intermediária (disciplina_curso)
-        if (disciplina.getCursos() != null) {
-            disciplina.getCursos().forEach(curso -> {
-                if (!curso.getDisciplinas().contains(disciplina)) {
-                    curso.getDisciplinas().add(disciplina);
+        // 2. Instancia a Entidade básica
+        Disciplina disciplina = new Disciplina();
+        disciplina.setNome(dto.getNome());
+        disciplina.setCodigo(dto.getCodigo());
+
+        // 3. VÍNCULO DOS CURSOS - PROTEGIDO CONTRA BUGS DE ID NULL (Onde dava o Erro 500)
+        if (dto.getCursosIds() != null && !dto.getCursosIds().isEmpty()) {
+            
+            // Remove qualquer valor 'null' acidental que possa ter vindo na lista do JSX
+            List<Long> idsValidos = dto.getCursosIds().stream()
+                    .filter(id -> id != null)
+                    .collect(Collectors.toList());
+
+            // Só consulta o banco se a lista contiver IDs reais após a filtragem
+            if (!idsValidos.isEmpty()) {
+                List<Curso> cursosBuscados = cursoRepository.findAllById(idsValidos);
+                if (!cursosBuscados.isEmpty()) {
+                    disciplina.setCursos(new java.util.HashSet<>(cursosBuscados));
+                }
+            }
+        }
+
+        // 4. Vínculo com o Monitor (Opcional)
+        if (dto.getMonitorId() != null) {
+            usuarioRepository.findById(dto.getMonitorId()).ifPresent(disciplina::setMonitor);
+        }
+
+        // 5. Salva a disciplina de forma isolada
+        Disciplina salva = repository.save(disciplina);
+
+        // 6. Atualiza o lado inverso do relacionamento se houver cursos vinculados
+        if (salva.getCursos() != null) {
+            salva.getCursos().forEach(curso -> {
+                if (!curso.getDisciplinas().contains(salva)) {
+                    curso.getDisciplinas().add(salva);
                 }
             });
         }
 
-        Disciplina salva = repository.save(disciplina);
         return toDTO(salva);
     }
 

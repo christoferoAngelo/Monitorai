@@ -68,7 +68,7 @@ public class DisciplinaDTO {
         // Mapeamento Seguro da relação com o Monitor (Usuário)
         if (disciplina.getMonitor() != null) {
             this.monitorId = disciplina.getMonitor().getId();
-            this.monitorNome = disciplina.getMonitor().getNome(); // Supondo que a entidade Usuario tenha getNome()
+          this.monitorNome = disciplina.getMonitor().getUsername(); // Supondo que a entidade Usuario tenha getNome()
         }
     }
 
