@@ -1,20 +1,19 @@
 package com.eva.monitorai.service;
-import com.eva.monitorai.model.entity.Disciplina;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.eva.monitorai.dto.CursoDTO;
+import com.eva.monitorai.dto.DisciplinaDTO;
 import com.eva.monitorai.model.entity.Curso;
-import com.eva.monitorai.model.entity.Disciplina;
 import com.eva.monitorai.repository.CursoRepository;
 
-// Service responsável pela lógica de negócio (Cursos)
-
-
+/**
+ * Service responsável pela regra de negócios e gerenciamento da entidade Curso.
+ */
 @Service
 public class CursoService {
 
@@ -24,7 +23,10 @@ public class CursoService {
         this.repository = repository;
     }
 
-    // Converte Entity para DTO
+    // =========================================================================
+    // MAPPERS (CONVERSORES)
+    // =========================================================================
+    
     private CursoDTO toDTO(Curso curso) {
         return new CursoDTO(
             curso.getId(),
@@ -33,7 +35,6 @@ public class CursoService {
         );
     }
 
-    // Converte DTO para Entity
     private Curso toEntity(CursoDTO dto) {
         Curso curso = new Curso();
         curso.setId(dto.getId());
@@ -41,16 +42,13 @@ public class CursoService {
         return curso;
     }
 
-    // Gera o código automaticamente baseado no nome
-    private String gerarCodigo(String nome) {
-
+    // Algoritmo interno para geração de chaves de curso únicos
+    private String generarCodigo(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
             throw new RuntimeException("Nome do curso é obrigatório");
         }
 
-        // Remove espaços e garante pelo menos 3 caracteres
         String nomeLimpo = nome.replaceAll("\\s+", "");
-
         String prefixo = nomeLimpo
                 .substring(0, Math.min(3, nomeLimpo.length()))
                 .toUpperCase();
@@ -58,7 +56,6 @@ public class CursoService {
         int numero = 1;
         String codigo;
 
-        // Gera códigos até encontrar um que não existe no banco
         do {
             codigo = prefixo + String.format("%03d", numero);
             numero++;
@@ -67,78 +64,88 @@ public class CursoService {
         return codigo;
     }
 
-    // Lista todos os cursos
+    // =========================================================================
+    // CONSULTAS (READ-ONLY)
+    // =========================================================================
+
+    @Transactional(readOnly = true)
     public List<CursoDTO> listarTodos() {
-        return repository.findAll()
-                .stream()
+        return repository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    // Busca curso por ID
+    @Transactional(readOnly = true)
     public CursoDTO buscarPorId(Long id) {
         Curso curso = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
-
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado com o ID: " + id));
         return toDTO(curso);
     }
 
-    // Cria um novo curso
-    public CursoDTO criar(CursoDTO dto) {
+    @Transactional(readOnly = true)
+    public List<CursoDTO> filtrarPorNome(String nome) {
+        return repository.findByNomeContainingIgnoreCase(nome).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<DisciplinaDTO> listarDisciplinasDoCurso(Long cursoId) {
+        Curso curso = repository.findByIdComDisciplinas(cursoId)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
 
+        return curso.getDisciplinas().stream()
+                .map(DisciplinaDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    // =========================================================================
+    // OPERAÇÕES DE ESCRITA (MUTATION)
+    // =========================================================================
+
+    @Transactional
+    public CursoDTO criar(CursoDTO dto) {
         if (repository.existsByNome(dto.getNome())) {
             throw new RuntimeException("Já existe um curso com esse nome");
         }
 
         Curso curso = toEntity(dto);
 
-        // Gera código automaticamente
-        curso.setCodigo(gerarCodigo(dto.getNome()));
+        // Mudamos aqui para botar o "ne" igualzinho está na sua função original
+        curso.setCodigo(generarCodigo(dto.getNome())); 
 
         return toDTO(repository.save(curso));
     }
 
-    // Atualiza um curso existente
+    @Transactional
     public CursoDTO atualizar(Long id, CursoDTO dto) {
-
         Curso curso = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
 
         curso.setNome(dto.getNome());
-
         return toDTO(repository.save(curso));
     }
 
+    /**
+     * Remove o curso de maneira segura garantindo que as tabelas de associação 
+     * não causem violação de integridade referencial ou erros de commit tardio.
+     */
+    @Transactional
     public void deletar(Long id) {
-
-        System.out.println("ENTROU NO DELETE");
-
         Curso curso = repository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Curso não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
 
-        System.out.println("CURSO ENCONTRADO");
+        // Se houver disciplinas vinculadas, limpa a relação antes de excluir
+        if (curso.getDisciplinas() != null) {
+            // Remove a relação nos dois lados da coleção gerenciada pelo Hibernate
+            curso.getDisciplinas().forEach(disciplina -> {
+                if (disciplina.getCursos() != null) {
+                    disciplina.getCursos().remove(curso);
+                }
+            });
+            curso.getDisciplinas().clear();
+        }
 
-        curso.getDisciplinas().clear();
-
-        System.out.println("RELACIONAMENTOS LIMPOS");
-
-        repository.save(curso);
-
-        System.out.println("CURSO SALVO");
-
-        repository.deleteById(id);
-
-        System.out.println("CURSO DELETADO");
-    }
-    
-    // Filtrar por Curso
-    public List<CursoDTO> filtrarPorNome(String nome) {
-
-        return repository
-                .findByNomeContainingIgnoreCase(nome)
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        repository.delete(curso);
     }
 }

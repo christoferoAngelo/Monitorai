@@ -2,12 +2,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Login from './pages/Login';
 import Inicial from './pages/Inicial';
-import Curso from './pages/Curso';
+import Curso from "./pages/Curso/Curso";
 import Aluno from './pages/Aluno';
-import Disciplina from './pages/Disciplina';
 import Monitoria from './pages/Monitoria';
 import RegistrarRelatorio from './pages/RegistrarRelatorio';
 import MeusMateriais from './pages/MeusMateriais';
+import Disciplina from './Disciplina/Disciplina';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -45,15 +45,15 @@ function AppRoutes() {
                 }
             />
 
-            {/* DISCIPLINAS */}
-            <Route
-                path="/disciplinas"
-                element={
-                    <PrivateRoute>
-                        <Disciplina />
-                    </PrivateRoute>
-                }
-            />
+			{/* DISCIPLINAS */}
+			            <Route
+			                path="/disciplinas"
+			                element={
+			                    <PrivateRoute>
+			                        <Disciplina />
+			                    </PrivateRoute>
+			                }
+			            />
 
             {/* ALUNOS */}
             <Route

@@ -1,0 +1,239 @@
+/* Curso.css */
+
+.curso-container {
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.curso-header {
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.curso-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.curso-header p {
+  color: #666;
+  margin: 5px 0 0 0;
+}
+
+/* Barra de Ações (Filtros e Alinhamento) */
+.acoes-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  align-items: center;
+}
+
+.input-busca {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 250px;
+  font-size: 14px;
+}
+
+/* Abas de Navegação */
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  border-bottom: 3px solid #28a745; /* Verde para destacar Cursos */
+  color: #28a745;
+}
+
+/* Área de Formulário Isolado */
+.cadastro-box {
+  max-width: 500px;
+  border: 1px solid #e0e0e0;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  background: #fff;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Grid de Cards dos Cursos */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.card-curso {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s;
+}
+
+.card-curso:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px dashed #eee;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #222;
+}
+
+.card-id {
+  font-size: 11px;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.card-body p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.card-footer {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Painel Lateral/Inferior de Disciplinas Vinculadas */
+.disciplinas-panel {
+  margin-top: 35px;
+  padding: 25px;
+  background-color: #fdfdfd;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.disciplinas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.mini-card-disciplina {
+  background: #fff;
+  border-left: 4px solid #28a745;
+  border-top: 1px solid #e9ecef;
+  border-right: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+  padding: 12px;
+  border-radius: 0 6px 6px 0;
+}
+
+.mini-card-disciplina p {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+/* Botões Customizados */
+.btn-success {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
