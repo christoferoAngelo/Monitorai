@@ -7,7 +7,8 @@ import Aluno from './pages/Aluno';
 import Monitoria from './pages/Monitoria';
 import RegistrarRelatorio from './pages/RegistrarRelatorio';
 import MeusMateriais from './pages/MeusMateriais';
-import Disciplina from './Disciplina/Disciplina';
+import Disciplina from './pages/Disciplina/Disciplina';
+import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = !!localStorage.getItem('token');
@@ -77,6 +78,7 @@ function AppRoutes() {
 
             {/* MEUS MATERIAIS - Somente para Monitores */}
             <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
+			<Route path="/gerenciar-recursos" element={<GerenciarRecursos />} />
 
             {/* 404 */}
             <Route

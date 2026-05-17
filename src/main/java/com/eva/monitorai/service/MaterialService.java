@@ -57,4 +57,52 @@ public class MaterialService {
                 
         return materialRepository.findByAutorId(monitor.getId());
     }
+    
+    @Transactional
+    public Material criarMaterialPdf(MaterialDTO dto, String username) {
+
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
+
+        Material material = new Material();
+        material.setTitulo(dto.getTitulo());
+        material.setConteudo(dto.getConteudo());
+        material.setUrl(dto.getUrl());
+        material.setTipo(TipoMaterial.DOCUMENTO);
+        material.setAutor(monitor);
+
+        // 🔥 IMPORTANTE: buscar disciplina GERENCIADA pelo banco
+        material.setDisciplina(
+            monitorRepository.findById(monitor.getId())
+                .orElseThrow()
+                .getDisciplina()
+        );
+
+        return materialRepository.save(material);
+    }
+
+    @Transactional
+    public Material criarMaterialQuizz(MaterialDTO dto, String username) {
+        // 1. Acha o usuário pelo username vindo do Security
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(UsuarioNotFoundException::new);
+
+        // 2. Acha o perfil de monitor dele
+        Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Este usuário não possui um perfil de monitor ativo."));
+
+        // 3. Monta o material usando QUIZZ para o Quiz
+        Material material = new Material();
+        material.setTitulo(dto.getTitulo());
+        material.setConteudo(dto.getConteudo());
+        material.setUrl(dto.getUrl());
+        material.setTipo(TipoMaterial.QUIZ); // <-- Mantido QUIZZ conforme o seu Enum
+        material.setAutor(monitor);
+        material.setDisciplina(monitor.getDisciplina());
+
+        return materialRepository.save(material);
+    }
 }

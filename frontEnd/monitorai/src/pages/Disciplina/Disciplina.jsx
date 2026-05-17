@@ -261,8 +261,92 @@ export default function Disciplina() {
               </div>
             )}
           </div>
+		  
+		  
         )}
+		
+		{/* CASO 3: Listagem Geral das Disciplinas Cadastradas */}
+		{abaAtiva === "listar" && !editandoId && (
+		  <div className="dashboard-main-grid">
+		    
+		    {/* Coluna da Esquerda: Seus Cards Existentes (Mantidos Intactos) */}
+		    <div className="disciplinas-left-column">
+		      {disciplinas.length === 0 ? (
+		        <p className="no-data">Nenhuma disciplina cadastrada no sistema.</p>
+		      ) : (
+		        <div className="grid-cards">
+		          {disciplinas.map((disp) => (
+		            <section key={disp.id} className="card-disciplina">
+		              <div>
+		                <header className="card-header">
+		                  <h3>{disp.nome}</h3>
+		                  <span className="card-id">ID: {disp.id}</span>
+		                </header>
+		                <div className="card-body">
+		                  <p><strong>Código:</strong> {disp.codigo}</p>
+		                  <p>
+		                    <strong>Curso(s) Vinculado(s):</strong>{" "}
+		                    {disp.cursosNomes && disp.cursosNomes.length > 0 
+		                      ? disp.cursosNomes.join(" | ") 
+		                      : "Nenhum"}
+		                  </p>
+		                  <p><strong>Monitor:</strong> {disp.monitorNome || "Sem monitor atribuído"}</p>
+		                </div>
+		              </div>
+		              <footer className="card-footer">
+		                <button className="btn-secondary" onClick={() => prepararEdicaoVinculo(disp)}>
+		                  Editar Vínculos
+		                </button>
+		                <button className="btn-danger" onClick={() => deletarDisciplina(disp.id)}>
+		                  Deletar
+		                </button>
+		              </footer>
+		            </section>
+		          ))}
+		        </div>
+		      )}
+		    </div>
 
+		    {/* Coluna da Direita: NOVO Painel de Alocações de Monitores (Estilo Taskify) */}
+		    <aside className="alocacoes-sidebar">
+		      <div className="alocacoes-card">
+		        <header className="alocacoes-header">
+		          <h3>Alocações de Monitores</h3>
+		          <span className="alocacoes-badge">{monitores.length} ativos</span>
+		        </header>
+		        
+		        <div className="alocacoes-list">
+		          {monitores.map((m) => {
+		            // Conta quantas disciplinas este monitor possui associadas
+		            const totalDisciplinas = disciplinas.filter(d => d.monitorNome === m.username).length;
+
+		            return (
+		              <div key={m.id} className="monitor-item">
+		                <div className="monitor-avatar">
+		                  {/* Gera uma inicial estilizada caso não tenha foto no banco */}
+		                  {m.username ? m.username.charAt(0).toUpperCase() : "M"}
+		                </div>
+		                <div className="monitor-info">
+		                  <h4>{m.username}</h4>
+		                  <p>{totalDisciplinas} {totalDisciplinas === 1 ? 'disciplina' : 'disciplinas'} vinculada(s)</p>
+		                </div>
+		                <div className={`monitor-status ${totalDisciplinas > 0 ? 'active' : 'idle'}`}>
+		                  {totalDisciplinas > 0 ? 'Em atividade' : 'Disponível'}
+		                </div>
+		              </div>
+		            );
+		          })}
+		          
+		          {monitores.length === 0 && (
+		            <p className="no-monitors">Nenhum monitor localizado no ecossistema.</p>
+		          )}
+		        </div>
+		      </div>
+		    </aside>
+
+		  </div>
+		)}
+		
       </main>
     </div>
   );

@@ -5,18 +5,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.eva.monitorai.dto.MaterialDTO;
 import com.eva.monitorai.exception.MaterialNotFoundException;
 import com.eva.monitorai.exception.UsuarioNotFoundException;
 import com.eva.monitorai.model.entity.Material;
+import com.eva.monitorai.model.entity.TipoMaterial;
 import com.eva.monitorai.model.entity.Usuario;
 import com.eva.monitorai.repository.MaterialRepository;
 import com.eva.monitorai.repository.UsuarioRepository;
 import com.eva.monitorai.service.MaterialService;
+
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/materiais")
@@ -174,6 +180,39 @@ public class MaterialController {
 
         return ResponseEntity.ok("Material removido dos salvos");
     }
+    
+    @Transactional
+    public Material criarMaterialPdf(MaterialDTO dto, String username) {
 
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (!"MONITOR".equals(usuario.getRole())) {
+            throw new RuntimeException("Apenas monitores podem criar materiais");
+        }
+
+        Material material = new Material();
+        material.setTitulo(dto.getTitulo());
+        material.setConteudo(dto.getConteudo());
+        material.setUrl(dto.getUrl());
+        material.setTipo(TipoMaterial.DOCUMENTO);
+
+        return materialRepository.save(material);
+    }
+    
+    // =========================================
+    // CRIAR QUIZZ (Corrigido para seguir a lógica do vídeo)
+    // =========================================
+    @PostMapping("/quizz")
+    public ResponseEntity<Material> criarQuizz(
+            @RequestBody MaterialDTO dto, 
+            Authentication auth) {
+        
+        String username = auth.getName(); // Igualzinho ao fluxo do vídeo!
+        Material novoQuizz = materialService.criarMaterialQuizz(dto, username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoQuizz);
+    }
+    
+    
     
 }

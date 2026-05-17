@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
+
 function Inicial() {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -103,6 +104,15 @@ function Inicial() {
              >
                Gerenciar Meus Materiais
              </button> <br></br>
+			 
+			 <button 
+			            onClick={() => navigate("/gerenciar-recursos")}
+			            style={{ backgroundColor: '#8b5cf6', color: 'white', marginBottom: '10px', width: '100%' }}
+			          >
+			            Gerenciar Recursos (PDFs e Quizzes)
+			          </button> <br />
+			 		 
+			 
           </>
         )
       }

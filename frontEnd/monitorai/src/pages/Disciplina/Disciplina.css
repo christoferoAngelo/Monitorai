@@ -1,0 +1,463 @@
+/* =========================================================================
+   VARIÁVEIS DE DESIGN SYSTEM (Inspirado no Painel Premium)
+   ========================================================================= */
+:root {
+    --fatec-blue-primary: #0D3B73;       /* Azul institucional */
+    --fatec-blue-light: #F4F7FC;         /* Fundo limpo e suave do painel */
+    --fatec-red-danger: rgb(178, 0, 0);  /* Seu vermelho exato para exclusão */
+    --fatec-red-hover: rgb(140, 0, 0);
+    
+    --surface-card: #FFFFFF;             /* Fundo dos cards brancos */
+    --text-primary: #1E293B;             /* Títulos e dados fortes (Slate) */
+    --text-muted: #64748B;               /* Labels e textos secundários */
+    --border-smooth: #EEF2F6;            /* Linhas divisórias sutis */
+    
+    --radius-lg: 20px;                   /* Arredondamento dos cards principais */
+    --radius-md: 12px;                   /* Arredondamento dos botões e abas */
+    
+    /* Sombra suave de elevação (Estilo Taskify) */
+    --shadow-premium: 0 10px 30px -5px rgba(13, 59, 115, 0.04), 0 8px 20px -6px rgba(0, 0, 0, 0.02);
+    --shadow-hover: 0 20px 40px -10px rgba(13, 59, 115, 0.1);
+}
+
+/* =========================================================================
+   ESTRUTURA E CONTAINER PRINCIPAL
+   ========================================================================= */
+.disciplina-container {
+    background-color: var(--fatec-blue-light);
+    min-height: 100vh;
+    padding: 50px 40px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Cabeçalho da Matriz */
+.disciplina-header {
+    margin-bottom: 40px;
+}
+
+.disciplina-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.8px;
+    margin-bottom: 8px;
+}
+
+.disciplina-header p {
+    font-size: 15px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* =========================================================================
+   NAVEGAÇÃO POR ABAS (Estilo Cápsula do Dashboard)
+   ========================================================================= */
+.tabs-container {
+    display: inline-flex;
+    background-color: rgba(13, 59, 115, 0.06);
+    padding: 6px;
+    border-radius: 14px;
+    margin-bottom: 44px;
+    gap: 4px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.tab-btn:hover {
+    color: var(--fatec-blue-primary);
+}
+
+/* Estado Ativo: vira a pílula azul preenchida */
+.tab-btn.active {
+    background-color: var(--fatec-blue-primary);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(13, 59, 115, 0.2);
+}
+
+/* =========================================================================
+   GRID DE CARDS (Visualização das Disciplinas)
+   ========================================================================= */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 32px;
+}
+
+/* O Card Redesenhado (Flutuante, limpo e com respiro) */
+.card-disciplina {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-premium);
+    border: 1px solid rgba(234, 240, 246, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 280px; /* Garante que os cards alinhem perfeitamente em grid */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-disciplina:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Topo do Card (Título e Badge) */
+.card-header {
+    padding: 32px 32px 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.card-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+    letter-spacing: -0.3px;
+}
+
+/* Badge de ID Reduzido e sutil */
+.card-id {
+    font-size: 11px;
+    font-weight: 700;
+    background-color: rgba(13, 59, 115, 0.08);
+    color: var(--fatec-blue-primary);
+    padding: 4px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+/* Corpo do Card (Informações internas) */
+.card-body {
+    padding: 0 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-body p {
+    font-size: 14.5px;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Estilização dos rótulos internos (Código, Curso, Monitor) */
+.card-body p strong {
+    color: var(--text-muted);
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Rodapé do Card (Espaço dos Botões) */
+.card-footer {
+    padding: 24px 32px 32px 32px;
+    background-color: #FAFCFE;
+    border-top: 1px solid var(--border-smooth);
+    display: flex;
+    gap: 14px;
+}
+
+/* =========================================================================
+   BOTÕES DE AÇÃO INTERNA DO CARD
+   ========================================================================= */
+/* Editar Vínculos (Clean/Outline Moderno) */
+.btn-secondary {
+    background-color: rgba(13, 59, 115, 0.06);
+    color: var(--fatec-blue-primary);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--fatec-blue-primary);
+    color: #FFFFFF;
+}
+
+/* Deletar (Seu Vermelho rgb(178,0,0) - Perigo Semântico) */
+.btn-danger {
+    background-color: var(--fatec-red-danger);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    transition: background-color 0.15s ease;
+}
+
+.btn-danger:hover {
+    background-color: var(--fatec-red-hover);
+}
+
+/* =========================================================================
+   FORMULÁRIOS DE CRIAÇÃO E EDIÇÃO (cadastro-box)
+   ========================================================================= */
+.cadastro-box {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-premium);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    max-width: 650px;
+}
+
+.cadastro-box h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+}
+
+/* Inputs, Selects e Fields */
+.form-input, 
+.form-select {
+    width: 100%;
+    padding: 16px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #E2E8F0;
+    border-radius: var(--radius-md);
+    background-color: #F8FAFC;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.form-input:focus, 
+.form-select:focus {
+    border-color: var(--fatec-blue-primary);
+    background-color: var(--surface-card);
+    box-shadow: 0 0 0 4px rgba(13, 59, 115, 0.08);
+}
+
+.fieldset-cursos {
+    border: 1px solid var(--border-smooth);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    background-color: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--fatec-blue-primary);
+    cursor: pointer;
+}
+
+/* Botão de Envio do Formulário (Criar Registro / Atualizar) */
+.btn-primary {
+    background-color: var(--fatec-blue-primary);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(13, 59, 115, 0.15);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0A2E5A;
+    transform: translateY(-1px);
+}
+
+/* Estado de Lista Vazia */
+.no-data {
+    font-size: 16px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 60px;
+    background-color: var(--surface-card);
+    border-radius: var(--radius-lg);
+    border: 2px dashed #E2E8F0;
+}
+
+/* =========================================================================
+   LAYOUT DE CORREÇÃO: SEÇÃO DE ALOCAÇÕES INTEGRADA (Estilo Taskify Premium)
+   ========================================================================= */
+
+/* Transforma o container geral em um fluxo vertical onde nada fica espremido */
+.dashboard-main-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Cria um super respiro vertical entre os blocos */
+    width: 100%;
+}
+
+.disciplinas-left-column {
+    width: 100%;
+}
+
+/* Painel de Alocações - Agora横 (Horizontal) e panorâmico para não sumir */
+.alocacoes-sidebar {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.alocacoes-card {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-premium);
+    border: 1px solid rgba(234, 240, 246, 0.7);
+    padding: 32px;
+}
+
+/* Cabeçalho alinhado e destacado */
+.alocacoes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-smooth);
+    padding-bottom: 16px;
+}
+
+.alocacoes-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--fatec-blue-primary); /* Destaca usando o azul institucional */
+    margin: 0;
+    letter-spacing: -0.4px;
+}
+
+.alocacoes-badge {
+    font-size: 12px;
+    font-weight: 700;
+    background-color: rgba(13, 59, 115, 0.08);
+    color: var(--fatec-blue-primary);
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.2px;
+}
+
+/* Lista de Monitores: Agora se distribui em Grid Fluido (Estilo Módulos do Taskify) */
+.alocacoes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* O Item Individual de cada Monitor reformulado como um Mini-Card limpo */
+.monitor-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.monitor-item:hover {
+    background-color: #FFFFFF;
+    border-color: var(--fatec-blue-primary);
+    transform: translateY(-3px); /* Efeito flutuante individualizado */
+    box-shadow: 0 10px 20px -5px rgba(13, 59, 115, 0.06);
+}
+
+/* Avatar Redondo */
+.monitor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--fatec-blue-primary), #1e5ca8);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(13, 59, 115, 0.15);
+    flex-shrink: 0;
+}
+
+/* Informações de Texto internas */
+.monitor-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.monitor-info h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.monitor-info p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Badges de Status Lateral sutil */
+.monitor-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.monitor-status.active {
+    background-color: rgba(13, 59, 115, 0.08);
+    color: var(--fatec-blue-primary);
+}
+
+.monitor-status.idle {
+    background-color: #E2E8F0;
+    color: var(--text-muted);
+}
+
+.no-monitors {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 24px 0;
+}

@@ -1,0 +1,170 @@
+.recursos-container {
+    padding: 30px;
+    max-width: 750px;
+    margin: 0 auto;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Cabeçalho da Tela */
+.recursos-header {
+    margin-bottom: 24px;
+}
+
+.recursos-header h2 {
+    color: #1e1b4b; /* Tom escuro elegante para o título */
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+}
+
+.recursos-header p {
+    color: #64748B;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Menu de Abas Alternáveis (PDF vs Quizz) */
+.recursos-abas-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #E2E8F0;
+    padding-bottom: 8px;
+}
+
+.aba-btn {
+    background: none;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748B;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.aba-btn:hover {
+    background-color: #F1F5F9;
+    color: #1E293B;
+}
+
+.aba-btn.ativa {
+    background-color: rgba(139, 92, 246, 0.1); /* Roxo MonitorAI com transparência */
+    color: #8b5cf6; /* Cor idêntica ao seu botão */
+}
+
+/* Caixa/Card do Formulário */
+.recursos-card-form {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 30px;
+    border: 1px solid #EEF2F6;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.recursos-card-form h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    color: #1E293B;
+    font-weight: 700;
+}
+
+.recursos-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.recursos-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recursos-group label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* Inputs de Texto e Textarea */
+.recursos-group input[type="text"],
+.recursos-group input[type="url"],
+.recursos-group textarea {
+    padding: 12px 14px;
+    font-size: 14px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background-color: #F8FAFC;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.recursos-group input:focus,
+.recursos-group textarea:focus {
+    border-color: #8b5cf6; /* Borda Roxa ao focar */
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+/* Área de Upload do PDF (Estilo Dropzone) */
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-label {
+    display: block;
+    padding: 30px 20px;
+    text-align: center;
+    background-color: #F8FAFC;
+    border: 2px dashed #CBD5E1;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #64748B;
+    transition: all 0.2s ease;
+}
+
+.file-upload-wrapper:hover .file-upload-label {
+    border-color: #8b5cf6;
+    background-color: rgba(139, 92, 246, 0.02);
+    color: #8b5cf6;
+}
+
+/* Botão de Submissão */
+.recursos-btn-submit {
+    background-color: #8b5cf6; /* Roxo padrão do MonitorAI */
+    color: #FFFFFF;
+    border: none;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.recursos-btn-submit:hover {
+    background-color: #7c3aed; /* Tom ligeiramente mais escuro no hover */
+}
+
+.recursos-btn-submit:disabled {
+    background-color: #94A3B8;
+    cursor: not-allowed;
+}

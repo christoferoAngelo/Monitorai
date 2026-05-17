@@ -31,6 +31,7 @@ function MeusMateriais() {
         videoId = urlObj.pathname.slice(1);
       }
       return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       return null;
     }
