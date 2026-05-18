@@ -1,0 +1,8 @@
+@import './AlunoDashboard.css';
+
+.card small {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #666;
+}

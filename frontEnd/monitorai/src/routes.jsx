@@ -1,7 +1,15 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Inicial from './pages/Inicial';
+
+// 👈 DASHBOARDS NOVOS
+import AdminDashboard from './pages/AdminDashboard';
+import MonitorDashboard from './pages/MonitorDashboard';
+import AlunoDashboard from './pages/AlunoDashboard';
+
+// PÁGINAS EXISTENTES
 import Curso from "./pages/Curso/Curso";
 import Aluno from './pages/Aluno';
 import Monitoria from './pages/Monitoria';
@@ -11,83 +19,40 @@ import Disciplina from './pages/Disciplina/Disciplina';
 import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
 
 const PrivateRoute = ({ children }) => {
-    const isAuthenticated = !!localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    return token ? children : <Navigate to="/login" />;
+};
 
-    return isAuthenticated
-        ? children
-        : <Navigate to="/" />;
+const PublicRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    return token ? <Navigate to="/dashboard" /> : children;
 };
 
 function AppRoutes() {
-
     return (
         <Routes>
+            {/* PÚBLICAS */}
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
-            {/* LOGIN */}
-            <Route path="/" element={<Login />} />
+            {/* REDIRECIONADOR */}
+            <Route path="/dashboard" element={<PrivateRoute><Inicial /></PrivateRoute>} />
 
-            {/* DASHBOARD */}
-            <Route
-                path="/dashboard"
-                element={
-                    <PrivateRoute>
-                        <Inicial />
-                    </PrivateRoute>
-                }
-            />
+            {/* 👈 DASHBOARDS DEDICADOS */}
+            <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
+            <Route path="/monitor-dashboard" element={<PrivateRoute><MonitorDashboard /></PrivateRoute>} />
+            <Route path="/aluno-dashboard" element={<PrivateRoute><AlunoDashboard /></PrivateRoute>} />
 
-            {/* CURSOS */}
-            <Route
-                path="/cursos"
-                element={
-                    <PrivateRoute>
-                        <Curso />
-                    </PrivateRoute>
-                }
-            />
-
-			{/* DISCIPLINAS */}
-			            <Route
-			                path="/disciplinas"
-			                element={
-			                    <PrivateRoute>
-			                        <Disciplina />
-			                    </PrivateRoute>
-			                }
-			            />
-
-            {/* ALUNOS */}
-            <Route
-                path="/alunos"
-                element={
-                    <PrivateRoute>
-                        <Aluno />
-                    </PrivateRoute>
-                }
-            />
-
-            {/* MONITORIAS */}
-            <Route
-                path="/monitorias"
-                element={
-                    <PrivateRoute>
-                        <Monitoria />
-                    </PrivateRoute>
-                }
-            />
-
-            {/* MEUS MATERIAIS - Somente para Monitores */}
+            {/* EXISTENTES */}
+            <Route path="/cursos" element={<PrivateRoute><Curso /></PrivateRoute>} />
+            <Route path="/alunos" element={<PrivateRoute><Aluno /></PrivateRoute>} />
+            <Route path="/disciplinas" element={<PrivateRoute><Disciplina /></PrivateRoute>} />
+            <Route path="/monitorias" element={<PrivateRoute><Monitoria /></PrivateRoute>} />
             <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
-			<Route path="/gerenciar-recursos" element={<GerenciarRecursos />} />
+            <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
+            <Route path="/relatorios/novo" element={<PrivateRoute><RegistrarRelatorio /></PrivateRoute>} />
 
-            {/* 404 */}
-            <Route
-                path="*"
-                element={<h1>Página não encontrada (404)</h1>}
-            />
-
-        <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
-
+            <Route path="*" element={<div>404 - Página não encontrada</div>} />
         </Routes>
     );
 }

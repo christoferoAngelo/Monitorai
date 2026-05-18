@@ -1,31 +1,29 @@
 import { useState } from 'react';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';  // ✅ CORRETO
 import axios from 'axios';
-import api from '../../services/api'; // <-- Mesmo import que você usa na tela de vídeos
+import api from '../../services/api';
 import './GerenciarRecursos.css';
 
 export default function GerenciarRecursos() {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();  // ✅ CORRETO
 
-  // Controle de Abas: 'pdf' ou 'quizz'
   const [abaAtiva, setAbaAtiva] = useState('pdf');
-
-  // Estados dos campos - Seguindo exatamente os mesmos nomes que funcionam no seu form de vídeo
   const [titulo, setTitulo] = useState('');
   const [conteudo, setConteudo] = useState('');
   const [url, setUrl] = useState(''); 
-  
-  // Estado para o arquivo físico do PDF
   const [arquivoPdf, setArquivoPdf] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
-  // Configurações do seu Cloudinary
   const CLOUD_NAME = "dglfyhzto"; 
-  const UPLOAD_PRESET = "eva_monitorai"; // Coloque o seu preset Unsigned aqui!
+  const UPLOAD_PRESET = "eva_monitorai";
 
-  /**
-   * Upload para o Cloudinary (Igual ao fluxo de imagem/mídia que roda no front)
-   */
+  // ✅ FUNÇÃO LOGOUT (MOVER AQUI)
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
+    navigate('/login');
+  };
+
   const fazerUploadCloudinary = async (arquivo) => {
     const formData = new FormData();
     formData.append("file", arquivo);
@@ -38,9 +36,6 @@ export default function GerenciarRecursos() {
     return resposta.data.secure_url; 
   };
 
-  /**
-   * Salvar Recurso - Segue a exata lógica de envio do botão de vídeo
-   */
   const handleSalvarRecurso = async (e) => {
     e.preventDefault();
     setCarregando(true);
@@ -48,7 +43,6 @@ export default function GerenciarRecursos() {
     try {
       let urlFinal = url;
 
-      // Se for PDF, faz o upload primeiro para conseguir a URL string igual à do vídeo
       if (abaAtiva === 'pdf') {
         if (!arquivoPdf) {
           alert("Por favor, selecione um arquivo PDF!");
@@ -58,14 +52,12 @@ export default function GerenciarRecursos() {
         urlFinal = await fazerUploadCloudinary(arquivoPdf);
       }
 
-      // Monta o payload exatamente igual ao formato aceito no salvarVideo
       const dadosMaterial = {
         titulo: titulo,
         conteudo: conteudo,
         url: urlFinal
       };
 
-      // Dispara para o endpoint correto usando a instância 'api' que já tem o token salvo
       if (abaAtiva === 'pdf') {
         await api.post('/materiais/pdf', dadosMaterial);
         alert("Material em PDF publicado com sucesso!");
@@ -74,19 +66,17 @@ export default function GerenciarRecursos() {
         alert("Quizz publicado com sucesso!");
       }
 
-      // Limpa o formulário após o sucesso
       setTitulo('');
       setConteudo('');
       setUrl('');
       setArquivoPdf(null);
       
     } catch (error) {
-      console.error("Erro ao salvar o recurso:", error);
-      // Se o backend devolver uma mensagem de erro, mostra ela no alert para sabermos o que foi
+      console.error("Erro ao salvar:", error);
       if (error.response && error.response.data) {
         alert(`Erro do servidor: ${JSON.stringify(error.response.data)}`);
       } else {
-        alert("Ocorreu um erro ao salvar o material. Verifique o console.");
+        alert("Erro ao salvar material.");
       }
     } finally {
       setCarregando(false);
@@ -95,21 +85,50 @@ export default function GerenciarRecursos() {
 
   return (
     <div className="recursos-container">
-      <header className="recursos-header">
-        <h2>Gerenciamento de Materiais Complementares</h2>
-        <p>Publique questionários ou arquivos de revisão diretamente para a sua turma.</p>
+      {/* ✅ HEADER COM LOGOUT (ÚNICO HEADER) */}
+      <header style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1.5rem 2rem',
+        background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+        color: 'white',
+        borderRadius: '16px',
+        marginBottom: '2rem',
+        boxShadow: '0 10px 30px rgba(139,92,246,0.3)'
+      }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: '1.75rem' }}>👨‍🏫 Gerenciar Recursos</h1>
+          <p style={{ margin: '0.25rem 0 0 0', opacity: 0.9 }}>
+            Publique PDFs e quizzes para sua turma
+          </p>
+        </div>
+        <button 
+          onClick={handleLogout}
+          style={{
+            background: 'rgba(255,255,255,0.2)',
+            color: 'white',
+            border: '1px solid rgba(255,255,255,0.3)',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          🚪 Sair
+        </button>
       </header>
 
+      {/* ✅ NAV DE ABAS */}
       <nav className="recursos-abas-nav">
         <button 
-          type="button"
           className={`aba-btn ${abaAtiva === 'pdf' ? 'ativa' : ''}`}
           onClick={() => { setAbaAtiva('pdf'); setUrl(''); }}
         >
           📄 Upload de PDF
         </button>
         <button 
-          type="button"
           className={`aba-btn ${abaAtiva === 'quizz' ? 'ativa' : ''}`}
           onClick={() => { setAbaAtiva('quizz'); setArquivoPdf(null); }}
         >
@@ -117,12 +136,13 @@ export default function GerenciarRecursos() {
         </button>
       </nav>
 
+      {/* ✅ FORMULÁRIO (SEU CÓDIGO ORIGINAL) */}
       <div className="recursos-card-form">
         <h3>{abaAtiva === 'pdf' ? "Novo Arquivo de Apoio (PDF)" : "Novo Link de Questionário"}</h3>
         
         <form onSubmit={handleSalvarRecurso} className="recursos-form">
           <div className="recursos-group">
-            <label>Título do Material</label>
+            <label>Título do Material <span style={{color: 'red'}}>*</span></label>
             <input 
               type="text" 
               placeholder={abaAtiva === 'pdf' ? "Ex: Lista de Exercícios - Álgebra" : "Ex: Simulado para a P1"}
@@ -133,9 +153,9 @@ export default function GerenciarRecursos() {
           </div>
 
           <div className="recursos-group">
-            <label>Descrição / Instruções (Opcional)</label>
+            <label>Descrição (Opcional)</label>
             <textarea 
-              placeholder="Adicione observações importantes sobre como utilizar este conteúdo..."
+              placeholder="Orientações para os alunos..."
               value={conteudo}
               onChange={(e) => setConteudo(e.target.value)}
               rows="3"
@@ -144,28 +164,29 @@ export default function GerenciarRecursos() {
 
           {abaAtiva === 'pdf' ? (
             <div className="recursos-group">
-              <label>Selecione o Arquivo PDF</label>
+              <label>Arquivo PDF <span style={{color: 'red'}}>*</span></label>
               <div className="file-upload-wrapper">
                 <input 
                   type="file" 
                   accept="application/pdf"
                   onChange={(e) => setArquivoPdf(e.target.files[0])}
                   id="pdf-file-input"
+                  required
                 />
                 <label htmlFor="pdf-file-input" className="file-upload-label">
-                  {arquivoPdf ? `📁 ${arquivoPdf.name}` : "Clique aqui para escolher o arquivo PDF"}
+                  {arquivoPdf ? `📁 ${arquivoPdf.name}` : "Escolha o arquivo PDF"}
                 </label>
               </div>
             </div>
           ) : (
             <div className="recursos-group">
-              <label>URL do Quizz / Formulário</label>
+              <label>URL do Quizz <span style={{color: 'red'}}>*</span></label>
               <input 
                 type="url" 
-                placeholder="https://forms.gle/... ou link do Kahoot"
+                placeholder="https://forms.gle/..."
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                required={abaAtiva === 'quizz'}
+                required
               />
             </div>
           )}
@@ -175,7 +196,7 @@ export default function GerenciarRecursos() {
             className="recursos-btn-submit"
             disabled={carregando}
           >
-            {carregando ? "Processando e Salvando..." : abaAtiva === 'pdf' ? "🚀 Publicar PDF" : "🚀 Publicar Quizz"}
+            {carregando ? "⏳ Publicando..." : `🚀 Publicar ${abaAtiva === 'pdf' ? 'PDF' : 'Quizz'}`}
           </button>
         </form>
       </div>

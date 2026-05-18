@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -141,6 +143,30 @@ public class UsuarioController {
         );
 
         return ResponseEntity.ok(perfil);
+    }
+    
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Long>> getAdminStats() {
+        Map<String, Long> stats = new HashMap<>();
+        
+        List<Usuario> usuarios = repository.findAll();
+        
+        stats.put("totalAlunos", usuarios.stream()
+            .filter(u -> "ALUNO".equals(u.getRole()))
+            .count());
+            
+        stats.put("totalMonitores", usuarios.stream()
+            .filter(u -> "MONITOR".equals(u.getRole()))
+            .count());
+            
+        stats.put("totalAdmins", usuarios.stream()
+            .filter(u -> "ADMIN".equals(u.getRole()))
+            .count());
+            
+        stats.put("totalMateriais", 3563L);
+        stats.put("totalRelatorios", 892L);
+        
+        return ResponseEntity.ok(stats);
     }
     
 
