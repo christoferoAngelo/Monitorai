@@ -1,0 +1,189 @@
+.perfil-page{
+
+    min-height:100vh;
+
+    padding:50px;
+
+    background:#f4f6fb;
+
+    color:#1b2440;
+}
+
+.perfil-hero{
+
+    display:flex;
+
+    gap:30px;
+
+    align-items:center;
+
+    padding:35px;
+
+    border-radius:30px;
+
+    margin-bottom:40px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #042b63,
+        #081f50,
+        #8d112f
+    );
+
+    color:white;
+
+    box-shadow:0 18px 45px rgba(0,0,0,.12);
+}
+
+.perfil-avatar{
+
+    width:110px;
+
+    height:110px;
+
+    border-radius:50%;
+
+    background:white;
+
+    color:#0b2f75;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:42px;
+
+    font-weight:bold;
+}
+
+.perfil-info h1{
+
+    margin:0;
+
+    font-size:40px;
+}
+
+.perfil-role{
+
+    display:inline-block;
+
+    margin:12px 0 18px;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.18);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    font-weight:700;
+}
+
+.perfil-info p{
+
+    margin:8px 0;
+
+    opacity:.92;
+}
+
+.salvos-section h2{
+
+    font-size:30px;
+
+    margin-bottom:25px;
+
+    color:#062b66;
+}
+
+.salvos-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(260px,1fr));
+
+    gap:24px;
+}
+
+.salvo-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:26px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    border:1px solid #edf0f7;
+
+    transition:.25s;
+}
+
+.salvo-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 18px 45px rgba(0,0,0,.12);
+}
+
+.salvo-card h3{
+
+    color:#0a285f;
+
+    margin-bottom:20px;
+}
+
+.btn-material{
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:
+    linear-gradient(
+        90deg,
+        #2358d5,
+        #bc001f
+    );
+}
+
+.empty-card{
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:24px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    color:#5d6785;
+}
+
+.perfil-loading{
+
+    height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#f4f6fb;
+}

@@ -17,6 +17,7 @@ import RegistrarRelatorio from './pages/RegistrarRelatorio';
 import MeusMateriais from './pages/MeusMateriais';
 import Disciplina from './pages/Disciplina/Disciplina';
 import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
+import Perfil from './pages/Perfil';
 
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -51,6 +52,8 @@ function AppRoutes() {
             <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
             <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
             <Route path="/relatorios/novo" element={<PrivateRoute><RegistrarRelatorio /></PrivateRoute>} />
+            <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+            <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
 
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
         </Routes>

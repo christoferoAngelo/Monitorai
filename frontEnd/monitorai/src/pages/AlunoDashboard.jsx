@@ -37,6 +37,10 @@ return (
           <button className="sidebar-btn" onClick={() => navigate('/perfil/salvos')}>
             💾 Meus Salvos
           </button>
+
+          <button className="sidebar-btn" onClick={() => navigate('/perfil')}>
+            👤 Meu Perfil
+          </button>
         </div>
       </div>
 
