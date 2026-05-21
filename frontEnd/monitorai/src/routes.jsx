@@ -8,6 +8,7 @@ import Inicial from './pages/Inicial';
 import AdminDashboard from './pages/AdminDashboard';
 import MonitorDashboard from './pages/MonitorDashboard';
 import AlunoDashboard from './pages/AlunoDashboard';
+import AlunoDisciplina from './pages/AlunoDisciplina/AlunoDisciplina';
 
 // PÁGINAS EXISTENTES
 import Curso from "./pages/Curso/Curso";
@@ -15,7 +16,7 @@ import Aluno from './pages/Aluno';
 import Monitoria from './pages/Monitoria';
 import RegistrarRelatorio from './pages/RegistrarRelatorio';
 import MeusMateriais from './pages/MeusMateriais';
-import Disciplina from './pages/Disciplina/Disciplina';
+import Disciplina from './pages/AdminDisciplina/AdminDisciplina';
 import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
 import Perfil from './pages/Perfil';
 
@@ -54,6 +55,7 @@ function AppRoutes() {
             <Route path="/relatorios/novo" element={<PrivateRoute><RegistrarRelatorio /></PrivateRoute>} />
             <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+            <Route path="/disciplina/:id" element={<PrivateRoute><AlunoDisciplina /></PrivateRoute>} />
 
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
         </Routes>

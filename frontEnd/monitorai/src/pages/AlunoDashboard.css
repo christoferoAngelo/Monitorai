@@ -87,11 +87,25 @@
 .hero-section {
   background: linear-gradient(135deg, #002b5c 60%, #b20000 100%);
   color: white;
-  padding: 35px;
+  padding: 10px;
+  
   border-radius: 20px;
   margin-bottom: 30px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction:column ;
+}
+
+.cartinhas {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 20px;
+  padding: 20px;
+  /* Removido o align-items: center para o grid poder esticar até as pontas */
+  width: 100%; 
+  margin-top:0px;
 }
 
 .hero-section::after {
@@ -123,8 +137,10 @@
 /* CARDS */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  /* Ajustamos o tamanho mínimo para 240px para que divida em 3 colunas perfeitamente */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
+  width: 100%; /* Força o grid a ocupar a largura total do quadro azul */
 }
 
 .card {
@@ -141,4 +157,142 @@
 
 .card:hover {
   transform: translateY(-5px);
+}
+
+/* =========================================================================
+   SESSÃO DE DISCIPLINAS DO ALUNO (Cards)
+   ========================================================================= */
+
+.disciplinas-section {
+  margin-top: 20px;
+}
+
+.section-title {
+  color: #002b5c;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.disciplina-card-aluno {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start; /* Evita que o texto centralize estranho */
+}
+
+.disciplina-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.disciplina-card-header h4 {
+  font-size: 18px;
+  color: #002b5c;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.disciplina-code {
+  font-size: 11px;
+  font-weight: 700;
+  background-color: rgba(0, 43, 92, 0.1);
+  color: #002b5c;
+  padding: 4px 10px;
+  border-radius: 8px;
+  align-self: flex-start; /* Fica no cantinho esquerdo */
+}
+
+.disciplina-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.disciplina-card-body p {
+  font-size: 14px;
+  color: #555;
+  font-weight: 400;
+  margin: 0;
+}
+
+.disciplina-card-body strong {
+  color: #002b5c;
+}
+
+.no-data-text {
+  color: #555;
+  font-size: 15px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* =========================================================================
+   SESSÃO DE DISCIPLINAS DO ALUNO (Cards dentro do Hero)
+   ========================================================================= */
+
+.disciplina-card-aluno {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: flex-start; /* Evita que o texto centralize estranho */
+  text-align: left; /* Garante o alinhamento à esquerda mesmo dentro do hero */
+}
+
+.disciplina-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.disciplina-card-header h4 {
+  font-size: 18px;
+  color: #002b5c;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.disciplina-code {
+  font-size: 11px;
+  font-weight: 700;
+  background-color: rgba(0, 43, 92, 0.1);
+  color: #002b5c;
+  padding: 4px 10px;
+  border-radius: 8px;
+  align-self: flex-start;
+}
+
+.disciplina-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.disciplina-card-body p {
+  font-size: 14px;
+  color: #555;
+  font-weight: 400;
+  margin: 0;
+}
+
+.disciplina-card-body strong {
+  color: #002b5c;
+}
+
+.no-data-text {
+  color: #002b5c; /* Ajustado para azul escuro para ler bem no fundo branco */
+  font-size: 15px;
+  font-weight: 500;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
 }
