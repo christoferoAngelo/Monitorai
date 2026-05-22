@@ -22,16 +22,44 @@ function AdminDashboard() {
   const navigate = useNavigate();
 
   // Função para limpar objetos ruins antes de renderizar
+
   const sanitizeMonitorias = (data) => {
-    if (!Array.isArray(data)) return [];
-    return data.map(m => ({
+  if (!Array.isArray(data)) return [];
+  return data.map(m => {
+    // Trata disciplina - pode estar em m.disciplina OU m.monitor.disciplina
+    let disciplinaStr = '—';
+    if (m.disciplina) {
+      if (typeof m.disciplina === 'string') {
+        disciplinaStr = m.disciplina;
+      } else if (typeof m.disciplina === 'object') {
+        disciplinaStr = m.disciplina.nome || m.disciplina.name || '—';
+      }
+    } else if (m.monitor?.disciplina) {
+      // Se não tem disciplina direto, pega do monitor
+      const disp = m.monitor.disciplina;
+      disciplinaStr = disp.nome || disp.name || '—';
+    }
+    
+    // Trata monitor - está em m.monitor.usuario
+    let monitorStr = '—';
+    if (m.monitor) {
+      if (typeof m.monitor === 'string') {
+        monitorStr = m.monitor;
+      } else if (typeof m.monitor === 'object') {
+        // Tenta pegarusuario dentro do monitor
+        const usuario = m.monitor.usuario;
+        monitorStr = usuario?.username || usuario?.usuario || '—';
+      }}
+    
+    return {
       ...m,
-      disciplina: typeof m.disciplina === 'object' ? m.disciplina?.nome || '—' : m.disciplina || '—',
-      monitor: typeof m.monitor === 'object' ? m.monitor?.username || m.monitor?.usuario || '—' : m.monitor || '—',
+      disciplina: disciplinaStr,
+      monitor: monitorStr,
       sala: m.sala || '—',
       ativa: Boolean(m.ativa)
-    }));
-  };
+    };
+  });
+};
 
   // Buscar dados ao carregar
   useEffect(() => {
@@ -44,16 +72,14 @@ function AdminDashboard() {
 
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    // Só busca o que com certeza funciona:
-    // 1. /auth/me (usuário logado)
-    // 2. /usuarios/stats (números)
-    // 3. /monitorias (lista)
     Promise.all([
       api.get('/auth/me'),
       api.get('/usuarios/stats'),
       api.get('/monitorias')
     ])
-    .then(([resUser, resStats, resMonitorias]) => {
+.then(([resUser, resStats, resMonitorias]) => {
+  console.log('Primeiro item:', resMonitorias.data[0]);
+
       const userData = resUser.data;
       setUsuario({
         username: userData.username || userData.usuario || 'Admin',
@@ -66,8 +92,8 @@ function AdminDashboard() {
 
       setStats({
         totalUsuarios: (Number(s.totalAlunos) || 0) + (Number(s.totalMonitores) || 0) + (Number(s.totalAdmins) || 0),
-        totalMateriais: Number(s.totalMateriais) || 0, // do stats fixo
-        totalRelatorios: Number(s.totalRelatorios) || 0, // do stats fixo
+        totalMateriais: Number(s.totalMateriais) || 0,
+        totalRelatorios: Number(s.totalRelatorios) || 0,
         breakdown: [
           { name: 'Alunos', value: Number(s.totalAlunos) || 0 },
           { name: 'Monitores', value: Number(s.totalMonitores) || 0 },
@@ -77,12 +103,10 @@ function AdminDashboard() {
 
       setMonitorias(monitoriasData);
 
-      // Alertas dinâmicos
       const novosAlertas = [];
       if (inativas > 0) {
         novosAlertas.push({ type: 'danger', message: `${inativas} monitorias inativas` });
       }
-      // Se tiver relatórios no stats
       if (Number(s.totalRelatorios) > 0) {
         novosAlertas.push({ type: 'warning', message: `${s.totalRelatorios} relatórios enviados` });
       }
@@ -101,10 +125,15 @@ function AdminDashboard() {
   const monitoriasFiltradas = monitorias.filter(m => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
+    
+    const disciplinaStr = String(m.disciplina || '');
+    const monitorStr = String(m.monitor || '');
+    const salaStr = String(m.sala || '');
+    
     return (
-      m.disciplina?.toLowerCase().includes(term) ||
-      m.monitor?.toLowerCase().includes(term) ||
-      m.sala?.toLowerCase().includes(term)
+      disciplinaStr.toLowerCase().includes(term) ||
+      monitorStr.toLowerCase().includes(term) ||
+      salaStr.toLowerCase().includes(term)
     );
   });
 
@@ -222,7 +251,7 @@ function AdminDashboard() {
 
           <div className="right-panel">
             <QuickActions onAction={handleQuickAction} />
-<AlertsPanel alertas={alertas} />
+            <AlertsPanel alertas={alertas} />
           </div>
 
         </section>
