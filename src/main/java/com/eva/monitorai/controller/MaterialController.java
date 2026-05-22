@@ -214,5 +214,8 @@ public class MaterialController {
     }
     
     
-    
+    @GetMapping
+    public ResponseEntity<List<Material>> listarTodos() {
+        return ResponseEntity.ok(materialRepository.findAll());
+    }
 }

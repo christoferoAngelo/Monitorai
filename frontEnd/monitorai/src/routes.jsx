@@ -4,12 +4,12 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Inicial from './pages/Inicial';
 
-// 👈 DASHBOARDS NOVOS
-import AdminDashboard from './pages/AdminDashboard';
+// DASHBOARDS
+import AdminDashboard from './pages/Admin/AdminDashboard';
 import MonitorDashboard from './pages/MonitorDashboard';
 import AlunoDashboard from './pages/AlunoDashboard';
 
-// PÁGINAS EXISTENTES
+// PÁGINAS
 import Curso from "./pages/Curso/Curso";
 import Aluno from './pages/Aluno';
 import Monitoria from './pages/Monitoria';
@@ -39,7 +39,7 @@ function AppRoutes() {
             {/* REDIRECIONADOR */}
             <Route path="/dashboard" element={<PrivateRoute><Inicial /></PrivateRoute>} />
 
-            {/* 👈 DASHBOARDS DEDICADOS */}
+            {/* DASHBOARDS DEDICADOS */}
             <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
             <Route path="/monitor-dashboard" element={<PrivateRoute><MonitorDashboard /></PrivateRoute>} />
             <Route path="/aluno-dashboard" element={<PrivateRoute><AlunoDashboard /></PrivateRoute>} />
