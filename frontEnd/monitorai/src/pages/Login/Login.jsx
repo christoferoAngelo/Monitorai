@@ -139,10 +139,10 @@ function Login() {
       <div className="loginShell">
         <section className="loginCard" aria-label="Tela de login">
           <div className="loginHeader">
-            <div className="loginBadge">MonitorAí</div>
-            <h1 className="loginTitle">{isLoginView ? 'Login' : 'Cadastro'}</h1>
+
+            <h1 className="loginTitle">{isLoginView ? 'Monitoraí' : 'Crie sua conta!'}</h1>
             <p className="loginSubtitle">
-              {isLoginView ? 'Acesse sua conta para continuar.' : 'Crie sua conta em poucos segundos.'}
+              {isLoginView ? 'Acesse sua conta para continuar.' : 'Cadastre-se para acessar o Monitoraí e aproveitar todos os recursos disponíveis!'}
             </p>
           </div>
 

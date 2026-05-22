@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./Disciplina.css";
+import "./AdminDisciplina.css";
 
 
 export default function Disciplina() {
