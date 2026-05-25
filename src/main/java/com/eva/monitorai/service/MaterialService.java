@@ -77,21 +77,26 @@ public class MaterialService {
         return materialRepository.save(material);
     }
 
+   
+    
     @Transactional
     public Material criarMaterialQuizz(MaterialDTO dto, String username) {
+        // 1. Acha o usuário pelo username vindo do Security
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(UsuarioNotFoundException::new);
 
+        // 2. Acha o perfil de monitor dele
         Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId())
                 .orElseThrow(() -> new RuntimeException("Este usuário não possui um perfil de monitor ativo."));
 
+        // 3. Monta o material
         Material material = new Material();
         material.setTitulo(dto.getTitulo());
         material.setConteudo(dto.getConteudo());
         material.setUrl(dto.getUrl());
-        material.setTipo(TipoMaterial.QUIZZ); // Corrigido para dois Z conforme seu Enum!
+        material.setTipo(TipoMaterial.QUIZZ);
         material.setAutor(monitor);
-        material.setDisciplina(monitor.getDisciplina());
+        material.setDisciplina(monitor.getDisciplina()); // Vincula automaticamente à matéria dele!
 
         return materialRepository.save(material);
     }

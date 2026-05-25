@@ -129,7 +129,7 @@ export default function GerenciarRecursos() {
         await api.post('/materiais/quizz', dadosMaterial);
         alert("Quizz publicado com sucesso!");
       } else if (abaAtiva === 'video') {
-        await api.post('/materiais', dadosMaterial);
+        await api.post('/materiais/video', dadosMaterial);
         alert("Vídeo publicado com sucesso!");
       }
 
@@ -158,7 +158,7 @@ export default function GerenciarRecursos() {
   // Função auxiliar para definir o ícone correto na listagem
   const renderizarIconeTipo = (tipo) => {
     if (tipo === 'DOCUMENTO') return '📄';
-    if (tipo === 'QUIZZ' || tipo === 'QUIZ') return '🧩';
+    if (tipo === 'QUIZZ' || tipo === 'QUIZZ') return '🧩';
     if (tipo === 'VIDEO') return '▶️';
     return '📁';
   };

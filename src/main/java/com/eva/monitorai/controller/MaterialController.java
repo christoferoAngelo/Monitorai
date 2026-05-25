@@ -42,7 +42,7 @@ public class MaterialController {
     // =========================================
     // POSTAR NOVO MATERIAL (VÍDEO)
     // =========================================
-    @PostMapping
+    @PostMapping("/video")
     public ResponseEntity<Material> criarMaterial(
             @RequestBody MaterialDTO dto,
             Authentication auth
@@ -69,10 +69,10 @@ public class MaterialController {
     // POSTAR NOVO MATERIAL (QUIZZ)
     // =========================================
     @PostMapping("/quizz")
-    public ResponseEntity<Material> criarQuizz(
-            @RequestBody MaterialDTO dto, 
-            Authentication auth
-    ) {
+    public ResponseEntity<Material> criarQuizz(@RequestBody MaterialDTO dto, Authentication auth) {
+        System.out.println("DEBUG: Título = " + dto.getTitulo());
+        System.out.println("DEBUG: URL = " + dto.getUrl());
+        
         String username = auth.getName();
         Material novoQuizz = materialService.criarMaterialQuizz(dto, username);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoQuizz);

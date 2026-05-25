@@ -22,7 +22,7 @@ public class Material {
     private String url; // Aqui vai o link do YouTube
 
     @Enumerated(EnumType.STRING)
-    private TipoMaterial tipo; // VIDEO, DOCUMENTO, QUIZ
+    private TipoMaterial tipo; // VIDEO, DOCUMENTO, QUIZZ
 
     // Qual monitor postou isso?
     @ManyToOne
