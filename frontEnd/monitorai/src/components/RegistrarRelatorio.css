@@ -1,0 +1,321 @@
+/* RegistrarRelatorio.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.relatorio-page {
+    padding: 32px;
+    background: #f4f7fb;
+    min-height: 100vh;
+    font-family: Inter, sans-serif;
+}
+
+/* HEADER */
+.relatorio-header {
+    margin-bottom: 28px;
+}
+
+.relatorio-header h1 {
+    font-size: 28px;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.relatorio-header p {
+    color: #64748b;
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+/* INFO DA MONITORIA */
+.monitoria-info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.monitoria-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.monitoria-info-item label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.monitoria-info-item span {
+    font-size: 16px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* FORMULÁRIO */
+.relatorio-form {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    max-width: 550px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.relatorio-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.relatorio-form input,
+.relatorio-form textarea,
+.relatorio-form select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    margin-bottom: 18px;
+    font-family: Inter, sans-serif;
+    transition: 0.2s;
+}
+
+.relatorio-form input:focus,
+.relatorio-form textarea:focus,
+.relatorio-form select:focus {
+    outline: none;
+    border-color: #003b94;
+    box-shadow: 0 0 0 3px rgba(0, 59, 148, 0.1);
+}
+
+.relatorio-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.relatorio-form select {
+    background: white;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.btn-salvar-relatorio {
+    width: 100%;
+    background: linear-gradient(90deg, #003b94, #0f4fc2);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 8px;
+}
+
+.btn-salvar-relatorio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 59, 148, 0.35);
+}
+
+/* HISTÓRICO */
+.relatorio-historico {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    margin-top: 32px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.relatorio-historico h2 {
+    font-size: 20px;
+    color: #1e293b;
+    margin-bottom: 20px;
+}
+
+.media-alunos {
+    background: #eff6ff;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    color: #1d4ed8;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* TABELA */
+.historico-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.historico-table th,
+.historico-table td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.historico-table th {
+    background: #f8fafc;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.historico-table td {
+    font-size: 14px;
+    color: #475569;
+}
+
+.historico-table tr:hover {
+    background: #f8fafc;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.empty-state .icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+/* SELECTS */
+.filtro-select {
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    background: white;
+    min-width: 250px;
+    cursor: pointer;
+}
+
+.filtro-select:focus {
+    outline: none;
+    border-color: #003b94;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .relatorio-page {
+        padding: 16px;
+    }
+    
+    .monitoria-info-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .relatorio-form {
+        padding: 20px;
+    }
+}
+
+/* Ações da tabela */
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-action.edit {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.btn-action.delete {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.btn-action:hover {
+    opacity: 0.8;
+}
+
+/* Header do histórico */
+.historico-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-novo {
+    background: linear-gradient(90deg, #003b94, #0f4fc2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-novo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 59, 148, 0.3);
+}
+
+/* Botão cancelar */
+.btn-cancelar {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+}
+
+.btn-cancelar:hover {
+    background: #e2e8f0;
+}
+
+/* Linha de ações no form */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* Seleção de monitoria */
+.selecao-monitoria {
+    margin-bottom: 24px;
+}
+
+.filtro-admin {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.filtro-admin label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #475569;
+}

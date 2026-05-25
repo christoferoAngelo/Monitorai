@@ -32,4 +32,9 @@ public class RelatorioController {
     public ResponseEntity<List<RelatorioMonitoria>> listarTodos() {
         return ResponseEntity.ok(relatorioService.listarTodos());
     }
+    
+    @GetMapping("/monitoria/{id}/media")
+    public ResponseEntity<Double> mediaAlunos(@PathVariable Long id) {
+        return ResponseEntity.ok(relatorioService.calcularMediaAlunos(id));
+    }
 }

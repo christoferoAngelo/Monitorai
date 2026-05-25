@@ -11,7 +11,9 @@ import com.eva.monitorai.dto.MonitoriaDTO;
 import com.eva.monitorai.model.entity.Disciplina;
 import com.eva.monitorai.model.entity.Monitor;
 import com.eva.monitorai.model.entity.Monitoria;
+import com.eva.monitorai.model.entity.AtuacaoMonitoria;
 import com.eva.monitorai.model.entity.Usuario;
+import com.eva.monitorai.repository.AtuacaoMonitoriaRepository;
 import com.eva.monitorai.repository.DisciplinaRepository;
 import com.eva.monitorai.repository.MonitorRepository;
 import com.eva.monitorai.repository.MonitoriaRepository;
@@ -31,6 +33,9 @@ public class MonitoriaService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private AtuacaoMonitoriaRepository atuacaoRepository;
 
     // =========================================
     // FUNÇÃO AUXILIAR: CALCULAR SEMESTRE
@@ -60,10 +65,10 @@ public class MonitoriaService {
                 dto.getHorarioFim()
             );
 
-            if (!conflitos.isEmpty()) {
-                throw new RuntimeException("Já existe uma monitoria agendada para a sala " + dto.getSala() + 
-                                           " neste dia e horário.");
-            }
+        if (!conflitos.isEmpty()) {
+            throw new RuntimeException("Já existe uma monitoria agendada para a sala " + dto.getSala() + 
+                                       " neste dia e horário.");
+        }
 
         Usuario usuario = usuarioRepository.findById(dto.getMonitorId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -105,7 +110,18 @@ public class MonitoriaService {
         monitoria.setSemestreReferencia(calcularSemestreAtual());
         monitoria.setAtiva(true);
 
-        return monitoriaRepository.save(monitoria);
+        // Salva a monitoria primeiro
+        monitoria = monitoriaRepository.save(monitoria);
+        
+        // CRIA A ATUAÇÃO
+        AtuacaoMonitoria atuacao = new AtuacaoMonitoria();
+        atuacao.setMonitoria(monitoria);
+        atuacao.setMonitor(monitor);
+        atuacao.setDataInicio(LocalDate.now());
+        atuacao.setAtiva(true);
+        atuacaoRepository.save(atuacao);
+
+        return monitoria;
     }
 
     // =========================================
@@ -134,10 +150,10 @@ public class MonitoriaService {
                 dto.getDiaSemana(), 
                 dto.getHorarioInicio(), 
                 dto.getHorarioFim(),
-                id // Passa o ID da monitoria que está sendo editada
+                id
             );
 
-        // ATUALIZA DADOS (Sem mexer no SemestreReferencia para preservar histórico)
+        // ATUALIZA DADOS
         monitoria.setDisciplina(disciplina);
         monitoria.setDiaSemana(dto.getDiaSemana());
         monitoria.setHorarioInicio(dto.getHorarioInicio());
@@ -171,6 +187,14 @@ public class MonitoriaService {
         Monitoria monitoria = monitoriaRepository.findById(monitoriaId)
                 .orElseThrow(() -> new RuntimeException("Monitoria não encontrada"));
 
+        // Encerra atuação anterior
+        atuacaoRepository.findByMonitoriaIdAndAtivaTrue(monitoriaId)
+            .ifPresent(atuacao -> {
+                atuacao.setDataFim(LocalDate.now().minusDays(1));
+                atuacao.setAtiva(false);
+                atuacaoRepository.save(atuacao);
+            });
+
         // MONITOR ANTIGO -> Volta a ser ALUNO
         Usuario usuarioAntigo = monitoria.getMonitor().getUsuario();
         usuarioAntigo.setRole("ALUNO");
@@ -182,7 +206,7 @@ public class MonitoriaService {
 
         Monitor novoMonitor = monitorRepository.findByUsuarioId(usuarioNovo.getId()).orElse(null);
 
-        // Validação de acúmulo na troca
+        // Validação de acúmulo
         if (novoMonitor != null) {
             boolean jaTemAtiva = monitoriaRepository.findByMonitorId(novoMonitor.getId())
                     .stream().anyMatch(Monitoria::isAtiva);
@@ -196,6 +220,14 @@ public class MonitoriaService {
             novoMonitor.setAtivo(true);
             novoMonitor = monitorRepository.save(novoMonitor);
         }
+
+        // CRIA NOVA ATUAÇÃO
+        AtuacaoMonitoria novaAtuacao = new AtuacaoMonitoria();
+        novaAtuacao.setMonitoria(monitoria);
+        novaAtuacao.setMonitor(novoMonitor);
+        novaAtuacao.setDataInicio(LocalDate.now());
+        novaAtuacao.setAtiva(true);
+        atuacaoRepository.save(novaAtuacao);
 
         usuarioNovo.setRole("MONITOR");
         usuarioRepository.save(usuarioNovo);

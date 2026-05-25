@@ -14,6 +14,7 @@ public interface MonitoriaRepository extends JpaRepository<Monitoria, Long> {
     // Buscar monitorias por monitor
     List<Monitoria> findByMonitorId(Long monitorId);
 
+    
     // Buscar monitorias ativas
     List<Monitoria> findByAtivaTrue();
 
@@ -51,4 +52,6 @@ public interface MonitoriaRepository extends JpaRepository<Monitoria, Long> {
     	       "LEFT JOIN FETCH m.monitor " +
     	       "LEFT JOIN FETCH m.monitor.usuario")
     	List<Monitoria> buscarTodasComRelacionamentos();
+    
+    
 }

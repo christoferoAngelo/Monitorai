@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../../services/api";
 import "./Monitoria.css";
 import MonitoriaModal from "./MonitoriaModal";  
@@ -25,6 +26,11 @@ export default function Monitoria() {
       console.error("Erro ao carregar monitorias", error);
     }
   }
+
+  function verRelatorios(monitoriaId) {
+    // Abre modal ou navega para página de relatórios passando o ID
+    navigate(`/components/registrar-relatorio?monitoriaId=${monitoriaId}`);
+}
 
   async function carregarCursos() {
     try {
@@ -246,14 +252,20 @@ const monitoriasFiltradas = monitorias.filter(m => {
                   </div>
                 </div>
 
-                <div className="monitoria-actions">
-                  <button className="btn-edit" onClick={() => editarMonitoria(m)}>
-                    ✏️ Editar
-                  </button>
-                  <button className={`btn-toggle ${m.ativa ? 'btn-disable' : 'btn-enable'}`} onClick={() => toggleAtivar(m)}>
-                    {m.ativa ? '⏸️ Inativar' : '▶️ Ativar'}
-                  </button>
-                </div>
+<div className="monitoria-actions">
+    <button className="btn-edit" onClick={() => editarMonitoria(m)}>
+        ✏️ Editar
+    </button>
+    <button 
+        className="btn-report" 
+        onClick={() => verRelatorios(m.id)}
+    >
+        📋 Relatórios
+    </button>
+    <button className={`btn-toggle ${m.ativa ? 'btn-disable' : 'btn-enable'}`} onClick={() => toggleAtivar(m)}>
+        {m.ativa ? '⏸️ Inativar' : '▶️ Ativar'}
+    </button>
+</div>
               </div>
             ))}
           </div>

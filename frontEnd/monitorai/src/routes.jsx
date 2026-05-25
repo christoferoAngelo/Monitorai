@@ -13,7 +13,7 @@ import AlunoDisciplina from './pages/AlunoDisciplina/AlunoDisciplina';
 // PÁGINAS
 import Curso from './pages/Curso/Curso';
 import Aluno from './pages/Aluno';
-import RegistrarRelatorio from './pages/RegistrarRelatorio';
+import RegistrarRelatorio from './components/RegistrarRelatorio';
 import MeusMateriais from './pages/MeusMateriais';
 import Disciplina from './pages/AdminDisciplina/AdminDisciplina';
 import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
