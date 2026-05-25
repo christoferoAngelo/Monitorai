@@ -147,10 +147,6 @@ public class MonitoriaService {
         return monitoriaRepository.save(monitoria);
     }
 
-    public List<Monitoria> listarTodas() {
-        return monitoriaRepository.findAll();
-    }
-
     public Monitoria buscarPorId(Long id) {
         return monitoriaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Monitoria não encontrada"));
@@ -205,6 +201,14 @@ public class MonitoriaService {
         usuarioRepository.save(usuarioNovo);
 
         monitoria.setMonitor(novoMonitor);
+        return monitoriaRepository.save(monitoria);
+    }
+    
+    public List<Monitoria> listarTodas() {
+        return monitoriaRepository.buscarTodasComRelacionamentos();
+    }
+    
+    public Monitoria salvar(Monitoria monitoria) {
         return monitoriaRepository.save(monitoria);
     }
 }

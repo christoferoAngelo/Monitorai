@@ -44,4 +44,11 @@ public interface MonitoriaRepository extends JpaRepository<Monitoria, Long> {
     	    @Param("fim") LocalTime fim,
     	    @Param("idAtual") Long idAtual
     	);
+    
+    @Query("SELECT m FROM Monitoria m " +
+    	       "LEFT JOIN FETCH m.disciplina " +
+    	       "LEFT JOIN FETCH m.disciplina.cursos " +
+    	       "LEFT JOIN FETCH m.monitor " +
+    	       "LEFT JOIN FETCH m.monitor.usuario")
+    	List<Monitoria> buscarTodasComRelacionamentos();
 }

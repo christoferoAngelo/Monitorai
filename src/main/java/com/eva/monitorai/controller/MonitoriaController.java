@@ -64,5 +64,13 @@ public class MonitoriaController {
         return monitoriaService.listarAtivas();
     }
     
+    @PutMapping("/{id}/reativar")
+    public Monitoria reativar(@PathVariable Long id) {
+        Monitoria monitoria = monitoriaService.buscarPorId(id);
+        monitoria.setAtiva(true);
+        return monitoriaService.salvar(monitoria);
+    }
+    
+    
     
 }

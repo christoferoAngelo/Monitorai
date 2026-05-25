@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../../services/api';
 
 // Componentes Locais
-import Sidebar from './components/Sidebar';
-import StatCard from './components/StatCard';
-import MonitoriasTable from './components/MonitoriasTable';
-import QuickActions from './components/QuickActions';
-import AlertsPanel from "./components/AlertsPanel";
+import Sidebar from '../components/Sidebar';
+import StatCard from '../components/StatCard';
+import MonitoriasTable from '../components/MonitoriasTable';
+import QuickActions from '../components/QuickActions';
+import AlertsPanel from "../components/AlertsPanel";
 
 import './AdminDashboard.css';
 
