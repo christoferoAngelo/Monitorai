@@ -37,4 +37,17 @@ public class RelatorioController {
     public ResponseEntity<Double> mediaAlunos(@PathVariable Long id) {
         return ResponseEntity.ok(relatorioService.calcularMediaAlunos(id));
     }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        relatorioService.excluir(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<RelatorioMonitoria> atualizar(
+            @PathVariable Long id, 
+            @RequestBody RelatorioMonitoriaDTO dto) {
+        return ResponseEntity.ok(relatorioService.atualizar(id, dto));
+    }
 }

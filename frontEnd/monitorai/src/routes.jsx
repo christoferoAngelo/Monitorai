@@ -19,6 +19,7 @@ import Disciplina from './pages/AdminDisciplina/AdminDisciplina';
 import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
 import Perfil from './pages/Perfil';
 import GerenciarMonitoria from './pages/Admin/GerenciarMonitoria/Monitoria';
+import GradeCurricular from './pages/Admin/GerenciarGrade/GradeCurricular';
 
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -55,6 +56,7 @@ function AppRoutes() {
             <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/disciplina/:id" element={<PrivateRoute><AlunoDisciplina /></PrivateRoute>} />
+            <Route path="/grade-curricular" element={<PrivateRoute><GradeCurricular /></PrivateRoute>} />
 
             {/* ADMIN */}
             <Route path="/admin-monitorias" element={<PrivateRoute><GerenciarMonitoria /></PrivateRoute>} />

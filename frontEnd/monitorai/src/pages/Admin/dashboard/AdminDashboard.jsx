@@ -150,6 +150,7 @@ function AdminDashboard() {
       case 'Monitorias': navigate('/monitorias'); break;
       case 'Relatórios': navigate('/relatorios/novo'); break;
       case 'Pagamentos': alert('Em breve!'); break;
+      case 'Grade Curricular': navigate('/grade-curricular'); break;
       case 'Configurações': navigate('/perfil'); break;
       default: alert(`Página "${page}" em desenvolvimento`);
     }
@@ -160,6 +161,7 @@ function AdminDashboard() {
       case 'Novo Usuário': navigate('/alunos'); break;
       case 'Nova Monitoria': navigate('/monitorias'); break;
       case 'Novo Relatório': navigate('/relatorios/novo'); break;
+            case 'Grade Curricular': navigate('/grade-curricular'); break; 
       case 'Lançar Pagamento': alert('Em breve!'); break;
       default: alert(`Ação "${action}" em desenvolvimento`);
     }

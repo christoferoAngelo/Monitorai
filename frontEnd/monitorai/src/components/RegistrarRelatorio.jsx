@@ -121,12 +121,14 @@ export default function RegistrarRelatorio() {
                 {user?.role === 'ADMIN' && (
                     <div className="filtro-admin">
                         <label>Selecione a Monitoria: </label>
-                        <select className="filtro-select" onChange={async (e) => {
-                            const m = monitorias.find(it => it.id === parseInt(e.target.value));
-                            setMonitoriaSelecionada(m);
-                            if (m) carregarHistorico(m.id);
-                            setModo('list');
-                        }} value={monitoriaSelecionada?.id || ""}>
+                        <select className="filtro-select" onChange={(e) => {
+    const id = parseInt(e.target.value);
+    const m = monitorias.find(it => it.id === id);
+    setMonitoriaSelecionada(m || null);
+    if (m) carregarHistorico(m.id);
+    setModo('list');
+}}
+                         value={monitoriaSelecionada?.id || ""}>
                             <option value="">--- Selecione ---</option>
                             {monitorias.map(m => (
                                 <option key={m.id} value={m.id}>

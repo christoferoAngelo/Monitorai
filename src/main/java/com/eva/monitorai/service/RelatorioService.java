@@ -53,4 +53,20 @@ public class RelatorioService {
                 .average()
                 .orElse(0.0);
     }
+    
+    public void excluir(Long id) {
+        relatorioRepository.deleteById(id);
+    }
+    
+    public RelatorioMonitoria atualizar(Long id, RelatorioMonitoriaDTO dto) {
+        RelatorioMonitoria relatorio = relatorioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Relatório não encontrado"));
+        
+        relatorio.setData(dto.getData());
+        relatorio.setQuantidadeAlunos(dto.getQuantidadeAlunos());
+        relatorio.setConteudoAbordado(dto.getConteudoAbordado());
+        relatorio.setObservacoes(dto.getObservacoes());
+        
+        return relatorioRepository.save(relatorio);
+    }
 }

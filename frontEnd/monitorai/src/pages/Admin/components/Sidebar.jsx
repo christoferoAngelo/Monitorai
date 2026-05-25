@@ -15,7 +15,11 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
     { id: 'Dashboard', label: 'Dashboard', icon: '📊', action: () => onNavigate('Dashboard') },
     { id: 'Usuarios', label: 'Usuários', icon: '👥', action: () => navigate('/alunos') },
     { id: 'Monitorias', label: 'Monitorias', icon: '📚', action: () => navigate('/admin-monitorias') },
-    { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo') },
+    { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo')
+      
+     },
+         { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📋', action: () => navigate('/grade-curricular') },  // <-- ADD ESSE
+
     { id: 'Pagamentos', label: 'Pagamentos', icon: '💰', action: () => alert('Em breve') },
     { id: 'Configuracoes', label: 'Configurações', icon: '⚙️', action: () => navigate('/perfil') }
   ];
