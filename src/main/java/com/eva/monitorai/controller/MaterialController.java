@@ -51,6 +51,32 @@ public class MaterialController {
         Material novo = materialService.criarMaterialVideo(dto, username);
         return ResponseEntity.ok(novo);
     }
+    
+    // =========================================
+    // POSTAR NOVO MATERIAL (PDF)
+    // =========================================
+    @PostMapping("/pdf")
+    public ResponseEntity<Material> criarPdf(
+            @RequestBody MaterialDTO dto, 
+            Authentication auth
+    ) {
+        String username = auth.getName();
+        Material novoPdf = materialService.criarMaterialPdf(dto, username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoPdf);
+    }
+
+    // =========================================
+    // POSTAR NOVO MATERIAL (QUIZZ)
+    // =========================================
+    @PostMapping("/quizz")
+    public ResponseEntity<Material> criarQuizz(
+            @RequestBody MaterialDTO dto, 
+            Authentication auth
+    ) {
+        String username = auth.getName();
+        Material novoQuizz = materialService.criarMaterialQuizz(dto, username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoQuizz);
+    }
 
     // =========================================
     // LISTAR MATERIAIS DO MONITOR LOGADO
@@ -181,41 +207,16 @@ public class MaterialController {
         return ResponseEntity.ok("Material removido dos salvos");
     }
     
-    @Transactional
-    public Material criarMaterialPdf(MaterialDTO dto, String username) {
-
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        if (!"MONITOR".equals(usuario.getRole())) {
-            throw new RuntimeException("Apenas monitores podem criar materiais");
-        }
-
-        Material material = new Material();
-        material.setTitulo(dto.getTitulo());
-        material.setConteudo(dto.getConteudo());
-        material.setUrl(dto.getUrl());
-        material.setTipo(TipoMaterial.DOCUMENTO);
-
-        return materialRepository.save(material);
-    }
-    
+ // =========================================
+    // EXCLUIR MATERIAL
     // =========================================
-    // CRIAR QUIZZ (Corrigido para seguir a lógica do vídeo)
-    // =========================================
-    @PostMapping("/quizz")
-    public ResponseEntity<Material> criarQuizz(
-            @RequestBody MaterialDTO dto, 
-            Authentication auth) {
-        
-        String username = auth.getName(); // Igualzinho ao fluxo do vídeo!
-        Material novoQuizz = materialService.criarMaterialQuizz(dto, username);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoQuizz);
-    }
-    
-    
-    @GetMapping
-    public ResponseEntity<List<Material>> listarTodos() {
-        return ResponseEntity.ok(materialRepository.findAll());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarMaterial(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+        String username = auth.getName();
+        materialService.deletarMaterial(id, username);
+        return ResponseEntity.ok("Material excluído com sucesso!");
     }
 }

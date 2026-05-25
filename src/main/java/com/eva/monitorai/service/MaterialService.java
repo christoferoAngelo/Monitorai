@@ -60,7 +60,6 @@ public class MaterialService {
     
     @Transactional
     public Material criarMaterialPdf(MaterialDTO dto, String username) {
-
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
@@ -71,38 +70,51 @@ public class MaterialService {
         material.setTitulo(dto.getTitulo());
         material.setConteudo(dto.getConteudo());
         material.setUrl(dto.getUrl());
-        material.setTipo(TipoMaterial.DOCUMENTO);
+        material.setTipo(TipoMaterial.DOCUMENTO); // Assumindo que DOCUMENTO = PDF no seu Enum
         material.setAutor(monitor);
-
-        // 🔥 IMPORTANTE: buscar disciplina GERENCIADA pelo banco
-        material.setDisciplina(
-            monitorRepository.findById(monitor.getId())
-                .orElseThrow()
-                .getDisciplina()
-        );
+        material.setDisciplina(monitor.getDisciplina()); 
 
         return materialRepository.save(material);
     }
 
     @Transactional
     public Material criarMaterialQuizz(MaterialDTO dto, String username) {
-        // 1. Acha o usuário pelo username vindo do Security
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(UsuarioNotFoundException::new);
 
-        // 2. Acha o perfil de monitor dele
         Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId())
                 .orElseThrow(() -> new RuntimeException("Este usuário não possui um perfil de monitor ativo."));
 
-        // 3. Monta o material usando QUIZZ para o Quiz
         Material material = new Material();
         material.setTitulo(dto.getTitulo());
         material.setConteudo(dto.getConteudo());
         material.setUrl(dto.getUrl());
-        material.setTipo(TipoMaterial.QUIZ); // <-- Mantido QUIZZ conforme o seu Enum
+        material.setTipo(TipoMaterial.QUIZZ); // Corrigido para dois Z conforme seu Enum!
         material.setAutor(monitor);
         material.setDisciplina(monitor.getDisciplina());
 
         return materialRepository.save(material);
+    }
+    
+    @Transactional
+    public void deletarMaterial(Long materialId, String username) {
+        // 1. Acha o usuário e o monitor
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(UsuarioNotFoundException::new);
+        
+        Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Monitor não encontrado"));
+
+        // 2. Busca o material
+        Material material = materialRepository.findById(materialId)
+                .orElseThrow(() -> new RuntimeException("Material não encontrado"));
+
+        // 3. SEGURANÇA: Verifica se quem está tentando deletar é o dono do material
+        if (!material.getAutor().getId().equals(monitor.getId())) {
+            throw new RuntimeException("Você não tem permissão para deletar materiais de outros monitores.");
+        }
+
+        // 4. Deleta
+        materialRepository.delete(material);
     }
 }
