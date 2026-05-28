@@ -180,6 +180,8 @@ public class DataLoader {
         dto.setCursosIds(cursosIds);
 
         dto.setMonitorId(null);
+        
+        dto.setSemestre(1);
 
         service.criar(dto);
     }

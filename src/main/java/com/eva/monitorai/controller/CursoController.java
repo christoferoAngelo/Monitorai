@@ -94,4 +94,20 @@ public class CursoController {
     public ResponseEntity<List<DisciplinaDTO>> listarDisciplinas(@PathVariable Long id) {
         return ResponseEntity.ok(service.listarDisciplinasDoCurso(id));
     }
+    
+    @PostMapping("/{cursoId}/disciplinas/{disciplinaId}")
+    public ResponseEntity<Void> adicionarDisciplina(
+            @PathVariable Long cursoId,
+            @PathVariable Long disciplinaId) {
+        service.adicionarDisciplina(cursoId, disciplinaId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{cursoId}/disciplinas/{disciplinaId}")
+    public ResponseEntity<Void> removerDisciplina(
+            @PathVariable Long cursoId,
+            @PathVariable Long disciplinaId) {
+        service.removerDisciplina(cursoId, disciplinaId);
+        return ResponseEntity.ok().build();
+    }
 }

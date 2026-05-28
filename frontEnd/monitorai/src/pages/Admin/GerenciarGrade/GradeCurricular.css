@@ -285,3 +285,36 @@
 .grade-item span { font-size: 14px; }
 .grade-item button { background: none; border: none; cursor: pointer; }
 .empty { color: #64748b; font-style: italic; }
+
+/* Filtros */
+.filtros {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+
+.filtros select {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    min-width: 180px;
+}
+
+.btn-clear {
+    padding: 10px 16px;
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-clear:hover {
+    background: #fecaca;
+}

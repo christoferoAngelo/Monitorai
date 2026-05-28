@@ -58,6 +58,7 @@ public class DisciplinaService {
         disciplina.setId(dto.getId());
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
+        disciplina.setSemestre(dto.getSemestre());
 
         // Processamento Seguro e flexível dos Cursos Associados
         if (dto.getCursosIds() != null && !dto.getCursosIds().isEmpty()) {
@@ -120,7 +121,8 @@ public class DisciplinaService {
         Disciplina disciplina = new Disciplina();
         disciplina.setNome(dto.getNome());
         disciplina.setCodigo(dto.getCodigo());
-
+        disciplina.setSemestre(dto.getSemestre());
+        
         // 3. VÍNCULO DOS CURSOS - PROTEGIDO CONTRA BUGS DE ID NULL (Onde dava o Erro 500)
         if (dto.getCursosIds() != null && !dto.getCursosIds().isEmpty()) {
             
@@ -190,6 +192,9 @@ public class DisciplinaService {
             disciplina.setMonitor(null); // Remove monitor se desvinculado no Front
         }
 
+        disciplina.setNome(dto.getNome());
+        disciplina.setSemestre(dto.getSemestre());  
+        
         Disciplina atualizada = repository.save(disciplina);
         return toDTO(atualizada);
     }

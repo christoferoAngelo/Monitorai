@@ -18,6 +18,7 @@ public class DisciplinaDTO {
     private List<String> cursosNomes;  // Nomes dos cursos vinculados (para exibição na listagem)
     private Long monitorId;
     private String monitorNome;
+    private Integer semestre;
 
     // =========================================================================
     // CONSTRUTORES
@@ -32,7 +33,7 @@ public class DisciplinaDTO {
     /**
      * Construtor completo para criação manual ou testes unitários.
      */
-    public DisciplinaDTO(Long id, String nome, String codigo, List<Long> cursosIds, List<String> cursosNomes, Long monitorId, String monitorNome) {
+    public DisciplinaDTO(Long id, String nome, String codigo, List<Long> cursosIds, List<String> cursosNomes, Long monitorId, String monitorNome, Integer semestre) {
         this.id = id;
         this.nome = nome;
         this.codigo = codigo;
@@ -40,6 +41,8 @@ public class DisciplinaDTO {
         this.cursosNomes = cursosNomes;
         this.monitorId = monitorId;
         this.monitorNome = monitorNome;
+        this.semestre = semestre;
+
     }
 
     /**
@@ -51,6 +54,7 @@ public class DisciplinaDTO {
         this.id = disciplina.getId();
         this.nome = disciplina.getNome();
         this.codigo = disciplina.getCodigo();
+        this.semestre = disciplina.getSemestre(); 
         
         // Mapeamento Seguro da relação Muitos-para-Muitos com Curso
         if (disciplina.getCursos() != null) {
@@ -130,5 +134,13 @@ public class DisciplinaDTO {
 
     public void setMonitorNome(String monitorNome) {
         this.monitorNome = monitorNome;
+    }
+    
+    public Integer getSemestre() {
+        return semestre;
+    }
+
+    public void setSemestre(Integer semestre) {
+        this.semestre = semestre;
     }
 }

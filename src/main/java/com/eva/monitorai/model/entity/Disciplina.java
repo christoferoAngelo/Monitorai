@@ -21,6 +21,9 @@ public class Disciplina {
 
     @Column(unique = true, nullable = false)
     private String codigo; // Gerado automaticamente via ciclo de vida do JPA (@PrePersist)
+    
+    @Column(nullable = false)
+    private Integer semestre; 
 
     // =========================================================================
     // RELACIONAMENTOS
@@ -138,5 +141,13 @@ public class Disciplina {
 
     public void setMonitor(Usuario monitor) {
         this.monitor = monitor;
+    }
+    
+    public Integer getSemestre() {
+        return semestre;
+    }
+
+    public void setSemestre(Integer semestre) {
+        this.semestre = semestre;
     }
 }
