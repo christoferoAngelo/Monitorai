@@ -12,6 +12,9 @@ function Login() {
   const [email, setEmail] = useState('');
   const [ra, setRa] = useState('');
 
+  // ESTADO DO OLHINHO: true = oculta, false = visível
+  const [showSenha, setShowSenha] = useState(false);
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -20,6 +23,8 @@ function Login() {
   useEffect(() => {
     setError('');
     setSuccess('');
+    // Reseta o olho ao alternar entre Login e Cadastro
+    setShowSenha(false); 
   }, [isLoginView]);
 
   // Função de Login
@@ -28,7 +33,6 @@ function Login() {
     setError('');
     setSuccess('');
 
-    // Validação de campos obrigatórios (Substitutos do 'required')
     if (!username.trim()) {
       setError('Por favor, preencha o campo de Usuário.');
       return;
@@ -58,7 +62,6 @@ function Login() {
     setError('');
     setSuccess('');
 
-    // 1. Validação de campos vazios (Substitutos do 'required')
     if (!username.trim()) {
       setError('O Usuário é obrigatório.');
       return;
@@ -76,34 +79,29 @@ function Login() {
       return;
     }
 
-    // 2. Validação de formato básico de e-mail (Evita coisas como "a@", "a@a" ou "email-invalido")
     const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailFormatRegex.test(email)) {
       setError("Por favor, insira um formato de e-mail válido (exemplo@dominio.com).");
       return;
     }
 
-    // 3. Validação de Usuário (Palavra única, sem especiais)
     const userRegex = /^[a-zA-Z0-9]+$/;
     if (!userRegex.test(username) || username.length > 20 || username.includes(' ') || username.length < 3) {
       setError("Usuário inválido! Use apenas letras e números (entre 3 e 20 caracteres).");
       return;
     }
 
-    // 4. Validação de E-mail Institucional específico
     if (!email.endsWith("@fatec.sp.gov.br") && !email.endsWith("@aluno.cps.sp.gov.br")) {
       setError("Por favor, utilize seu e-mail institucional (@fatec.sp.gov.br ou @aluno.cps.sp.gov.br).");
       return;
     }
 
-    // 5. Validação de RA (Apenas números e 13 dígitos)
     const raRegex = /^\d{13}$/;
     if (!raRegex.test(ra)) {
       setError("O RA deve conter exatamente 13 números.");
       return;
     }
 
-    // 6. Validação de Senha (Tamanho mínimo)
     if (senha.length < 8) {
       setError("A senha deve ter pelo menos 8 caracteres.");
       return;
@@ -139,14 +137,12 @@ function Login() {
       <div className="loginShell">
         <section className="loginCard" aria-label="Tela de login">
           <div className="loginHeader">
-
             <h1 className="loginTitle">{isLoginView ? 'Monitoraí' : 'Crie sua conta!'}</h1>
             <p className="loginSubtitle">
               {isLoginView ? 'Acesse sua conta para continuar.' : 'Cadastre-se para acessar o Monitoraí e aproveitar todos os recursos disponíveis!'}
             </p>
           </div>
 
-          {/* O segredo está aqui: noValidate desativa os balões nativos chatos do navegador */}
           <form
             className="loginForm"
             onSubmit={isLoginView ? handleLogin : handleRegister}
@@ -199,14 +195,32 @@ function Login() {
 
             <div className="field">
               <label className="label" htmlFor="senha">Senha</label>
-              <input
-                id="senha"
-                type="password"
-                placeholder="Sua senha"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                autoComplete={isLoginView ? 'current-password' : 'new-password'}
-              />
+              {/* Adicionado o container para alinhar o botão */}
+              <div className="passwordFieldContainer">
+                <input
+                  id="senha"
+                  // MUDANÇA AQUI: Dinâmico baseado no estado showSenha
+                  type={showSenha ? 'text' : 'password'}
+                  placeholder="Sua senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  autoComplete={isLoginView ? 'current-password' : 'new-password'}
+                  className="passwordInput"
+                />
+                {/* Botão de Toggle do Olhinho com imagens da pasta public */}
+                <button
+                  type="button"
+                  className="togglePasswordButton"
+                  onClick={() => setShowSenha(!showSenha)}
+                  aria-label={showSenha ? "Esconder senha" : "Mostrar senha"}
+                >
+                  <img 
+                    src={showSenha ? "/olho.png" : "/olho_aberto.png"} 
+                    alt={showSenha ? "Ícone de esconder senha" : "Ícone de mostrar senha"}
+                    className="eyeIcon"
+                  />
+                </button>
+              </div>
             </div>
 
             <div className={`feedbackContainer ${error || success ? 'show' : ''}`}>

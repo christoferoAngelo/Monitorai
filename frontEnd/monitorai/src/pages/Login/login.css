@@ -300,3 +300,64 @@ html, body {
   color: #10b981;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
 }
+
+/* ==========================================================================
+   Container e Botão para Alternar Visibilidade da Senha (Olhinho)
+   ========================================================================== */
+.passwordFieldContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Adiciona um espaço na direita do input de senha para o texto não ficar embaixo do olho */
+.passwordFieldContainer .passwordInput {
+  padding-right: 46px; 
+}
+
+.togglePasswordButton {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+/* Efeito de hover sutil no olhinho seguindo o padrão de design do projeto */
+.togglePasswordButton:hover {
+  background: rgba(139, 92, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.togglePasswordButton:active {
+  transform: scale(0.95);
+}
+
+.togglePasswordButton:focus-visible {
+  outline: 2px solid var(--login-accent);
+}
+
+/* ==========================================================================
+   Estilo da imagem do Olhinho customizado
+   ========================================================================== */
+.eyeIcon {
+  width: 20px; /* Ajuste esse valor se achar que o ícone ficou muito grande ou pequeno */
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.6; /* Deixa o ícone um pouco mais suave combinando com o placeholder */
+  transition: opacity 0.2s ease;
+}
+
+/* Deixa o ícone com cor forte quando o usuário passa o mouse por cima */
+.togglePasswordButton:hover .eyeIcon {
+  opacity: 1;
+}
