@@ -21,6 +21,9 @@ import Perfil from './pages/Perfil';
 import GerenciarMonitoria from './pages/Admin/GerenciarMonitoria/Monitoria';
 import GradeCurricular from './pages/Admin/GerenciarGrade/GradeCurricular';
 
+// Layouts
+import AdminLayout from './pages/Admin/components/AdminLayout';
+
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
     return token ? children : <Navigate to="/login" />;
@@ -42,7 +45,6 @@ function AppRoutes() {
             <Route path="/dashboard" element={<PrivateRoute><Inicial /></PrivateRoute>} />
 
             {/* DASHBOARDS */}
-            <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
             <Route path="/monitor-dashboard" element={<PrivateRoute><MonitorDashboard /></PrivateRoute>} />
             <Route path="/aluno-dashboard" element={<PrivateRoute><AlunoDashboard /></PrivateRoute>} />
 
@@ -52,14 +54,17 @@ function AppRoutes() {
             <Route path="/disciplinas" element={<PrivateRoute><Disciplina /></PrivateRoute>} />
             <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
             <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
-            <Route path="/relatorios/novo" element={<PrivateRoute><RegistrarRelatorio /></PrivateRoute>} />
             <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/disciplina/:id" element={<PrivateRoute><AlunoDisciplina /></PrivateRoute>} />
-            <Route path="/grade-curricular" element={<PrivateRoute><GradeCurricular /></PrivateRoute>} />
 
-            {/* ADMIN */}
-            <Route path="/admin-monitorias" element={<PrivateRoute><GerenciarMonitoria /></PrivateRoute>} />
+            {/* ADMIN COM LAYOUT (Sidebar fixa) - AGORA INCLUI O DASHBOARD */}
+            <Route element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/admin-monitorias" element={<GerenciarMonitoria />} />
+                <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
+                <Route path="/grade-curricular" element={<GradeCurricular />} />
+            </Route>
 
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
         </Routes>

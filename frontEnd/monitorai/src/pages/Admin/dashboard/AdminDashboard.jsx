@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
 
 // Componentes Locais
-import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import MonitoriasTable from '../components/MonitoriasTable';
 import QuickActions from '../components/QuickActions';
@@ -197,12 +196,6 @@ function AdminDashboard() {
 
   return (
     <div className="admin-layout">
-
-      <Sidebar 
-        usuario={usuario} 
-        onLogout={handleLogout}
-        onNavigate={handleNavClick}
-      />
 
       <main className="admin-main">
 
