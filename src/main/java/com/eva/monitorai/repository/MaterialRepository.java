@@ -9,4 +9,5 @@ import java.util.List;
 public interface MaterialRepository extends JpaRepository<Material, Long> {
     // Busca todos os materiais postados por um Monitor específico usando o ID dele
     List<Material> findByAutorId(Long monitorId);
+    List<Material> findByDisciplinaId(Long disciplinaId);
 }

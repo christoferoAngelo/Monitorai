@@ -122,4 +122,8 @@ public class MaterialService {
         // 4. Deleta
         materialRepository.delete(material);
     }
+    
+    public List<Material> listarMateriaisDaDisciplina(Long disciplinaId) {
+        return materialRepository.findByDisciplinaId(disciplinaId);
+    }
 }

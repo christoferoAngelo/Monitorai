@@ -42,6 +42,7 @@
   color: #002b5c;
   font-size: 30px;
   font-weight: 700;
+  margin: 0;
 }
 
 .detalhe-code {
@@ -53,15 +54,159 @@
   border-radius: 8px;
 }
 
-/* MAIN CONTENT */
-.disciplina-detalhe-main {
-  max-width: 1100px;
-  display: flex;
-  flex-direction: column;
+/* DUAS COLUNAS ASIDE + MAIN */
+.disciplina-detalhe-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
   gap: 30px;
+  align-items: flex-start;
+  max-width: 1200px;
 }
 
-/* CARD DE INFORMAÇÕES */
+@media (max-width: 900px) {
+  .disciplina-detalhe-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* REPOSITÓRIO CARD */
+.repositorio-card {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+}
+
+.repositorio-header h2 {
+  color: #002b5c;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.repositorio-header p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* FILTROS E BUSCA */
+.filtros-recursos-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.input-pesquisa-material {
+  flex: 1;
+  min-width: 250px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-pesquisa-material:focus {
+  border-color: #002b5c;
+}
+
+.select-filtro-tipo {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+}
+
+/* LISTA DE MATERIAIS */
+.materiais-lista-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.material-item-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.material-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.material-item-info h3 {
+  color: #002b5c;
+  font-size: 17px;
+  font-weight: 600;
+  margin: 4px 0 0;
+}
+
+.material-item-info p {
+  color: #555;
+  font-size: 13.5px;
+  margin: 0;
+}
+
+/* TAGS COLORIDAS */
+.material-tag-tipo {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+.material-tag-tipo.pdf { background: #fee2e2; color: #ef4444; }
+.material-tag-tipo.video, .material-tag-tipo.vídeo { background: #dbeafe; color: #3b82f6; }
+.material-tag-tipo.quiz { background: #d1fae5; color: #10b981; }
+.material-tag-tipo.link { background: #f3e8ff; color: #a855f7; }
+
+.btn-acessar-material {
+  background: white;
+  color: #002b5c;
+  border: 1px solid #002b5c;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.btn-acessar-material:hover {
+  background: #002b5c;
+  color: white;
+}
+
+.sem-materiais-container {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+}
+
+/* COLUNA DIREITA INFO */
+.layout-lateral-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
 .info-geral-card {
   background: white;
   padding: 30px;
@@ -87,28 +232,12 @@
   padding: 14px 0;
   border-bottom: 1px solid #f8fafc;
   font-size: 15.5px;
+  gap: 15px;
 }
 
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-row strong {
-  color: #555;
-  font-weight: 500;
-}
-
-.info-row span {
-  color: #002b5c;
-  font-weight: 600;
-}
-
-/* PLACEHOLDERS */
-.placeholders-futuros-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 25px;
-}
+.info-row:last-child { border-bottom: none; }
+.info-row strong { color: #555; font-weight: 500; }
+.info-row span { color: #002b5c; font-weight: 600; text-align: right; }
 
 .card-placeholder-futuro {
   background: #ffffff;
@@ -121,13 +250,122 @@
   gap: 10px;
 }
 
-.card-placeholder-futuro h3 {
-  color: #94a3b8;
-  font-size: 18px;
-  font-weight: 600;
+.card-placeholder-futuro h3 { color: #94a3b8; font-size: 18px; font-weight: 600; }
+.card-placeholder-futuro p { font-size: 14px; line-height: 1.6; }
+.loading { text-align: center; padding: 50px; font-size: 16px; color: #002b5c; }
+
+
+/* =========================================================
+   Adições para os Filtros e Cards de Materiais (Idêntico ao Monitor)
+   ========================================================= */
+
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+  background: white;
 }
 
-.card-placeholder-futuro p {
+.input-busca {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-busca:focus {
+  border-color: #002b5c;
+}
+
+.select-filtro {
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: white;
+  font-size: 15px;
+  cursor: pointer;
+  outline: none;
+}
+
+.materiais-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.material-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.material-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.material-tipo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.material-card h4 {
+  margin: 0 0 8px 0;
+  color: #002b5c;
+  font-size: 18px;
+}
+
+.material-card p {
+  color: #4b5563;
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.btn-acessar-material {
+  display: inline-block;
+  background: #002b5c;
+  color: white;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
   font-size: 14px;
-  line-height: 1.6;
+  transition: background 0.2s;
+}
+
+.btn-acessar-material:hover {
+  background: #00152e;
+}
+
+.materiais-vazio {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  font-size: 15px;
 }

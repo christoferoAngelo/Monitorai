@@ -219,4 +219,10 @@ public class MaterialController {
         materialService.deletarMaterial(id, username);
         return ResponseEntity.ok("Material excluído com sucesso!");
     }
+    
+    @GetMapping("/disciplina/{id}")
+    public ResponseEntity<List<Material>> listarPorDisciplina(@PathVariable Long id) {
+        List<Material> lista = materialService.listarMateriaisDaDisciplina(id);
+        return ResponseEntity.ok(lista);
+    }
 }
