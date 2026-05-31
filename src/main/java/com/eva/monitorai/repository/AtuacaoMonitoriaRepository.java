@@ -31,4 +31,7 @@ public interface AtuacaoMonitoriaRepository extends JpaRepository<AtuacaoMonitor
     	    @Param("disciplinaId") Long disciplinaId,
     	    @Param("anoSemestre") String anoSemestre
     	);
+    
+    List<AtuacaoMonitoria> findAll();
+
 }

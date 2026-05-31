@@ -99,4 +99,14 @@ public class MonitoriaController {
     ) {
         return ResponseEntity.ok(atuacaoRepository.buscarHistorico(monitorId, disciplinaId, anoSemestre));
     }
+    
+    @PostMapping("/finalizar-semestre")
+    public ResponseEntity<String> finalizarSemestre() {
+        return ResponseEntity.ok(monitoriaService.finalizarSemestre());
+    }
+    
+    @GetMapping("/atuacoes/todas")
+    public List<AtuacaoMonitoria> listarTodasAtuacoes() {
+        return atuacaoRepository.findAll();
+    }
 }

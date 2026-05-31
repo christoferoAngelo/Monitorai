@@ -24,61 +24,66 @@ export default function HistoricoMonitoria() {
         carregarDados();
     }, []);
 
-    async function carregarDados() {
+async function carregarDados() {
+    try {
+        const [resAtuacoes, resMonitores, resDisciplinas] = await Promise.all([
+            api.get('/monitorias/atuacoes/todas'),
+            api.get('/monitores').catch(() => ({ data: [] })),  // Se der erro, usa array vazio
+            api.get('/disciplinas')
+        ]);
+        setHistorico(resAtuacoes.data);
+        setMonitores(resMonitores.data);
+        setDisciplinas(resDisciplinas.data);
+    } catch (err) {
+        console.error("Erro:", err);
+        // Se der erro em algum, carrega com o que conseguir
         try {
-            const [resAtuacoes, resMonitores, resDisciplinas] = await Promise.all([
-                api.get('/atuacoes'),
-                api.get('/monitores'),
-                api.get('/disciplinas')
-            ]);
+            const resAtuacoes = await api.get('/monitorias/atuacoes/todas');
             setHistorico(resAtuacoes.data);
-            setMonitores(resMonitores.data);
-            setDisciplinas(resDisciplinas.data);
-        } catch (err) {
-            console.error("Erro:", err);
-        }
-        setLoading(false);
+        } catch (e) {}
     }
+    setLoading(false);
+}
 
-    // Filtrar histórico
-    const historicoFiltrado = historico.filter(a => {
-        // Filtro por status da atuação
-        if (filtroStatus === 'ativa' && a.ativa) return true;
-        if (filtroStatus === 'inativa' && !a.ativa) return true;
-        if (filtroStatus === 'todos') return true;
-        
-        // Filtro por monitor
-        if (filtroMonitor && a.monitor?.usuario?.id !== parseInt(filtroMonitor)) return false;
-        
-        // Filtro por disciplina
-        if (filtroDisciplina && a.monitoria?.disciplina?.id !== parseInt(filtroDisciplina)) return false;
-        
-        // Filtro por ano/semestre
-        if (filtroAno && a.monitoria?.semestreReferencia !== filtroAno) return false;
-        
-        return true;
-    });
+// Filtrar histórico
+const historicoFiltrado = historico.filter(a => {
+    // Filtro por status da atuação
+    if (filtroStatus !== 'todos') {
+        if (filtroStatus === 'ativa' && !a.ativa) return false;
+        if (filtroStatus === 'inativa' && a.ativa) return false;
+    }
+    
+    // Filtro por monitor (só aplica se filtroMonitor tiver valor)
+    if (filtroMonitor && a.monitor?.usuario?.id !== parseInt(filtroMonitor)) return false;
+    
+    // Filtro por disciplina (só aplica se filtroDisciplina tiver valor)
+    if (filtroDisciplina && a.monitoria?.disciplina?.id !== parseInt(filtroDisciplina)) return false;
+    
+    // Filtro por ano/semestre (só aplica se filtroAno tiver valor)
+    if (filtroAno && a.monitoria?.semestreReferencia !== filtroAno) return false;
+    
+    // Se passou por todos os filtros, mostra
+    return true;
+});
 
-    // Gerar PDF (simulação)
     function gerarPDF() {
         alert("Funcionalidade de PDF em desenvolvimento!");
     }
 
-    // Listar relatórios de uma atuação
     async function verRelatorios(atuacaoId) {
         try {
-            const res = await api.get(`/relatorios/atuacao/${atuacaoId}`);
+            // Busca a partir da monitoria
+            const res = await api.get(`/relatorios/monitoria/${atuacaoId}`);  // <-- CORRIGIDO
             if (res.data.length === 0) {
                 alert("Nenhum relatório encontrado para esta atuação.");
             } else {
-                alert(`Esta atuamção teve ${res.data.length} relatórios.`);
+                alert(`Esta atuação teve ${res.data.length} relatórios.`);
             }
         } catch (err) {
             alert("Erro ao buscar relatórios");
         }
     }
 
-    // Anos-semestres únicos
     const anosUnicos = [...new Set(historico.map(a => a.monitoria?.semestreReferencia).filter(Boolean))].sort().reverse();
 
     if (loading) return <div className="admin-loading"><div className="spinner"></div></div>;

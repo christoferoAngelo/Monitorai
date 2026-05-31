@@ -11,7 +11,7 @@ export default function Monitoria() {
   const [monitoriaEditando, setMonitoriaEditando] = useState(null);
 
   const [busca, setBusca] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("todos");
+const [filtroStatus, setFiltroStatus] = useState("ativas");
   const [filtroCurso, setFiltroCurso] = useState("");
 
   const navigate = useNavigate();
@@ -86,6 +86,21 @@ export default function Monitoria() {
     navigate(`/relatorios/novo?monitoriaId=${monitoriaId}`);
   }
 
+    // FUNÇÃO: Finalizar Semestre
+  async function finalizarSemestre() {
+    if (!window.confirm("⚠️ FINALIZAR SEMESTRE?\n\nOs monitores serão desvinculados das monitorias e elas ficarão inativas.\n\nTem certeza que deseja continuar?")) {
+      return;
+    }
+    
+    try {
+      await api.post("/monitorias/finalizar-semestre");
+      alert("✅ Semestre finalizado com sucesso!");
+      carregarMonitorias();
+    } catch (error) {
+      alert("Erro ao finalizar semestre");
+    }
+  }
+
   const ativas = monitorias.filter(m => m.ativa).length;
   const inativas = monitorias.filter(m => !m.ativa).length;
 
@@ -103,7 +118,13 @@ export default function Monitoria() {
           <button className="btn-new" onClick={criarNova}>
             ➕ Nova Monitoria
           </button>
+          <button className="btn-finalizar" onClick={finalizarSemestre}>
+            🏁 Finalizar Semestre
+          </button>
         </div>
+
+        
+        
       </header>
 
       <div className="stats-row">

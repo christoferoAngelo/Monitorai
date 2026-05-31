@@ -570,3 +570,18 @@ body {
 .btn-report:hover {
     background: #dcfce7;
 }
+
+.btn-finalizar {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-finalizar:hover {
+    background: #b91c1c;
+}

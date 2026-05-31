@@ -250,4 +250,43 @@ public class MonitoriaService {
     public Monitoria salvar(Monitoria monitoria) {
         return monitoriaRepository.save(monitoria);
     }
+    
+    @Transactional
+    public String finalizarSemestre() {
+        LocalDate hoje = LocalDate.now();
+        int total = 0;
+        
+        // Busca todas monitorias ativas
+        List<Monitoria> ativas = monitoriaRepository.findByAtivaTrue();
+        
+        for (Monitoria m : ativas) {
+            // Encerra a atuação atual
+            atuacaoRepository.findByMonitoriaIdAndAtivaTrue(m.getId()).ifPresent(atuacao -> {
+                atuacao.setDataFim(hoje);
+                atuacao.setAtiva(false);
+                atuacaoRepository.save(atuacao);
+            });
+            
+            // Monitor antigo volta a ser ALUNO
+            if (m.getMonitor() != null) {
+                Usuario usuario = m.getMonitor().getUsuario();
+                usuario.setRole("ALUNO");
+                usuarioRepository.save(usuario);
+                
+                //Inativa o monitor na tabela monitores
+                m.getMonitor().setAtivo(false);
+                monitorRepository.save(m.getMonitor());
+            }
+            
+            // Inativa a monitoria (mas mantém: sala, horário, disciplina!)
+            m.setAtiva(false);
+            m.setMonitor(null); // Desvincula o monitor
+            monitoriaRepository.save(m);           
+      
+            
+            total++;
+        }
+        
+        return "Semestre finalizado! " + total + " monitorias inativadas e monitores desvinculados.";
+    }
 }
