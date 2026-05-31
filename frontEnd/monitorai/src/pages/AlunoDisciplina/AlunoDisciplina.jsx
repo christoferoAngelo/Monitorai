@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './AlunoDisciplina.css';
+import {
+  FaHeart,
+  FaRegHeart,
+  FaBookmark,
+  FaRegBookmark,
+  FaComment
+} from "react-icons/fa";
 
 function AlunoDisciplina() {
   const { id } = useParams(); // Pega o ID da disciplina na URL
@@ -16,6 +23,10 @@ function AlunoDisciplina() {
   const [filtroTipo, setFiltroTipo] = useState('TODOS');
   const [ordenacao, setOrdenacao] = useState('recente'); // 'recente' ou 'antigo'
 
+  // cons dos cards
+  const [curtidos, setCurtidos] = useState([]);
+  const [salvos, setSalvos] = useState([]);
+
   useEffect(() => {
     // Busca a disciplina e os materiais dela ao mesmo tempo
     const carregarDados = async () => {
@@ -27,6 +38,11 @@ function AlunoDisciplina() {
         
         setDisciplina(discRes.data);
         setMateriais(matRes.data);
+        const curtidosUsuario = matRes.data
+        .filter(m => m.curtidoPorMim)
+        .map(m => m.id);
+
+        setCurtidos(curtidosUsuario);
       } catch (err) {
         console.error("Erro ao buscar dados:", err);
       } finally {
@@ -54,6 +70,44 @@ function AlunoDisciplina() {
     if (tipo === 'QUIZ' || tipo === 'QUIZZ') return '🧩';
     if (tipo === 'VIDEO') return '▶️';
     return '📁';
+  };
+
+  const toggleCurtida = async (materialId) => {
+
+  try{
+
+    const response = await api.post(`/curtidas/${materialId}`);
+
+    setCurtidos(prev =>
+      prev.includes(materialId)
+        ? prev.filter(id => id !== materialId)
+        : [...prev, materialId]
+    );
+
+    setMateriais(prev =>
+      prev.map(material =>
+        material.id === materialId
+          ? {
+              ...material,
+              totalCurtidas: response.data.totalCurtidas
+            }
+          : material
+      )
+    );
+
+  }catch(err){
+
+    console.error("Erro ao curtir:", err);
+
+  }
+  };
+
+  const toggleSalvo = (id) => {
+    setSalvos(prev =>
+      prev.includes(id)
+      ? prev.filter(item => item !== id)
+      : [...prev, id]
+    );
   };
 
   if (loading) return <div className="loading">Carregando detalhes da disciplina...</div>;
@@ -131,9 +185,50 @@ function AlunoDisciplina() {
                   <h4>{material.titulo}</h4>
                   {material.conteudo && <p>{material.conteudo}</p>}
                   
-                  <a href={material.url} target="_blank" rel="noopener noreferrer" className="btn-acessar-material">
-                    Acessar Material 🔗
-                  </a>
+                  <div className="material-actions">
+
+
+  <div className="interaction-buttons">
+
+    <button
+      className={`icon-btn ${curtidos.includes(material.id) ? "active" : ""}`}
+      onClick={() => toggleCurtida(material.id)}
+    >
+
+    <FaHeart/>
+
+    <span className="contador-curtidas">
+      {material.totalCurtidas || 0}
+    </span>
+
+    </button>
+
+    <button
+      className="icon-btn save-btn"
+      onClick={() => toggleSalvo(material.id)}
+    >
+      {salvos.includes(material.id)
+        ? <FaBookmark />
+        : <FaRegBookmark />}
+    </button>
+
+    <button
+      className="icon-btn comment-btn"
+    >
+      <FaComment />
+    </button>
+
+  <a
+    href={material.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="btn-acessar-material"
+  >
+    Acessar Material 🔗
+  </a>
+  </div>
+
+</div>
                 </div>
               ))}
             </div>
