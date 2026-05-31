@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import "./RegistrarRelatorio.css";
 
@@ -9,9 +10,12 @@ export default function RegistrarRelatorio() {
     const [historico, setHistorico] = useState([]);
     const [media, setMedia] = useState(0);
     
-    // Modo: 'list' (lista) ou 'form' (formulário)
     const [modo, setModo] = useState('list');
     const [relatorioEditando, setRelatorioEditando] = useState(null);
+
+    // 🔑 LE O PARÂMETRO DA URL
+    const [searchParams] = useSearchParams();
+    const monitoriaIdFromUrl = searchParams.get('monitoriaId');
 
     const [form, setForm] = useState({
         quantidadeAlunos: "",
@@ -26,7 +30,14 @@ export default function RegistrarRelatorio() {
         
         api.get("/auth/me").then(res => {
             setUser(res.data);
-            if (res.data.role === 'MONITOR') {
+            
+            // Se veio monitoriaId da URL, usa ele; senão busca normal
+            if (monitoriaIdFromUrl) {
+                api.get(`/monitorias/${monitoriaIdFromUrl}`).then(mRes => {
+                    setMonitoriaSelecionada(mRes.data);
+                    carregarHistorico(mRes.data.id);
+                });
+            } else if (res.data.role === 'MONITOR') {
                 api.get(`/monitorias/monitor/${res.data.username}`).then(mRes => {
                     const monitoriaAtiva = mRes.data.find(m => m.ativa);
                     if (monitoriaAtiva) {
@@ -38,9 +49,10 @@ export default function RegistrarRelatorio() {
                 api.get("/monitorias/ativas").then(mRes => setMonitorias(mRes.data));
             }
         });
-    }, []);
+    }, [monitoriaIdFromUrl]);
 
     async function carregarHistorico(id) {
+        if (!id) return;
         const res = await api.get(`/relatorios/monitoria/${id}`);
         setHistorico(res.data);
         const total = res.data.reduce((acc, curr) => acc + curr.quantidadeAlunos, 0);
@@ -118,16 +130,16 @@ export default function RegistrarRelatorio() {
 
             {/* SELECÃO DE MONITORIA */}
             <div className="selecao-monitoria">
-                {user?.role === 'ADMIN' && (
+                {user?.role === 'ADMIN' && !monitoriaIdFromUrl && (
                     <div className="filtro-admin">
                         <label>Selecione a Monitoria: </label>
                         <select className="filtro-select" onChange={(e) => {
-    const id = parseInt(e.target.value);
-    const m = monitorias.find(it => it.id === id);
-    setMonitoriaSelecionada(m || null);
-    if (m) carregarHistorico(m.id);
-    setModo('list');
-}}
+                            const id = parseInt(e.target.value);
+                            const m = monitorias.find(it => it.id === id);
+                            setMonitoriaSelecionada(m || null);
+                            if (m) carregarHistorico(m.id);
+                            setModo('list');
+                        }}
                          value={monitoriaSelecionada?.id || ""}>
                             <option value="">--- Selecione ---</option>
                             {monitorias.map(m => (
@@ -142,7 +154,6 @@ export default function RegistrarRelatorio() {
 
             {monitoriaSelecionada && modo === 'form' && (
                 <>
-                    {/* INFO DA MONITORIA */}
                     <div className="monitoria-info-card">
                         <div className="monitoria-info-item">
                             <label>Disciplina</label>
@@ -158,7 +169,6 @@ export default function RegistrarRelatorio() {
                         </div>
                     </div>
 
-                    {/* FORMULÁRIO */}
                     <form className="relatorio-form" onSubmit={handleSubmit}>
                         <h3>{relatorioEditando ? 'Editar Relatório' : 'Novo Relatório'}</h3>
                         
@@ -246,18 +256,8 @@ export default function RegistrarRelatorio() {
                                         <td>{h.quantidadeAlunos}</td>
                                         <td>{h.conteudoAbordado}</td>
                                         <td className="acoes">
-                                            <button 
-                                                className="btn-action edit" 
-                                                onClick={() => abrirFormulario(h)}
-                                            >
-                                                ✏️ Editar
-                                            </button>
-                                            <button 
-                                                className="btn-action delete" 
-                                                onClick={() => excluirRelatorio(h.id)}
-                                            >
-                                                🗑️
-                                            </button>
+                                            <button className="btn-action edit" onClick={() => abrirFormulario(h)}>✏️</button>
+                                            <button className="btn-action delete" onClick={() => excluirRelatorio(h.id)}>🗑️</button>
                                         </td>
                                     </tr>
                                 ))}

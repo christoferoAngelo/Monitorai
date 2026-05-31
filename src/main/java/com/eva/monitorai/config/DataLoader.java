@@ -15,7 +15,7 @@ import com.eva.monitorai.service.DisciplinaService;
 @Configuration
 public class DataLoader {
 
-    @Bean
+   @Bean
     CommandLineRunner carregarDados(
             CursoRepository cursoRepository,
             DisciplinaRepository disciplinaRepository,
@@ -28,7 +28,7 @@ public class DataLoader {
             // CURSOS
             // =====================================
 
-            if (cursoRepository.count() == 0) {
+           if (cursoRepository.count() == 0) {
 
                 criarCurso(
                         cursoRepository,
@@ -61,7 +61,7 @@ public class DataLoader {
             // DISCIPLINAS
             // =====================================
 
-            if (disciplinaRepository.count() == 0) {
+           if (disciplinaRepository.count() == 0) {
 
                 Curso ads = buscarCurso(cursoRepository, "ADS001");
                 Curso eng = buscarCurso(cursoRepository, "ENG001");

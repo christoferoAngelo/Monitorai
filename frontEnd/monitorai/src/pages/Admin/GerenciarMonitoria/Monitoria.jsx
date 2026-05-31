@@ -10,14 +10,12 @@ export default function Monitoria() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [monitoriaEditando, setMonitoriaEditando] = useState(null);
 
-  // Filtros
   const [busca, setBusca] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("todos"); // todos, ativas, inativas
+  const [filtroStatus, setFiltroStatus] = useState("todos");
   const [filtroCurso, setFiltroCurso] = useState("");
 
-  // =========================
-  // CARREGAR DADOS
-  // =========================
+  const navigate = useNavigate();
+
   async function carregarMonitorias() {
     try {
       const response = await api.get("/monitorias");
@@ -26,11 +24,6 @@ export default function Monitoria() {
       console.error("Erro ao carregar monitorias", error);
     }
   }
-
-  function verRelatorios(monitoriaId) {
-    // Abre modal ou navega para página de relatórios passando o ID
-    navigate(`/components/registrar-relatorio?monitoriaId=${monitoriaId}`);
-}
 
   async function carregarCursos() {
     try {
@@ -50,51 +43,12 @@ export default function Monitoria() {
     carregarCursos();
   }, []);
 
-// =========================
-// FILTRAR LISTA
-// =========================
-const monitoriasFiltradas = monitorias.filter(m => {
-  // Filtro por status
-  if (filtroStatus === "ativas" && !m.ativa) return false;
-  if (filtroStatus === "inativas" && m.ativa) return false;
+  const monitoriasFiltradas = monitorias.filter(m => {
+    if (filtroStatus === "ativas" && !m.ativa) return false;
+    if (filtroStatus === "inativas" && m.ativa) return false;
+    return true;
+  });
 
-  // Filtro por curso
-  if (filtroCurso) {
-    const cursoId = parseInt(filtroCurso);
-    
-    // Tenta diferentes formas de acessar os cursos
-    let cursosMonitoria = [];
-    
-    if (m.disciplina?.cursosIds) {
-      cursosMonitoria = m.disciplina.cursosIds;
-    } else if (m.disciplina?.cursos) {
-      cursosMonitoria = m.disciplina.cursos.map(c => typeof c === 'object' ? c.id : c);
-    } else if (m.disciplina?.curso?.id) {
-      cursosMonitoria = [m.disciplina.curso.id];
-    }
-    
-    // Se não tem curso vinculados, mostra só se não tiver filtro
-    if (cursosMonitoria.length > 0 && !cursosMonitoria.includes(cursoId)) {
-      return false;
-    }
-  }
-
-  // Filtro por busca
-  if (busca) {
-    const termo = busca.toLowerCase();
-    const matchDisciplina = m.disciplina?.nome?.toLowerCase().includes(termo);
-    const matchMonitor = m.monitor?.usuario?.username?.toLowerCase().includes(termo);
-    const matchSala = m.sala?.toLowerCase().includes(termo);
-    const matchDia = m.diaSemana?.toLowerCase().includes(termo);
-    
-    if (!matchDisciplina && !matchMonitor && !matchSala && !matchDia) return false;
-  }
-
-  return true;
-});
-  // =========================
-  // ABRIR MODAL
-  // =========================
   function criarNova() {
     setMonitoriaEditando(null);
     setMostrarModal(true);
@@ -105,24 +59,15 @@ const monitoriasFiltradas = monitorias.filter(m => {
     setMostrarModal(true);
   }
 
-  // =========================
-  // ATIVAR/DESATIVAR
-  // =========================
   async function toggleAtivar(monitoria) {
     const acao = monitoria.ativa ? "desativar" : "ativar";
-    if (acao === "desativar") {
-      if (!window.confirm("Deseja desativar esta monitoria?")) return;
-    } else {
-      if (!window.confirm("Deseja reativar esta monitoria?")) return;
-    }
+    if (!window.confirm(`Deseja ${acao} esta monitoria?`)) return;
     
     try {
       if (monitoria.ativa) {
         await api.delete(`/monitorias/${monitoria.id}`);
-        alert("Monitoria desativada!");
       } else {
         await api.put(`/monitorias/${monitoria.id}/reativar`);
-        alert("Monitoria reativada!");
       }
       carregarMonitorias();
     } catch (error) {
@@ -131,29 +76,36 @@ const monitoriasFiltradas = monitorias.filter(m => {
     }
   }
 
-  // =========================
-  // CONTADORES
-  // =========================
+  // NOVA FUNÇÃO: Ir para Histórico
+  function irParaHistorico() {
+    navigate('/historico-monitorias');
+  }
+
+  // NOVA FUNÇÃO: Ir para Relatórios
+  function verRelatorios(monitoriaId) {
+    navigate(`/relatorios/novo?monitoriaId=${monitoriaId}`);
+  }
+
   const ativas = monitorias.filter(m => m.ativa).length;
   const inativas = monitorias.filter(m => !m.ativa).length;
 
-  // =========================
-  // RENDER
-  // =========================
   return (
     <div className="monitoria-page">
-      {/* HEADER */}
       <header className="page-header">
         <div>
           <h1>Gerenciamento de Monitorias</h1>
           <p className="page-subtitle">Cadastre e gerencie as monitorias ativas por semestre</p>
         </div>
-        <button className="btn-new" onClick={criarNova}>
-          ➕ Nova Monitoria
-        </button>
+        <div className="header-buttons">
+          <button className="btn-historic" onClick={irParaHistorico}>
+            📜 Histórico
+          </button>
+          <button className="btn-new" onClick={criarNova}>
+            ➕ Nova Monitoria
+          </button>
+        </div>
       </header>
 
-      {/* STATS */}
       <div className="stats-row">
         <div className="stat-box">
           <span className="stat-number">{ativas}</span>
@@ -169,7 +121,6 @@ const monitoriasFiltradas = monitorias.filter(m => {
         </div>
       </div>
 
-      {/* FILTROS */}
       <div className="filters-row">
         <div className="search-box">
           <span className="search-icon">🔍</span>
@@ -192,21 +143,9 @@ const monitoriasFiltradas = monitorias.filter(m => {
             <option value="ativas">Apenas Ativas</option>
             <option value="inativas">Apenas Inativas</option>
           </select>
-
-          <select
-            className="filter-select"
-            value={filtroCurso}
-            onChange={e => setFiltroCurso(e.target.value)}
-          >
-            <option value="">Todos os Cursos</option>
-            {cursos.map(c => (
-              <option key={c.id} value={c.id}>{c.nome}</option>
-            ))}
-          </select>
         </div>
       </div>
 
-      {/* LISTA */}
       <div className="list-card">
         <div className="list-header">
           <h2>Todas as Monitorias ({monitoriasFiltradas.length})</h2>
@@ -216,7 +155,6 @@ const monitoriasFiltradas = monitorias.filter(m => {
           <div className="empty-state">
             <div className="icon">📚</div>
             <h3>Nenhuma monitoria encontrada</h3>
-            <p>Tente ajustar os filtros de busca.</p>
           </div>
         ) : (
           <div className="monitorias-grid">
@@ -234,9 +172,7 @@ const monitoriasFiltradas = monitorias.filter(m => {
                 <div className="monitoria-info">
                   <div className="info-row">
                     <span className="info-icon">👤</span>
-                    <span className="info-text">
-                      Monitor: <strong>{m.monitor?.usuario?.username || '—'}</strong>
-                    </span>
+                    <span className="info-text">Monitor: <strong>{m.monitor?.usuario?.username || '—'}</strong></span>
                   </div>
                   <div className="info-row">
                     <span className="info-icon">📅</span>
@@ -252,27 +188,19 @@ const monitoriasFiltradas = monitorias.filter(m => {
                   </div>
                 </div>
 
-<div className="monitoria-actions">
-    <button className="btn-edit" onClick={() => editarMonitoria(m)}>
-        ✏️ Editar
-    </button>
-    <button 
-        className="btn-report" 
-        onClick={() => verRelatorios(m.id)}
-    >
-        📋 Relatórios
-    </button>
-    <button className={`btn-toggle ${m.ativa ? 'btn-disable' : 'btn-enable'}`} onClick={() => toggleAtivar(m)}>
-        {m.ativa ? '⏸️ Inativar' : '▶️ Ativar'}
-    </button>
-</div>
+                <div className="monitoria-actions">
+                  <button className="btn-edit" onClick={() => editarMonitoria(m)}>✏️ Editar</button>
+                  <button className="btn-report" onClick={() => verRelatorios(m.id)}>📋 Relatórios</button>
+                  <button className={`btn-toggle ${m.ativa ? 'btn-disable' : 'btn-enable'}`} onClick={() => toggleAtivar(m)}>
+                    {m.ativa ? '⏸️ Inativar' : '▶️ Ativar'}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* MODAL */}
       {mostrarModal && (
         <MonitoriaModal 
           monitoramento={monitoriaEditando} 

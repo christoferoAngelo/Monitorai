@@ -75,6 +75,13 @@ public class MonitoriaService {
 
         Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
                 .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+        
+        // 🛑 REGRA 4: Não permitir duplicar monitoria (mesma disciplina + ativa)
+        List<Monitoria> mesmaDisciplina = monitoriaRepository.buscarMonitoriaAtivaDaDisciplina(dto.getDisciplinaId());
+        if (!mesmaDisciplina.isEmpty()) {
+            throw new RuntimeException("Já existe uma monitoria ativa para a disciplina '" + disciplina.getNome() + 
+                "'. Para criar uma nova, inative a monitoria atual primeiro.");
+        }
 
         Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId()).orElse(null);
 

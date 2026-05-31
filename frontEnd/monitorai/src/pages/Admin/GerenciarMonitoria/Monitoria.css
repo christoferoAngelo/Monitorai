@@ -529,3 +529,44 @@ body {
 .btn-cancel:hover {
     background: #e2e8f0;
 }
+
+/* Botão Histórico */
+.header-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-historic {
+    background: white;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-historic:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+/* Botão Relatórios nos cards */
+.btn-report {
+    flex: 1;
+    background: #f0fdf4;
+    color: #15803d;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-report:hover {
+    background: #dcfce7;
+}

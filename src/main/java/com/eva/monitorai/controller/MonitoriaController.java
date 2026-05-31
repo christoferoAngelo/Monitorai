@@ -3,6 +3,7 @@ package com.eva.monitorai.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.eva.monitorai.dto.MonitoriaDTO;
@@ -88,5 +89,14 @@ public class MonitoriaController {
     @GetMapping("/monitor/{usuarioId}")
     public List<Monitoria> buscarPorMonitor(@PathVariable Long usuarioId) {
         return monitoriaRepository.findByMonitorId(usuarioId);  // Correto agora
+    }
+    
+    @GetMapping("/historico")
+    public ResponseEntity<List<AtuacaoMonitoria>> listarHistorico(
+        @RequestParam(required = false) Long monitorId,
+        @RequestParam(required = false) Long disciplinaId,
+        @RequestParam(required = false) String anoSemestre
+    ) {
+        return ResponseEntity.ok(atuacaoRepository.buscarHistorico(monitorId, disciplinaId, anoSemestre));
     }
 }

@@ -20,6 +20,7 @@ import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
 import Perfil from './pages/Perfil';
 import GerenciarMonitoria from './pages/Admin/GerenciarMonitoria/Monitoria';
 import GradeCurricular from './pages/Admin/GerenciarGrade/GradeCurricular';
+import HistoricoMonitoria from './pages/Admin/HistoricoMonitorias/HistoricoMonitoria';
 
 // Layouts
 import AdminLayout from './pages/Admin/components/AdminLayout';
@@ -58,10 +59,11 @@ function AppRoutes() {
             <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/disciplina/:id" element={<PrivateRoute><AlunoDisciplina /></PrivateRoute>} />
 
-            {/* ADMIN COM LAYOUT (Sidebar fixa) - AGORA INCLUI O DASHBOARD */}
+            {/* ADMIN COM LAYOUT (Sidebar fixa) - AGORA TUDO DENTRO */}
             <Route element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/admin-monitorias" element={<GerenciarMonitoria />} />
+                <Route path="/historico-monitorias" element={<HistoricoMonitoria />} />
                 <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
                 <Route path="/grade-curricular" element={<GradeCurricular />} />
             </Route>
