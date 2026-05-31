@@ -176,7 +176,7 @@ function AdminDashboard() {
   };
 
   const handleNovaMonitoria = () => {
-    navigate('/monitorias');
+    navigate('/admin-monitorias');
   };
 
   if (loading) {

@@ -1,8 +1,76 @@
 @import './AlunoDashboard.css';
 
+/* Descrição pequena dentro dos cards de gerenciamento */
 .card small {
   display: block;
   margin-top: 10px;
   font-size: 13px;
   color: #666;
+}
+
+/* =========================================================================
+   Ajustes Específicos do Dashboard do Monitor
+   ========================================================================= */
+
+/* Títulos separadores na Sidebar (Ações do Monitor / Área do Aluno) */
+.menu-section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  margin-left: 5px;
+  font-weight: 700;
+}
+
+/* Destaca levemente o card que pertence ao próprio monitor */
+.card.disciplina-card-aluno.minha-disciplina {
+  border: 2px solid #002b5c; /* Borda azul para destacar a matéria dele */
+  box-shadow: 0 8px 25px rgba(0, 43, 92, 0.2);
+}
+
+/* Tag verdinha escrita "(Você)" ao lado do nome do monitor no card */
+.tag-voce {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* =========================================================================
+   Ajuste de Estrutura Fixa (Sidebar Presa e Conteúdo Scrollável)
+   ========================================================================= */
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;      /* Força o container a ter exatamente a altura da tela */
+  width: 100%;
+  background: #f5f7fb;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;   /* Impede que a página inteira crie uma barra de rolagem */
+}
+
+/* SIDEBAR FIXA */
+.dashboard-sidebar {
+  width: 250px;
+  min-width: 250px;   /* Garante que ela não vai espremer em telas menores */
+  height: 100vh;      /* Ocupa toda a altura da tela */
+  background: linear-gradient(180deg, #002b5c, #00152e);
+  color: white;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  /* O segredo para ela não sair do lugar se houver qualquer evento */
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+/* CONTEÚDO DA DIREITA (O único que rola) */
+.dashboard-main {
+  flex: 1;
+  padding: 35px;
+  height: 100vh;      /* Ocupa a altura da tela */
+  overflow-y: auto;   /* Ativa a barra de rolagem vertical APENAS aqui dentro */
 }
