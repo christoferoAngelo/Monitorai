@@ -12,7 +12,13 @@ import com.eva.monitorai.model.entity.Monitoria;
 public interface MonitoriaRepository extends JpaRepository<Monitoria, Long> {
 
     List<Monitoria> findByMonitorId(Long monitorId);
-    List<Monitoria> findByAtivaTrue();
+    @Query("SELECT m FROM Monitoria m " +
+    	       "LEFT JOIN FETCH m.monitor mon " +
+    	       "LEFT JOIN FETCH mon.usuario " +
+    	       "LEFT JOIN FETCH m.disciplina d " +
+    	       "LEFT JOIN FETCH d.cursos " + // Força o carregamento da tabela curso_disciplina
+    	       "WHERE m.ativa = true")
+	List<Monitoria> findByAtivaTrue();
     List<Monitoria> findByDisciplinaId(Long disciplinaId);
     Optional<Monitoria> findByDisciplinaIdAndAtivaTrue(Long disciplinaId);
 
@@ -51,4 +57,10 @@ public interface MonitoriaRepository extends JpaRepository<Monitoria, Long> {
            "LEFT JOIN FETCH m.monitor " +
            "LEFT JOIN FETCH m.monitor.usuario")
     List<Monitoria> buscarTodasComRelacionamentos();
+    
+    @Query("SELECT m FROM Monitoria m " +
+            "JOIN m.monitor mon " +
+            "JOIN mon.usuario u " +
+            "WHERE u.id = :usuarioId")
+    List<Monitoria> findByUsuarioId(@Param("usuarioId") Long usuarioId);
 }

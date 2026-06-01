@@ -1,6 +1,7 @@
 package com.eva.monitorai.model.entity;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import jakarta.persistence.*;
 
@@ -33,6 +34,17 @@ public class Monitoria {
     private String semestreReferencia;
 
     private boolean ativa = true;
+    
+
+    @Transient // Indica que este método não é uma coluna do banco
+    public List<String> getCursosNomes() {
+        if (this.disciplina != null && this.disciplina.getCursos() != null) {
+            return this.disciplina.getCursos().stream()
+                    .map(curso -> curso.getNome()) // Altere para getNome() se for o atributo da sua classe Curso
+                    .collect(java.util.stream.Collectors.toList());
+        }
+        return java.util.Collections.emptyList();
+    }
 
     public Monitoria() {
     }

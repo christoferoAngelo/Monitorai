@@ -5,21 +5,21 @@ import './AlunoDashboard.css';
 
 function AlunoDashboard() {
   const [usuario, setUsuario] = useState(null);
-  const [disciplinas, setDisciplinas] = useState([]); // Novo estado para as disciplinas
+  // Renomeamos de disciplinas para monitorias para fazer mais sentido com a nova busca
+  const [monitorias, setMonitorias] = useState([]); 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fazemos as duas requisições ao mesmo tempo para a tela carregar mais rápido
     const carregarDados = async () => {
       try {
-        const [userRes, disciplinasRes] = await Promise.all([
+        const [userRes, monitoriasRes] = await Promise.all([
           api.get('/auth/me'),
-          api.get('/disciplinas') // Busca as disciplinas da sua API
+          api.get('/monitorias/ativas') // Buscando da rota correta de monitorias do seu Controller
         ]);
         
         setUsuario(userRes.data);
-        setDisciplinas(disciplinasRes.data);
+        setMonitorias(monitoriasRes.data);
       } catch (error) {
         console.error("Erro ao carregar dados do painel:", error);
       } finally {
@@ -69,9 +69,7 @@ function AlunoDashboard() {
           <p>Seu ambiente de estudos e monitorias.</p>
         </header>
 
-        {/* Hero Section com a lista de disciplinas EMBUTIDA */}
         <div className="hero-section">
-          {/* O zIndex garante que o texto e os cards fiquem acima do efeito diagonal de fundo */}
           <div className="cartinhas" style={{ position: 'relative', zIndex: 1 }}>
             <div>
               <h2>Explore seus materiais acadêmicos</h2>
@@ -80,29 +78,37 @@ function AlunoDashboard() {
               </p>
             </div>
 
-            {disciplinas.length === 0 ? (
-              <p className="no-data-text">Nenhuma disciplina disponível no momento.</p>
+            {monitorias.length === 0 ? (
+              <p className="no-data-text">Nenhuma monitoria disponível no momento.</p>
             ) : (
               <div className="cards-grid">
-                {disciplinas.map((disp) => (
+                {/* Agora fazemos o map em monitorias */}
+                {monitorias.map((monitoria) => (
                   <div 
-                    key={disp.id} 
+                    key={monitoria.id} 
                     className="card disciplina-card-aluno" 
-                    onClick={() => navigate(`/disciplina/${disp.id}`)}
+                    // Se você quiser manter a navegação pelo ID da disciplina:
+                    onClick={() => navigate(`/disciplina/${monitoria.disciplina?.id}`)}
                   >
                     <div className="disciplina-card-header">
-                      <h4>{disp.nome}</h4>
-                      {disp.codigo && <span className="disciplina-code">{disp.codigo}</span>}
+                      {/* Pegamos o nome direto do objeto disciplina aninhado na monitoria */}
+                      <h4>{monitoria.disciplina?.nome}</h4>
+                      {monitoria.disciplina?.codigo && (
+                        <span className="disciplina-code">{monitoria.disciplina.codigo}</span>
+                      )}
                     </div>
                     
                     <div className="disciplina-card-body">
                       <p>
-                        <strong>Monitor:</strong> {disp.monitorNome || "Sem monitor atribuído"}
+                        {/* Acessamos a relação: Monitoria -> Monitor -> Usuario -> username/nome */}
+                        <strong>Monitor:</strong> {monitoria.monitor?.usuario?.username || "Sem monitor atribuído"}
                       </p>
                       <p>
-                        <strong>Cursos:</strong> {disp.cursosNomes && disp.cursosNomes.length > 0 
-                          ? disp.cursosNomes.join(" | ") 
-                          : "Geral"}
+                        <strong>Cursos:</strong> {monitoria.cursosNomes && monitoria.cursosNomes.length > 0 
+                          ? monitoria.cursosNomes.join(" | ") 
+                          : (monitoria.disciplina?.cursosNomes && monitoria.disciplina.cursosNomes.length > 0 
+                              ? monitoria.disciplina.cursosNomes.join(" | ") 
+                              : "Geral")}
                       </p>
                     </div>
                   </div>

@@ -85,10 +85,11 @@ public class MonitoriaController {
         return atuacaoRepository.findByMonitoriaId(id);
     }
     
-    // Buscar monitoria por usuário (para o monitor acessar a dele)
+
+	// Buscar monitoria por usuário (para o monitor acessar a dele)
     @GetMapping("/monitor/{usuarioId}")
     public List<Monitoria> buscarPorMonitor(@PathVariable Long usuarioId) {
-        return monitoriaRepository.findByMonitorId(usuarioId);  // Correto agora
+        return monitoriaRepository.findByUsuarioId(usuarioId); 
     }
     
     @GetMapping("/historico")

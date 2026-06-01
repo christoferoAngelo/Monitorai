@@ -65,7 +65,11 @@
 						"/usuarios/me/salvos"
     					).authenticated()
 		        	    .requestMatchers("/usuarios/**").hasRole("ADMIN")
-		        	    .requestMatchers("/monitorias/**").hasRole("ADMIN")
+		        	    // 1. Libera a rota de monitorias ativas para TODOS
+		                .requestMatchers(HttpMethod.GET, "/monitorias/ativas").permitAll()
+		                
+		                // 2. Protege o resto do /monitorias/** apenas para ADMIN
+		                .requestMatchers("/monitorias/**").hasRole("ADMIN")
 		        	    .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MONITOR")
 		        	    // 4. Qualquer outra requisição precisa apenas estar logado (ex: portal do aluno)
 		        	    //.anyRequest().authenticated()

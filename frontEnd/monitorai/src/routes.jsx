@@ -20,6 +20,7 @@ import GerenciarMonitoria from './pages/Admin/GerenciarMonitoria/Monitoria';
 import GradeCurricular from './pages/Admin/GerenciarGrade/GradeCurricular';
 import HistoricoMonitoria from './pages/Admin/HistoricoMonitorias/HistoricoMonitoria';
 import Usuarios from './pages/Admin/Usuarios/Usuarios';
+import AlunoDisciplina from './pages/AlunoDisciplina/AlunoDisciplina';
 
 // Layouts
 import AdminLayout from './pages/Admin/components/AdminLayout';
@@ -63,8 +64,9 @@ function AppRoutes() {
                 <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
                 <Route path="/grade-curricular" element={<GradeCurricular />} />
                 <Route path="/admin-usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
+                
             </Route>
-
+            <Route path="/disciplina/:id" element={<AlunoDisciplina/>} />
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
         </Routes>
     );
