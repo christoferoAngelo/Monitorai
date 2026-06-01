@@ -8,11 +8,9 @@ import Inicial from './pages/Inicial';
 import AdminDashboard from './pages/Admin/dashboard/AdminDashboard';
 import MonitorDashboard from './pages/MonitorDashboard';
 import AlunoDashboard from './pages/AlunoDashboard';
-import AlunoDisciplina from './pages/AlunoDisciplina/AlunoDisciplina';
 
 // PÁGINAS
 import Curso from './pages/Curso/Curso';
-import Aluno from './pages/Aluno';
 import RegistrarRelatorio from './components/RegistrarRelatorio';
 import MeusMateriais from './pages/MeusMateriais';
 import Disciplina from './pages/AdminDisciplina/AdminDisciplina';
@@ -21,6 +19,7 @@ import Perfil from './pages/Perfil';
 import GerenciarMonitoria from './pages/Admin/GerenciarMonitoria/Monitoria';
 import GradeCurricular from './pages/Admin/GerenciarGrade/GradeCurricular';
 import HistoricoMonitoria from './pages/Admin/HistoricoMonitorias/HistoricoMonitoria';
+import Usuarios from './pages/Admin/Usuarios/Usuarios';
 
 // Layouts
 import AdminLayout from './pages/Admin/components/AdminLayout';
@@ -51,14 +50,11 @@ function AppRoutes() {
 
             {/* PÁGINAS */}
             <Route path="/cursos" element={<PrivateRoute><Curso /></PrivateRoute>} />
-            <Route path="/alunos" element={<PrivateRoute><Aluno /></PrivateRoute>} />
             <Route path="/disciplinas" element={<PrivateRoute><Disciplina /></PrivateRoute>} />
             <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
             <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
             <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
-            <Route path="/disciplina/:id" element={<PrivateRoute><AlunoDisciplina /></PrivateRoute>} />
-
             {/* ADMIN COM LAYOUT (Sidebar fixa) - AGORA TUDO DENTRO */}
             <Route element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
@@ -66,6 +62,7 @@ function AppRoutes() {
                 <Route path="/historico-monitorias" element={<HistoricoMonitoria />} />
                 <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
                 <Route path="/grade-curricular" element={<GradeCurricular />} />
+                <Route path="/admin-usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
             </Route>
 
             <Route path="*" element={<div>404 - Página não encontrada</div>} />

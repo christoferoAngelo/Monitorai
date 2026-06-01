@@ -13,21 +13,15 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
 
   const menuItems = [
     { id: 'Dashboard', label: 'Dashboard', icon: '📊', action: () => onNavigate('Dashboard') },
-    { id: 'Usuarios', label: 'Usuários', icon: '👥', action: () => navigate('/alunos') },
-    { id: 'Monitorias', label: 'Monitorias', icon: '📚', action: () => navigate('/admin-monitorias') },
-    { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo')
-      
-     },
-         { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📋', action: () => navigate('/grade-curricular') },  // <-- ADD ESSE
-
+{ id: 'Usuarios', label: 'Usuários', icon: '👥', action: () => navigate('/admin-usuarios') },    { id: 'Monitorias', label: 'Monitorias', icon: '📚', action: () => navigate('/admin-monitorias') },
+    { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo') },
+    { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📋', action: () => navigate('/grade-curricular') },
     { id: 'Pagamentos', label: 'Pagamentos', icon: '💰', action: () => alert('Em breve') },
     { id: 'Configuracoes', label: 'Configurações', icon: '⚙️', action: () => navigate('/perfil') }
   ];
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-
-      {/* HEADER */}
       <div className="sidebar-header">
         {!collapsed && (
           <div className="logo-area">
@@ -39,20 +33,18 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
           </div>
         )}
 
-<button
+        <button
           className="collapse-toggle"
           onClick={() => setCollapsed(!collapsed)}
           title={collapsed ? "Expandir Menu" : "Recolher Menu"}
         >
           {collapsed ? (
-            /* Ícone de Expandir (Menu fechado - com setinha) */
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="9" y1="3" x2="9" y2="21"></line>
               <path d="M13 9l3 3-3 3"></path>
             </svg>
           ) : (
-            /* Ícone de Recolher (Menu aberto - apenas a barra) */
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="9" y1="3" x2="9" y2="21"></line>
@@ -61,7 +53,6 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
         </button>
       </div>
 
-      {/* MENU */}
       <nav className="sidebar-nav">
         {menuItems.map((item) => (
           <button
@@ -76,7 +67,6 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
         ))}
       </nav>
 
-      {/* USUÁRIO */}
       <div className="sidebar-user">
         {!collapsed ? (
           <>
@@ -99,7 +89,6 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
           </button>
         )}
       </div>
-
     </aside>
   );
 }
