@@ -47,7 +47,7 @@ public class MonitoriaService {
         return ano + "/" + semestre;
     }
 
-    // =========================================
+ // =========================================
     // CRIAR MONITORIA
     // =========================================
     @Transactional
@@ -83,10 +83,11 @@ public class MonitoriaService {
                 "'. Para criar uma nova, inative a monitoria atual primeiro.");
         }
 
-        Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId()).orElse(null);
+        // Busca o monitor ou cria uma nova instância
+        Monitor monitor = monitorRepository.findByUsuarioId(usuario.getId()).orElse(new Monitor());
 
         // 🛑 REGRA 2: Bloquear aluno em múltiplas monitorias
-        if (monitor != null) {
+        if (monitor.getId() != null) { // Se ele já tem ID, já existe no banco
             boolean jaTemMonitoriaAtiva = monitoriaRepository.findByMonitorId(monitor.getId())
                     .stream()
                     .anyMatch(Monitoria::isAtiva);
@@ -94,16 +95,17 @@ public class MonitoriaService {
             if (jaTemMonitoriaAtiva) {
                 throw new RuntimeException("Este aluno já possui uma monitoria ativa. O edital não permite acúmulo de bolsas.");
             }
-        } else {
-            monitor = new Monitor();
-            monitor.setUsuario(usuario);
-            monitor.setDisciplina(disciplina);
-            monitor.setAtivo(true);
-            monitor = monitorRepository.save(monitor);
-            
-            usuario.setRole("MONITOR");
-            usuarioRepository.save(usuario);
         }
+
+        // Atualiza os dados, reativa (caso estivesse inativo) e salva
+        monitor.setUsuario(usuario);
+        monitor.setDisciplina(disciplina);
+        monitor.setAtivo(true);
+        monitor = monitorRepository.save(monitor);
+        
+        // Garante que o usuário recebe a Role correta
+        usuario.setRole("MONITOR");
+        usuarioRepository.save(usuario);
 
         Monitoria monitoria = new Monitoria();
         monitoria.setMonitor(monitor);
@@ -131,6 +133,69 @@ public class MonitoriaService {
         return monitoria;
     }
 
+    // =========================================
+    // TROCAR MONITOR
+    // =========================================
+    @Transactional
+    public Monitoria trocarMonitor(Long monitoriaId, Long novoUsuarioId) {
+        Monitoria monitoria = monitoriaRepository.findById(monitoriaId)
+                .orElseThrow(() -> new RuntimeException("Monitoria não encontrada"));
+
+        // Encerra atuação anterior
+        atuacaoRepository.findByMonitoriaIdAndAtivaTrue(monitoriaId)
+            .ifPresent(atuacao -> {
+                atuacao.setDataFim(LocalDate.now().minusDays(1));
+                atuacao.setAtiva(false);
+                atuacaoRepository.save(atuacao);
+            });
+
+        // MONITOR ANTIGO -> Volta a ser ALUNO e tem o cadastro de monitor inativado
+        Monitor monitorAntigo = monitoria.getMonitor();
+        if (monitorAntigo != null) {
+            Usuario usuarioAntigo = monitorAntigo.getUsuario();
+            usuarioAntigo.setRole("ALUNO");
+            usuarioRepository.save(usuarioAntigo);
+
+            monitorAntigo.setAtivo(false);
+            monitorRepository.save(monitorAntigo);
+        }
+
+        // NOVO USUÁRIO
+        Usuario usuarioNovo = usuarioRepository.findById(novoUsuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Monitor novoMonitor = monitorRepository.findByUsuarioId(usuarioNovo.getId()).orElse(new Monitor());
+
+        // Validação de acúmulo
+        if (novoMonitor.getId() != null) {
+            boolean jaTemAtiva = monitoriaRepository.findByMonitorId(novoMonitor.getId())
+                    .stream().anyMatch(Monitoria::isAtiva);
+            if (jaTemAtiva) {
+                throw new RuntimeException("O novo usuário selecionado já possui uma monitoria ativa.");
+            }
+        }
+
+        // Atualiza, reativa e salva o novo monitor
+        novoMonitor.setUsuario(usuarioNovo);
+        novoMonitor.setDisciplina(monitoria.getDisciplina());
+        novoMonitor.setAtivo(true);
+        novoMonitor = monitorRepository.save(novoMonitor);
+
+        usuarioNovo.setRole("MONITOR");
+        usuarioRepository.save(usuarioNovo);
+
+        // CRIA NOVA ATUAÇÃO
+        AtuacaoMonitoria novaAtuacao = new AtuacaoMonitoria();
+        novaAtuacao.setMonitoria(monitoria);
+        novaAtuacao.setMonitor(novoMonitor);
+        novaAtuacao.setDataInicio(LocalDate.now());
+        novaAtuacao.setAtiva(true);
+        atuacaoRepository.save(novaAtuacao);
+
+        monitoria.setMonitor(novoMonitor);
+        return monitoriaRepository.save(monitoria);
+    }
+    
     // =========================================
     // ATUALIZAR MONITORIA
     // =========================================
@@ -186,63 +251,6 @@ public class MonitoriaService {
         monitoriaRepository.save(monitoria);
     }
 
-    // =========================================
-    // TROCAR MONITOR
-    // =========================================
-    @Transactional
-    public Monitoria trocarMonitor(Long monitoriaId, Long novoUsuarioId) {
-        Monitoria monitoria = monitoriaRepository.findById(monitoriaId)
-                .orElseThrow(() -> new RuntimeException("Monitoria não encontrada"));
-
-        // Encerra atuação anterior
-        atuacaoRepository.findByMonitoriaIdAndAtivaTrue(monitoriaId)
-            .ifPresent(atuacao -> {
-                atuacao.setDataFim(LocalDate.now().minusDays(1));
-                atuacao.setAtiva(false);
-                atuacaoRepository.save(atuacao);
-            });
-
-        // MONITOR ANTIGO -> Volta a ser ALUNO
-        Usuario usuarioAntigo = monitoria.getMonitor().getUsuario();
-        usuarioAntigo.setRole("ALUNO");
-        usuarioRepository.save(usuarioAntigo);
-
-        // NOVO USUÁRIO
-        Usuario usuarioNovo = usuarioRepository.findById(novoUsuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        Monitor novoMonitor = monitorRepository.findByUsuarioId(usuarioNovo.getId()).orElse(null);
-
-        // Validação de acúmulo
-        if (novoMonitor != null) {
-            boolean jaTemAtiva = monitoriaRepository.findByMonitorId(novoMonitor.getId())
-                    .stream().anyMatch(Monitoria::isAtiva);
-            if (jaTemAtiva) {
-                throw new RuntimeException("O novo usuário selecionado já possui uma monitoria ativa.");
-            }
-        } else {
-            novoMonitor = new Monitor();
-            novoMonitor.setUsuario(usuarioNovo);
-            novoMonitor.setDisciplina(monitoria.getDisciplina());
-            novoMonitor.setAtivo(true);
-            novoMonitor = monitorRepository.save(novoMonitor);
-        }
-
-        // CRIA NOVA ATUAÇÃO
-        AtuacaoMonitoria novaAtuacao = new AtuacaoMonitoria();
-        novaAtuacao.setMonitoria(monitoria);
-        novaAtuacao.setMonitor(novoMonitor);
-        novaAtuacao.setDataInicio(LocalDate.now());
-        novaAtuacao.setAtiva(true);
-        atuacaoRepository.save(novaAtuacao);
-
-        usuarioNovo.setRole("MONITOR");
-        usuarioRepository.save(usuarioNovo);
-
-        monitoria.setMonitor(novoMonitor);
-        return monitoriaRepository.save(monitoria);
-    }
-    
     public List<Monitoria> listarTodas() {
         return monitoriaRepository.buscarTodasComRelacionamentos();
     }

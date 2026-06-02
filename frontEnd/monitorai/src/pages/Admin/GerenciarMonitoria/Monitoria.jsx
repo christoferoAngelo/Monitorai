@@ -127,17 +127,27 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
         
       </header>
 
-      <div className="stats-row">
-        <div className="stat-box">
-          <span className="stat-number">{ativas}</span>
+
+<div className="stats-row">
+        <div className="stat-box verde">
+          {/* Aplicando a cor e tamanho diretamente na tag */}
+          <span style={{ display: "block", fontSize: "34px", fontWeight: "700", color: "#0f172a", marginBottom: "10px" }}>
+            {ativas}
+          </span>
           <span className="stat-label">Ativas</span>
         </div>
-        <div className="stat-box">
-          <span className="stat-number">{inativas}</span>
+        
+        <div className="stat-box vermelho">
+          <span style={{ display: "block", fontSize: "34px", fontWeight: "700", color: "#0f172a", marginBottom: "10px" }}>
+            {inativas}
+          </span>
           <span className="stat-label">Inativas</span>
         </div>
-        <div className="stat-box">
-          <span className="stat-number">{monitorias.length}</span>
+        
+        <div className="stat-box azul">
+          <span style={{ display: "block", fontSize: "34px", fontWeight: "700", color: "#0f172a", marginBottom: "10px" }}>
+            {monitorias.length}
+          </span>
           <span className="stat-label">Total</span>
         </div>
       </div>
