@@ -174,17 +174,15 @@
 .material-tag-tipo.quiz { background: #d1fae5; color: #10b981; }
 .material-tag-tipo.link { background: #f3e8ff; color: #a855f7; }
 
-.btn-acessar-material {
-  background: white;
-  color: #002b5c;
-  border: 1px solid #002b5c;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 13.5px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: 0.2s;
+.btn-acessar-material{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    min-height:42px;
+    padding:0 18px;
+
+    white-space:nowrap;
 }
 
 .btn-acessar-material:hover {
@@ -370,11 +368,13 @@
   font-size: 15px;
 }
 
+
 .material-actions{
     display:flex;
-    flex-direction:column;
-    gap:12px;
-    margin-top:15px;
+    align-items:center;
+    gap:10px;
+
+    margin-left:auto;
 }
 
 .interaction-buttons{
@@ -386,16 +386,19 @@
 .icon-btn{
     border:none;
     background:#f5f7fb;
-    width:42px;
-    height:42px;
-    border-radius:12px;
+
+    width:46px;
+    height:46px;
+
+    border-radius:14px;
+
     cursor:pointer;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    font-size:1rem;
+    font-size:1.05rem;
 
     transition:0.25s;
 }
@@ -405,9 +408,32 @@
 }
 
 .like-btn{
-    color:#e74c3c;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+
+    color:#9ca3af;
 }
 
+.like-count{
+    font-size:0.85rem;
+    font-weight:600;
+}
+
+.like-btn.active{
+    color:#ef4444;
+    background:#fee2e2;
+}
+
+.like-btn.active svg{
+    transform:scale(1.15);
+}
+
+.icon-btn svg{
+    transition:0.25s;
+    font-size:1.1em;
+}
 .save-btn{
     color:#5b21b6;
 }
@@ -420,3 +446,13 @@
   font-size:0.9rem;
   font-weight:700;
 }
+
+.material-footer{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
+    width:100%;
+    margin-top:16px;
+}
+

@@ -72,35 +72,25 @@ function AlunoDisciplina() {
     return '📁';
   };
 
-  const toggleCurtida = async (materialId) => {
+  const toggleCurtida = async(id)=>{
 
-  try{
-
-    const response = await api.post(`/curtidas/${materialId}`);
-
-    setCurtidos(prev =>
-      prev.includes(materialId)
-        ? prev.filter(id => id !== materialId)
-        : [...prev, materialId]
+    const res = await api.post(
+        `/materiais/${id}/curtir`
     );
 
     setMateriais(prev =>
-      prev.map(material =>
-        material.id === materialId
-          ? {
-              ...material,
-              totalCurtidas: response.data.totalCurtidas
-            }
-          : material
-      )
+        prev.map(material =>
+
+            material.id === id
+            ? {
+                ...material,
+                curtidas: res.data.curtidas,
+                curtido: res.data.curtido
+              }
+            : material
+        )
     );
-
-  }catch(err){
-
-    console.error("Erro ao curtir:", err);
-
-  }
-  };
+};
 
   const toggleSalvo = (id) => {
     setSalvos(prev =>
@@ -188,45 +178,45 @@ function AlunoDisciplina() {
                   <div className="material-actions">
 
 
-  <div className="interaction-buttons">
+  <div className="material-footer">
 
-    <button
-      className={`icon-btn ${curtidos.includes(material.id) ? "active" : ""}`}
-      onClick={() => toggleCurtida(material.id)}
+    <div className="material-actions">
+
+        <button
+            className={`icon-btn like-btn ${
+                material.curtido ? "active" : ""
+            }`}
+            onClick={() => toggleCurtida(material.id)}
+        >
+            <FaHeart />
+
+        <span className="curtidas-count">
+            {material.curtidas}
+        </span>
+        
+        </button>
+
+
+        <button className="icon-btn">
+            <FaRegBookmark />
+        </button>
+
+        <button className="icon-btn">
+            <FaComment />
+        </button>
+
+    </div>
+
+    <a
+        href={material.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-acessar-material"
     >
+        Acessar Material 🔗
+    </a>
 
-    <FaHeart/>
-
-    <span className="contador-curtidas">
-      {material.totalCurtidas || 0}
-    </span>
-
-    </button>
-
-    <button
-      className="icon-btn save-btn"
-      onClick={() => toggleSalvo(material.id)}
-    >
-      {salvos.includes(material.id)
-        ? <FaBookmark />
-        : <FaRegBookmark />}
-    </button>
-
-    <button
-      className="icon-btn comment-btn"
-    >
-      <FaComment />
-    </button>
-
-  <a
-    href={material.url}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="btn-acessar-material"
-  >
-    Acessar Material 🔗
-  </a>
-  </div>
+</div>
 
 </div>
                 </div>
