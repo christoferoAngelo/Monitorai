@@ -1,6 +1,7 @@
 package com.eva.monitorai.service;
 
 import com.eva.monitorai.model.entity.Curtida;
+import com.eva.monitorai.dto.CurtidaDTO;
 import com.eva.monitorai.model.entity.Material;
 import com.eva.monitorai.model.entity.Usuario;
 import com.eva.monitorai.repository.CurtidaRepository;
@@ -22,7 +23,10 @@ public class CurtidaService {
     @Autowired
     private MaterialRepository materialRepository;
 
-    public long toggleCurtida(Long materialId, String username){
+    public CurtidaDTO toggleCurtida(
+            Long materialId,
+            String username
+    ){
 
         Usuario usuario = usuarioRepository
                 .findByUsername(username)
@@ -31,6 +35,8 @@ public class CurtidaService {
         Material material = materialRepository
                 .findById(materialId)
                 .orElseThrow();
+
+        boolean curtido;
 
         var curtidaExistente =
                 curtidaRepository.findByUsuarioAndMaterial(
@@ -44,6 +50,8 @@ public class CurtidaService {
                     curtidaExistente.get()
             );
 
+            curtido = false;
+
         }else{
 
             Curtida curtida = new Curtida();
@@ -52,8 +60,17 @@ public class CurtidaService {
             curtida.setMaterial(material);
 
             curtidaRepository.save(curtida);
+
+            curtido = true;
         }
 
-        return curtidaRepository.countByMaterial(material);
+        long totalCurtidas =
+                curtidaRepository.countByMaterial(material);
+
+        return new CurtidaDTO(
+                material.getId(),
+                totalCurtidas,
+                curtido
+        );
     }
 }

@@ -221,8 +221,44 @@ public class MaterialController {
     }
     
     @GetMapping("/disciplina/{id}")
-    public ResponseEntity<List<Material>> listarPorDisciplina(@PathVariable Long id) {
-        List<Material> lista = materialService.listarMateriaisDaDisciplina(id);
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<List<Map<String,Object>>> listarPorDisciplina(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+
+        String username = auth.getName();
+
+        Usuario usuario = usuarioRepository
+                .findByUsername(username)
+                .orElseThrow();
+
+        List<Material> lista =
+                materialService.listarMateriaisDaDisciplina(id);
+
+        List<Map<String,Object>> response = lista.stream().map(material -> {
+
+            Map<String,Object> item = new HashMap<>();
+
+            item.put("id", material.getId());
+            item.put("titulo", material.getTitulo());
+            item.put("conteudo", material.getConteudo());
+            item.put("tipo", material.getTipo());
+            item.put("url", material.getUrl());
+
+            item.put(
+                "curtidas",
+                material.getCurtidas().size()
+            );
+
+            item.put(
+                "curtido",
+                material.getCurtidas().contains(usuario)
+            );
+
+            return item;
+
+        }).toList();
+
+        return ResponseEntity.ok(response);
     }
 }
