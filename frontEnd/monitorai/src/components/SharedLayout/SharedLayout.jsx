@@ -50,7 +50,7 @@ function SharedLayout() {
                 <button className="sidebar-btn" onClick={() => navigate('/gerenciar-recursos')}>
                   📎 Gerenciar Recursos
                 </button>
-                <button className="sidebar-btn" onClick={() => navigate('/relatorios/novo')}>
+                <button className="sidebar-btn" onClick={() => navigate('/monitor/relatorio')}>
                   📊 Relatórios
                 </button>
                 <div className="menu-section-title" style={{ marginTop: '20px' }}>Área do Aluno</div>

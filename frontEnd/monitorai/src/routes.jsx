@@ -6,21 +6,21 @@ import Inicial from './pages/Inicial';
 
 // DASHBOARDS
 import AdminDashboard from './pages/Admin/dashboard/AdminDashboard';
-import MonitorDashboard from './pages/MonitorDashboard';
-import AlunoDashboard from './pages/AlunoDashboard';
+import MonitorDashboard from './pages/Monitor/Dashboard/MonitorDashboard';
+import AlunoDashboard from './pages/Aluno/Dashboard/AlunoDashboard';
 
 // PÁGINAS
 import Curso from './pages/Curso/Curso';
 import RegistrarRelatorio from './components/RegistrarRelatorio';
-import MeusMateriais from './pages/MeusMateriais';
 import Disciplina from './pages/AdminDisciplina/AdminDisciplina';
-import GerenciarRecursos from './pages/Materiais/GerenciarRecursos';
+import GerenciarRecursos from './pages/Monitor/Materiais/GerenciarRecursos';
 import Perfil from './pages/Perfil';
 import GerenciarMonitoria from './pages/Admin/GerenciarMonitoria/Monitoria';
 import GradeCurricular from './pages/Admin/GerenciarGrade/GradeCurricular';
 import HistoricoMonitoria from './pages/Admin/HistoricoMonitorias/HistoricoMonitoria';
 import Usuarios from './pages/Admin/Usuarios/Usuarios';
-import AlunoDisciplina from './pages/AlunoDisciplina/AlunoDisciplina';
+import AlunoDisciplina from './pages/Aluno/Disciplina/AlunoDisciplina';
+import MonitorRelatorio from './pages/Monitor/Relatorios/MonitorRelatorio';
 
 // Layouts
 import AdminLayout from './pages/Admin/components/AdminLayout';
@@ -52,17 +52,19 @@ function AppRoutes() {
             {/* PÁGINAS */}
             <Route path="/cursos" element={<PrivateRoute><Curso /></PrivateRoute>} />
             <Route path="/disciplinas" element={<PrivateRoute><Disciplina /></PrivateRoute>} />
-            <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
+            
             
             
             
             {/* LAYOUT COMPARTILHADO (Aluno e Monitor) */}
             <Route element={<PrivateRoute><SharedLayout /></PrivateRoute>}>
                 <Route path="/aluno-dashboard" element={<AlunoDashboard />} />
+                <Route path="/monitor/relatorio" element={<MonitorRelatorio />} />
                 <Route path="/monitor-dashboard" element={<MonitorDashboard />} />
                 <Route path="/disciplina/:id" element={<AlunoDisciplina />} />
                 <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
                 <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+                <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
                 <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
             </Route>
 

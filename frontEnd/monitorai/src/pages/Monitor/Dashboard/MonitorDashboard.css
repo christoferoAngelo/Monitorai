@@ -1,4 +1,4 @@
-@import './AlunoDashboard.css';
+@import "/src/pages/Aluno/Dashboard/AlunoDashboard.css";
 
 /* Descrição pequena dentro dos cards de gerenciamento */
 .card small {

@@ -58,6 +58,8 @@ public class MonitoriaController {
             @PathVariable Long novoUsuarioId) {
         return monitoriaService.trocarMonitor(monitoriaId, novoUsuarioId);
     }
+    
+    
 
     // Deletar
     @DeleteMapping("/{id}")
@@ -91,6 +93,7 @@ public class MonitoriaController {
     public List<Monitoria> buscarPorMonitor(@PathVariable Long usuarioId) {
         return monitoriaRepository.findByUsuarioId(usuarioId); 
     }
+    
     
     @GetMapping("/historico")
     public ResponseEntity<List<AtuacaoMonitoria>> listarHistorico(

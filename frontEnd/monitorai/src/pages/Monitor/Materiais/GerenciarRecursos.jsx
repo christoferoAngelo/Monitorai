@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import api from '../../services/api';
+import api from '/src/services/api';
 import './GerenciarRecursos.css';
 
 export default function GerenciarRecursos() {

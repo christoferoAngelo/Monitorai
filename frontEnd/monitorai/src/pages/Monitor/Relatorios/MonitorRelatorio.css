@@ -1,0 +1,303 @@
+/* MonitorRelatorio.css */
+
+.monitor-relatorio-container {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* INFO DA MONITORIA */
+.monitoria-info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    border-left: 5px solid #002b5c;
+}
+
+.monitoria-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.monitoria-info-item label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.monitoria-info-item span {
+    font-size: 16.5px;
+    color: #002b5c;
+    font-weight: 700;
+}
+
+/* FORMULÁRIO */
+.form-wrapper {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.relatorio-form {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+}
+
+.relatorio-form h3 {
+    color: #002b5c;
+    margin-bottom: 25px;
+    font-size: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.relatorio-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.relatorio-form input,
+.relatorio-form textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    font-family: inherit;
+    transition: 0.2s;
+    background: #f8fafc;
+}
+
+.relatorio-form input:focus,
+.relatorio-form textarea:focus {
+    outline: none;
+    border-color: #002b5c;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.1);
+}
+
+.relatorio-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* BOTÕES DO FORMULÁRIO */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn-salvar-relatorio {
+    flex: 2;
+    background: #002b5c;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-salvar-relatorio:hover {
+    background: #00152e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 43, 92, 0.25);
+}
+
+.btn-cancelar {
+    flex: 1;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cancelar:hover {
+    background: #e2e8f0;
+}
+
+/* HISTÓRICO */
+.relatorio-historico {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.historico-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.historico-header h2 {
+    font-size: 20px;
+    color: #002b5c;
+}
+
+.btn-novo {
+    background: #002b5c;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-novo:hover {
+    background: #00152e;
+    transform: translateY(-2px);
+}
+
+.media-alunos {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    color: #166534;
+    font-size: 15px;
+}
+
+/* TABELA */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.historico-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.historico-table th,
+.historico-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.historico-table th {
+    background: #f8fafc;
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.historico-table td {
+    font-size: 14.5px;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.historico-table tr:hover {
+    background: #f8fafc;
+}
+
+.badge-alunos {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* Ações da tabela */
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.2s;
+    background: transparent;
+}
+
+.btn-action.edit:hover { background: #eff6ff; }
+.btn-action.delete:hover { background: #fef2f2; }
+
+/* EMPTY STATES */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: #64748b;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #cbd5e1;
+}
+
+.empty-state .icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.empty-state-card {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+}
+
+.empty-state-card h3 {
+    color: #002b5c;
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .btn-cancelar, .btn-salvar-relatorio {
+        width: 100%;
+    }
+}

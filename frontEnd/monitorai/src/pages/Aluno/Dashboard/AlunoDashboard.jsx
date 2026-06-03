@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import api from '../services/api';
+import api from '/src/services/api';
 
 function AlunoDashboard() {
   // Consome os dados do usuário que o seu SharedLayout já buscou do back-end

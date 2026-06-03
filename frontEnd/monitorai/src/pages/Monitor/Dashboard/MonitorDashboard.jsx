@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import api from '../services/api';
+import api from '/src/services/api';
 import './MonitorDashboard.css';
 
 function MonitorDashboard() {
@@ -44,7 +44,7 @@ function MonitorDashboard() {
           📎 Recursos
           <small>Poste PDFs, Vídeos e Quizzes</small>
         </div>
-        <div className="card" onClick={() => navigate('/relatorios/novo')}>
+        <div className="card" onClick={() => navigate('/monitor/relatorio')}>
           📊 Relatórios
           <small>Registre suas atividades semanais</small>
         </div>
