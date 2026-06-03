@@ -172,9 +172,6 @@ export default function GerenciarRecursos() {
             Publique e gerencie os materiais da sua turma
           </p>
         </div>
-        <button className="btn-logout" onClick={handleLogout}>
-          🚪 Sair
-        </button>
       </header>
 
       {/* ✅ BARRA DE AÇÕES (Botão de Novo Material) */}

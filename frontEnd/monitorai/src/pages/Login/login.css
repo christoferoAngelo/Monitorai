@@ -330,16 +330,17 @@ html, body {
   border-radius: 50%;
   user-select: none;
   transition: all 0.2s ease;
+  transform: translateY(-50%);
 }
 
 /* Efeito de hover sutil no olhinho seguindo o padrão de design do projeto */
 .togglePasswordButton:hover {
   background: rgba(139, 92, 246, 0.1);
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .togglePasswordButton:active {
-  transform: scale(0.95);
+  transform: translateY(-50%) scale(0.95);
 }
 
 .togglePasswordButton:focus-visible {

@@ -24,6 +24,7 @@ import AlunoDisciplina from './pages/AlunoDisciplina/AlunoDisciplina';
 
 // Layouts
 import AdminLayout from './pages/Admin/components/AdminLayout';
+import SharedLayout from './components/SharedLayout/SharedLayout';
 
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -45,18 +46,27 @@ function AppRoutes() {
             {/* REDIRECIONADOR */}
             <Route path="/dashboard" element={<PrivateRoute><Inicial /></PrivateRoute>} />
 
-            {/* DASHBOARDS */}
-            <Route path="/monitor-dashboard" element={<PrivateRoute><MonitorDashboard /></PrivateRoute>} />
-            <Route path="/aluno-dashboard" element={<PrivateRoute><AlunoDashboard /></PrivateRoute>} />
+
+            
 
             {/* PÁGINAS */}
             <Route path="/cursos" element={<PrivateRoute><Curso /></PrivateRoute>} />
             <Route path="/disciplinas" element={<PrivateRoute><Disciplina /></PrivateRoute>} />
             <Route path="/meus-materiais" element={<PrivateRoute><MeusMateriais /></PrivateRoute>} />
-            <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
-            <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
-            <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
-            {/* ADMIN COM LAYOUT (Sidebar fixa) - AGORA TUDO DENTRO */}
+            
+            
+            
+            {/* LAYOUT COMPARTILHADO (Aluno e Monitor) */}
+            <Route element={<PrivateRoute><SharedLayout /></PrivateRoute>}>
+                <Route path="/aluno-dashboard" element={<AlunoDashboard />} />
+                <Route path="/monitor-dashboard" element={<MonitorDashboard />} />
+                <Route path="/disciplina/:id" element={<AlunoDisciplina />} />
+                <Route path="/gerenciar-recursos" element={<PrivateRoute><GerenciarRecursos /></PrivateRoute>} />
+                <Route path="/perfil" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+                <Route path="/perfil/salvos" element={<PrivateRoute><Perfil /></PrivateRoute>} />
+            </Route>
+
+            {/*LAYOUT DO ADMIN (Sidebar fixa)*/}
             <Route element={<PrivateRoute><AdminLayout /></PrivateRoute>}>
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/admin-monitorias" element={<GerenciarMonitoria />} />
@@ -64,9 +74,8 @@ function AppRoutes() {
                 <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
                 <Route path="/grade-curricular" element={<GradeCurricular />} />
                 <Route path="/admin-usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />
-                
             </Route>
-            <Route path="/disciplina/:id" element={<AlunoDisciplina/>} />
+
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
         </Routes>
     );

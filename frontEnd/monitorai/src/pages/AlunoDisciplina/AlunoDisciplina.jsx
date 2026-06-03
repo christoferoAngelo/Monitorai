@@ -107,9 +107,6 @@ function AlunoDisciplina() {
     <div className="disciplina-detalhe-container">
       {/* Cabeçalho superior */}
       <header className="disciplina-detalhe-header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ⬅ Voltar para o Painel
-        </button>
         <div className="header-title-row">
           <h1>{disciplina.nome}</h1>
           {disciplina.codigo && <span className="detalhe-code">{disciplina.codigo}</span>}
