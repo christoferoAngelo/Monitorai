@@ -226,8 +226,8 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
           </div>
 
           <div className="form-group">
-            <label>Sala *</label>
-            <input type="text" className="form-input" placeholder="Laboratório 3" value={form.sala}
+            <label>Local *</label>
+            <input type="text" className="form-input" placeholder="Ex. Laboratório 3 / Sala 7" value={form.sala}
               onChange={e => setForm({...form, sala: e.target.value})} required />
           </div>
 

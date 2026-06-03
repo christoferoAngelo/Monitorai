@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import api from '../../../services/api';
 import './AlunoDisciplina.css';
 import {
@@ -14,30 +14,44 @@ function AlunoDisciplina() {
   const { id } = useParams(); // Pega o ID da disciplina na URL
   const navigate = useNavigate();
   
+  // 1. Consome os dados do usuário injetados pelo SharedLayout pai
+  const { usuario } = useOutletContext() || {}; 
+  
   const [disciplina, setDisciplina] = useState(null);
   const [materiais, setMateriais] = useState([]);
+  
+  // 2. Novo estado para guardar a monitoria atrelada a essa disciplina
+  const [monitoria, setMonitoria] = useState(null); 
   const [loading, setLoading] = useState(true);
-
-  // Estados dos filtros (Idêntico ao do GerenciarRecursos)
+  
+  // Estados dos filtros
   const [termoBusca, setTermoBusca] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('TODOS');
-  const [ordenacao, setOrdenacao] = useState('recente'); // 'recente' ou 'antigo'
+  const [ordenacao, setOrdenacao] = useState('recente');
 
-  // cons dos cards
+  // Estados dos cards
   const [curtidos, setCurtidos] = useState([]);
   const [salvos, setSalvos] = useState([]);
 
   useEffect(() => {
-    // Busca a disciplina e os materiais dela ao mesmo tempo
     const carregarDados = async () => {
       try {
-        const [discRes, matRes] = await Promise.all([
+        // 3. Buscamos a disciplina, os materiais e as monitorias ativas ao mesmo tempo
+        const [discRes, matRes, monitoriasRes] = await Promise.all([
           api.get(`/disciplinas/${id}`),
-          api.get(`/materiais/disciplina/${id}`) // <--- Chama a nova rota do backend!
+          api.get(`/materiais/disciplina/${id}`),
+          api.get('/monitorias/ativas') // Busca as monitorias para achar o monitor correto
         ]);
         
         setDisciplina(discRes.data);
         setMateriais(matRes.data);
+
+        // Filtra a lista de monitorias ativas para achar a dessa disciplina específica
+        const monitoriaEncontrada = monitoriasRes.data.find(
+            m => m.disciplina?.id === Number(id)
+        );
+        setMonitoria(monitoriaEncontrada);
+
         const curtidosUsuario = matRes.data
         .filter(m => m.curtidoPorMim)
         .map(m => m.id);
@@ -53,7 +67,7 @@ function AlunoDisciplina() {
     carregarDados();
   }, [id]);
 
-  // Lógica de filtragem (O "filtro dinâmico" do Monitor)
+  // Lógica de filtragem
   const materiaisFiltrados = materiais.filter((item) => {
     const atendeBusca = item.titulo.toLowerCase().includes(termoBusca.toLowerCase()) || 
                         (item.conteudo && item.conteudo.toLowerCase().includes(termoBusca.toLowerCase()));
@@ -64,7 +78,6 @@ function AlunoDisciplina() {
     return ordenacao === 'recente' ? b.id - a.id : a.id - b.id;
   });
 
-  // Função auxiliar para definir o ícone correto na listagem
   const renderizarIconeTipo = (tipo) => {
     if (tipo === 'DOCUMENTO') return '📄';
     if (tipo === 'QUIZ' || tipo === 'QUIZZ') return '🧩';
@@ -72,36 +85,38 @@ function AlunoDisciplina() {
     return '📁';
   };
 
-  const toggleCurtida = async(id)=>{
+  const toggleCurtida = async(materialId) => {
+    try {
+        const res = await api.post(`/materiais/${materialId}/curtir`);
+        setMateriais(prev =>
+            prev.map(material =>
+                material.id === materialId
+                ? {
+                    ...material,
+                    curtidas: res.data.curtidas,
+                    curtido: res.data.curtido
+                  }
+                : material
+            )
+        );
+    } catch(err) {
+        console.error("Erro ao curtir:", err);
+    }
+  };
 
-    const res = await api.post(
-        `/materiais/${id}/curtir`
-    );
-
-    setMateriais(prev =>
-        prev.map(material =>
-
-            material.id === id
-            ? {
-                ...material,
-                curtidas: res.data.curtidas,
-                curtido: res.data.curtido
-              }
-            : material
-        )
-    );
-};
-
-  const toggleSalvo = (id) => {
+  const toggleSalvo = (materialId) => {
     setSalvos(prev =>
-      prev.includes(id)
-      ? prev.filter(item => item !== id)
-      : [...prev, id]
+      prev.includes(materialId)
+      ? prev.filter(item => item !== materialId)
+      : [...prev, materialId]
     );
   };
 
   if (loading) return <div className="loading">Carregando detalhes da disciplina...</div>;
   if (!disciplina) return <div className="error-message">Disciplina não encontrada.</div>;
+
+  // 4. Lógica para verificar se o monitor é o usuário logado
+  const isMinhaMonitoria = monitoria?.monitor?.usuario?.username === usuario?.username;
 
   return (
     <div className="disciplina-detalhe-container">
@@ -173,49 +188,39 @@ function AlunoDisciplina() {
                   {material.conteudo && <p>{material.conteudo}</p>}
                   
                   <div className="material-actions">
+                    <div className="material-footer">
+                      <div className="material-actions">
+                          <button
+                              className={`icon-btn like-btn ${
+                                  material.curtido ? "active" : ""
+                              }`}
+                              onClick={() => toggleCurtida(material.id)}
+                          >
+                              <FaHeart />
+                              <span className="curtidas-count">
+                                  {material.curtidas}
+                              </span>
+                          </button>
 
+                          <button className="icon-btn">
+                              <FaRegBookmark />
+                          </button>
 
-  <div className="material-footer">
+                          <button className="icon-btn">
+                              <FaComment />
+                          </button>
+                      </div>
 
-    <div className="material-actions">
-
-        <button
-            className={`icon-btn like-btn ${
-                material.curtido ? "active" : ""
-            }`}
-            onClick={() => toggleCurtida(material.id)}
-        >
-            <FaHeart />
-
-        <span className="curtidas-count">
-            {material.curtidas}
-        </span>
-        
-        </button>
-
-
-        <button className="icon-btn">
-            <FaRegBookmark />
-        </button>
-
-        <button className="icon-btn">
-            <FaComment />
-        </button>
-
-    </div>
-
-    <a
-        href={material.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-acessar-material"
-    >
-        Acessar Material 🔗
-    </a>
-
-</div>
-
-</div>
+                      <a
+                          href={material.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-acessar-material"
+                      >
+                          Acessar Material 🔗
+                      </a>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -230,7 +235,11 @@ function AlunoDisciplina() {
             
             <div className="info-row">
               <strong>Monitor Responsável:</strong>
-              <span>{disciplina.monitorNome || "Nenhum monitor alocado"}</span>
+              {/* 5. Exibição atualizada baseada na Monitoria! */}
+              <span>
+                {monitoria?.monitor?.usuario?.username || "Nenhum monitor alocado"}
+                {isMinhaMonitoria && <span className="tag-voce" style={{ color: '#10b981', fontWeight: 'bold' }}> (Você)</span>}
+              </span>
             </div>
             
             <div className="info-row">
@@ -243,9 +252,13 @@ function AlunoDisciplina() {
             </div>
           </div>
 
-          <div className="card-placeholder-futuro">
+          <div className="info-geral-card">
             <h3>📅 Agenda de Monitorias</h3>
-            <p>Área reservada para você verificar os dias de atendimento e reservar seu horário de dúvidas.</p>
+            <p>
+              {monitoria 
+                ? `Atendimento toda(o) ${(monitoria.diaSemana).toLowerCase()} das ${(monitoria.horarioInicio).substring(0,5)} às ${(monitoria.horarioFim).substring(0,5)} na(o) ${(monitoria.sala).toLowerCase()}.` 
+                : "Área reservada para você verificar os dias de atendimento e reservar seu horário de dúvidas."}
+            </p>
           </div>
         </aside>
 

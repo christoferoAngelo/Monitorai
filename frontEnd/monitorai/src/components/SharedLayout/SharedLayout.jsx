@@ -38,7 +38,7 @@ function SharedLayout() {
       <aside className="dashboard-sidebar">
         <div>
           <h2 className="sidebar-title">
-            {isMonitor ? "👨‍🏫 Portal Monitor" : "🎓 Portal Aluno"}
+            {isMonitor ? "Portal Monitor" : "Portal Aluno"}
           </h2>
 
           <div className="sidebar-menu">
@@ -48,10 +48,10 @@ function SharedLayout() {
               <>
                 <div className="menu-section-title">Ações do Monitor</div>
                 <button className="sidebar-btn" onClick={() => navigate('/gerenciar-recursos')}>
-                  📎 Gerenciar Recursos
+                  Gerenciar Recursos
                 </button>
                 <button className="sidebar-btn" onClick={() => navigate('/monitor/relatorio')}>
-                  📊 Relatórios
+                  Relatórios
                 </button>
                 <div className="menu-section-title" style={{ marginTop: '20px' }}>Área do Aluno</div>
               </>
@@ -59,19 +59,19 @@ function SharedLayout() {
 
             {/* Botões comuns para TODOS (Alunos e Monitores) */}
             <button className="sidebar-btn" onClick={() => navigate(isMonitor ? '/monitor-dashboard' : '/aluno-dashboard')}>
-              🏠 Monitorias
+              Monitorias
             </button>
             <button className="sidebar-btn" onClick={() => navigate('/perfil/salvos')}>
-              💾 Meus Salvos
+              Meus Salvos
             </button>
             <button className="sidebar-btn" onClick={() => navigate('/perfil')}>
-              👤 Meu Perfil
+              Meu Perfil
             </button>
           </div>
         </div>
 
         <button className="logout-btn" onClick={handleLogout}>
-          Sair
+          SAIR
         </button>
       </aside>
 

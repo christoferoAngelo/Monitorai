@@ -33,7 +33,7 @@ function MonitorDashboard() {
   return (
     <>
       <header className="dashboard-header">
-        <h1>Bem-vindo, {usuario?.username}</h1>
+        <h1>Bem-vindo, {usuario?.username}!</h1>
         <p>Seu painel de gerenciamento de monitoria e ambiente de estudos.</p>
       </header>
 
@@ -41,11 +41,11 @@ function MonitorDashboard() {
       <h2 className="section-title">Suas Ferramentas</h2>
       <div className="cards-grid" style={{ marginBottom: '40px' }}>
         <div className="card" onClick={() => navigate('/gerenciar-recursos')}>
-          📎 Recursos
+          Recursos
           <small>Poste PDFs, Vídeos e Quizzes</small>
         </div>
         <div className="card" onClick={() => navigate('/monitor/relatorio')}>
-          📊 Relatórios
+          Relatórios
           <small>Registre suas atividades semanais</small>
         </div>
       </div>
