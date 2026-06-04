@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import "./Perfil.css";
+import "./MaterialCard.css";
+import {
+  FaHeart,
+  FaRegBookmark,
+  FaComment
+} from "react-icons/fa";
 
 function Perfil(){
 
   const [perfil,setPerfil] = useState(null);
+  const [curtidos, setCurtidos] = useState([]);
 
   useEffect(() => {
 
+    
     api.get("/usuarios/me/perfil")
       .then(res => {
+        console.log("PERFIL:", res.data);
         setPerfil(res.data)
       })
       .catch(err => {
@@ -17,6 +26,7 @@ function Perfil(){
       })
 
   },[])
+
 
   if(!perfil){
     return (
@@ -26,6 +36,80 @@ function Perfil(){
     )
   }
 
+  const toggleCurtida = async(materialId) => {
+
+  try {
+
+    const res = await api.post(
+      `/materiais/${materialId}/curtir`
+    );
+
+    if(res.data.curtido){
+
+      setCurtidos(prev =>
+        [...prev, materialId]
+      );
+
+    }else{
+
+      setCurtidos(prev =>
+        prev.filter(id => id !== materialId)
+      );
+
+    }
+
+    setPerfil(prev => ({
+      ...prev,
+
+      materiaisSalvos:
+        prev.materiaisSalvos.map(material =>
+
+          material.id === materialId
+            ? {
+                ...material,
+                totalCurtidas: res.data.curtidas
+              }
+            : material
+
+        )
+    }));
+
+  } catch(err){
+
+    console.error(
+      "Erro ao curtir:",
+      err
+    );
+
+  }
+};
+
+  const removerSalvo = async (materialId) => {
+
+  try {
+
+    await api.delete(
+      `/materiais/${materialId}/salvar`
+    );
+
+    setPerfil(prev => ({
+      ...prev,
+      materiaisSalvos:
+        prev.materiaisSalvos.filter(
+          material => material.id !== materialId
+        )
+    }));
+
+  } catch (err) {
+
+    console.error(
+      "Erro ao remover salvo:",
+      err
+    );
+
+  }
+};
+
   return(
 
     <div className="perfil-page">
@@ -33,7 +117,7 @@ function Perfil(){
       <div className="perfil-hero">
 
         <div className="perfil-avatar">
-          {perfil.username.charAt(0).toUpperCase()}
+          {perfil.username?.charAt(0)?.toUpperCase() || "U"}
         </div>
 
         <div className="perfil-info">
@@ -57,34 +141,76 @@ function Perfil(){
 
         <div className="salvos-grid">
 
-          {perfil.materiaisSalvos?.length > 0 ? (
+  {perfil.materiaisSalvos?.map(material => (
 
-            perfil.materiaisSalvos.map(material => (
 
-              <div
-                key={material.id}
-                className="salvo-card"
-              >
+    <div
+      key={material.id}
+      className="material-card"
+    >
 
-                <h3>{material.titulo}</h3>
+      <div className="material-card-header">
 
-                <button className="btn-material">
-                  Abrir Material
-                </button>
+        <div className="material-tipo-badge">
+          {material.tipo}
+        </div>
 
-              </div>
+      </div>
 
-            ))
+      <h4>{material.titulo}</h4>
 
-          ) : (
+      <p>{material.conteudo}</p>
 
-            <div className="empty-card">
-              Nenhum material salvo ainda.
-            </div>
+      <div className="material-footer">
 
-          )}
+        <div className="material-actions">
+
+          <button
+  className={`icon-btn like-btn ${
+    curtidos.includes(material.id)
+      ? "active"
+      : ""
+  }`}
+  onClick={() => toggleCurtida(material.id)}
+>
+  <FaHeart />
+
+  <span className="like-count">
+    {material.totalCurtidas || 0}
+  </span>
+</button>
+
+          <button
+            className="icon-btn bookmark-btn active"
+            onClick={() => removerSalvo(material.id)}
+          >
+            <FaRegBookmark />
+          </button>
+
+          <button
+            className="icon-btn"
+          >
+            <FaComment />
+          </button>
 
         </div>
+
+        <a
+          href={material.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-acessar-material"
+        >
+          Acessar Material 🔗
+        </a>
+
+      </div>
+
+    </div>
+
+  ))}
+
+</div>
 
       </div>
 

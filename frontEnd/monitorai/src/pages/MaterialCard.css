@@ -1,0 +1,151 @@
+.salvos-grid{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-top:20px;
+}
+
+.material-card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:20px;
+    transition:transform 0.2s, box-shadow 0.2s;
+}
+
+.material-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.material-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.material-tipo-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background-color:#f3f4f6;
+    color:#374151;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+}
+
+.material-card h4{
+    margin:0 0 8px 0;
+    color:#002b5c;
+    font-size:18px;
+}
+
+.material-card p{
+    color:#4b5563;
+    font-size:14.5px;
+    line-height:1.5;
+    margin:0 0 16px 0;
+}
+
+.material-footer{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    width:100%;
+    margin-top:16px;
+}
+
+.material-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-left:auto;
+}
+
+.icon-btn{
+    border:none;
+    background:#f5f7fb;
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:1.05rem;
+    transition:0.25s;
+}
+
+.icon-btn:hover{
+    transform:translateY(-2px);
+}
+
+.icon-btn svg{
+    transition:0.25s;
+    font-size:1.1em;
+}
+
+.like-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    color:#9ca3af;
+}
+
+.like-btn.active{
+    color:#ef4444;
+    background:#fee2e2;
+}
+
+.like-btn.active svg{
+    transform:scale(1.15);
+}
+
+.like-count{
+    font-size:0.85rem;
+    font-weight:600;
+}
+
+.bookmark-btn.active{
+    color:#2563eb;
+    background:#dbeafe;
+}
+
+.save-btn{
+    color:#5b21b6;
+}
+
+.comment-btn{
+    color:#2563eb;
+}
+
+.btn-acessar-material{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    min-height:42px;
+    padding:0 18px;
+
+    background:#002b5c;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+
+    font-weight:600;
+    font-size:14px;
+
+    white-space:nowrap;
+    transition:0.2s;
+}
+
+.btn-acessar-material:hover{
+    background:#00152e;
+}

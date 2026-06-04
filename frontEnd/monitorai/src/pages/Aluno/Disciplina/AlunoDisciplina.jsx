@@ -57,14 +57,38 @@ function AlunoDisciplina() {
         .map(m => m.id);
 
         setCurtidos(curtidosUsuario);
+
+       
+
       } catch (err) {
         console.error("Erro ao buscar dados:", err);
       } finally {
         setLoading(false);
       }
+
     };
 
-    carregarDados();
+    const carregarSalvos = async () => {
+
+    const res = await api.get(
+        "/usuarios/me/salvos"
+    );
+
+    console.log("SALVOS API:", res.data);
+
+    const ids = res.data.map(
+        material => material.id
+    );
+
+    console.log("IDS SALVOS:", ids);
+
+    setSalvos(ids);
+};
+
+    Promise.all([
+    carregarDados(),
+    carregarSalvos()
+  ]);
   }, [id]);
 
   // Lógica de filtragem
@@ -92,6 +116,7 @@ function AlunoDisciplina() {
             prev.map(material =>
                 material.id === materialId
                 ? {
+
                     ...material,
                     curtidas: res.data.curtidas,
                     curtido: res.data.curtido
@@ -104,19 +129,48 @@ function AlunoDisciplina() {
     }
   };
 
-  const toggleSalvo = (materialId) => {
-    setSalvos(prev =>
-      prev.includes(materialId)
-      ? prev.filter(item => item !== materialId)
-      : [...prev, materialId]
-    );
-  };
-
   if (loading) return <div className="loading">Carregando detalhes da disciplina...</div>;
   if (!disciplina) return <div className="error-message">Disciplina não encontrada.</div>;
 
   // 4. Lógica para verificar se o monitor é o usuário logado
   const isMinhaMonitoria = monitoria?.monitor?.usuario?.username === usuario?.username;
+
+  const toggleSalvo = async (materialId) => {
+
+    try{
+
+        const jaSalvo = salvos.includes(materialId);
+
+        if(jaSalvo){
+
+            await api.delete(
+                `/materiais/${materialId}/salvar`
+            );
+
+            setSalvos(prev =>
+                prev.filter(id => id !== materialId)
+            );
+
+        }else{
+
+            await api.post(
+                `/materiais/${materialId}/salvar`
+            );
+
+            setSalvos(prev =>
+                [...prev, materialId]
+            );
+        }
+
+    }catch(err){
+
+        console.error(
+            "Erro ao salvar material",
+            err
+        );
+
+    }
+};
 
   return (
     <div className="disciplina-detalhe-container">
@@ -202,7 +256,12 @@ function AlunoDisciplina() {
                               </span>
                           </button>
 
-                          <button className="icon-btn">
+                          <button 
+                              className={`icon-btn bookmark-btn ${
+                                  salvos.includes(material.id) ? "active" : ""
+                              }`}
+                              onClick={() => toggleSalvo(material.id)}
+                          >
                               <FaRegBookmark />
                           </button>
 
