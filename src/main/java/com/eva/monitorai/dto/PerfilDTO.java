@@ -1,8 +1,6 @@
 package com.eva.monitorai.dto;
 
-import java.util.Set;
-
-import com.eva.monitorai.model.entity.Material;
+import java.util.List;
 
 public class PerfilDTO {
 
@@ -11,15 +9,18 @@ public class PerfilDTO {
     private String role;
     private String ra;
 
-    private Set<Material> materiaisSalvos;
+    private List<MaterialDTO> materiaisSalvos;
 
     public PerfilDTO() {
     }
 
-    public PerfilDTO(String username, String email,
-                     String role, String ra,
-                     Set<Material> materiaisSalvos) {
-
+    public PerfilDTO(
+            String username,
+            String email,
+            String role,
+            String ra,
+            List<MaterialDTO> materiaisSalvos
+    ) {
         this.username = username;
         this.email = email;
         this.role = role;
@@ -59,11 +60,11 @@ public class PerfilDTO {
         this.ra = ra;
     }
 
-    public Set<Material> getMateriaisSalvos() {
+    public List<MaterialDTO> getMateriaisSalvos() {
         return materiaisSalvos;
     }
 
-    public void setMateriaisSalvos(Set<Material> materiaisSalvos) {
+    public void setMateriaisSalvos(List<MaterialDTO> materiaisSalvos) {
         this.materiaisSalvos = materiaisSalvos;
     }
 }

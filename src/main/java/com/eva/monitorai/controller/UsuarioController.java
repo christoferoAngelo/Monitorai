@@ -1,5 +1,6 @@
 package com.eva.monitorai.controller;
 
+import com.eva.monitorai.dto.MaterialDTO;
 import com.eva.monitorai.dto.PerfilDTO;
 import com.eva.monitorai.dto.UsuarioDTO;
 import com.eva.monitorai.model.entity.Usuario;
@@ -134,14 +135,27 @@ public class UsuarioController {
         Usuario usuario = repository.findByUsername(username)
                 .orElseThrow();
 
-        PerfilDTO perfil = new PerfilDTO(
-                usuario.getUsername(),
-                usuario.getEmail(),
-                usuario.getRole(),
-                usuario.getRa(),
+        List<MaterialDTO> materiaisDTO =
                 usuario.getMateriaisSalvos()
-        );
-
+                        .stream()
+                        .map(material -> new MaterialDTO(
+                                material.getId(),
+                                material.getTitulo(),
+                                material.getConteudo(),
+                                material.getUrl(),
+                                material.getTipo().name(),
+                                material.getCurtidas().size()
+                        ))
+                        .toList();
+        
+        PerfilDTO perfil = new PerfilDTO(
+        	    usuario.getUsername(),
+        	    usuario.getEmail(),
+        	    usuario.getRole(),
+        	    usuario.getRa(),
+        	    materiaisDTO
+        	);
+        
         return ResponseEntity.ok(perfil);
     }
     
