@@ -73,16 +73,22 @@ function AlunoDisciplina() {
     const res = await api.get(
         "/usuarios/me/salvos"
     );
-    
-    console.log("SALVOS:", res.data);
 
-    setSalvos(
-        res.data.map(material => material.id)
+    console.log("SALVOS API:", res.data);
+
+    const ids = res.data.map(
+        material => material.id
     );
-    };
 
-    carregarDados();
-    carregarSalvos();
+    console.log("IDS SALVOS:", ids);
+
+    setSalvos(ids);
+};
+
+    Promise.all([
+    carregarDados(),
+    carregarSalvos()
+  ]);
   }, [id]);
 
   // Lógica de filtragem
@@ -110,6 +116,7 @@ function AlunoDisciplina() {
             prev.map(material =>
                 material.id === materialId
                 ? {
+
                     ...material,
                     curtidas: res.data.curtidas,
                     curtido: res.data.curtido

@@ -11,6 +11,7 @@ import {
 function Perfil(){
 
   const [perfil,setPerfil] = useState(null);
+  const [curtidos, setCurtidos] = useState([]);
 
   useEffect(() => {
 
@@ -34,6 +35,54 @@ function Perfil(){
       </div>
     )
   }
+
+  const toggleCurtida = async(materialId) => {
+
+  try {
+
+    const res = await api.post(
+      `/materiais/${materialId}/curtir`
+    );
+
+    if(res.data.curtido){
+
+      setCurtidos(prev =>
+        [...prev, materialId]
+      );
+
+    }else{
+
+      setCurtidos(prev =>
+        prev.filter(id => id !== materialId)
+      );
+
+    }
+
+    setPerfil(prev => ({
+      ...prev,
+
+      materiaisSalvos:
+        prev.materiaisSalvos.map(material =>
+
+          material.id === materialId
+            ? {
+                ...material,
+                totalCurtidas: res.data.curtidas
+              }
+            : material
+
+        )
+    }));
+
+  } catch(err){
+
+    console.error(
+      "Erro ao curtir:",
+      err
+    );
+
+  }
+};
 
   const removerSalvo = async (materialId) => {
 
@@ -117,15 +166,19 @@ function Perfil(){
         <div className="material-actions">
 
           <button
-            className="icon-btn like-btn"
-          >
-            <FaHeart />
-            
-            <span className="like-count">
-              {material.curtidas?.length || 0}
-            </span>
+  className={`icon-btn like-btn ${
+    curtidos.includes(material.id)
+      ? "active"
+      : ""
+  }`}
+  onClick={() => toggleCurtida(material.id)}
+>
+  <FaHeart />
 
-          </button>
+  <span className="like-count">
+    {material.totalCurtidas || 0}
+  </span>
+</button>
 
           <button
             className="icon-btn bookmark-btn active"
