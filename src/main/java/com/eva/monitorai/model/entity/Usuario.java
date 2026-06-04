@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,6 +24,10 @@ import jakarta.persistence.ManyToMany;
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
+	
+	@Column(nullable = false)
+	private Boolean ativo = true;
+	 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +44,13 @@ public class Usuario {
 
     @Column(unique = true)
     private String ra; // Todos os alunos e monitores terão preenchido. Admin pode ser null.
+    
+    // Para redefinição de senha
+    @Column(nullable = false)
+    private Boolean solicitacaoRedefinicaoSenha = false;
+    
+    // Data da solicitação (opcional, para ordenação)
+    private LocalDateTime dataSolicitacaoSenha;
     
     @JsonIgnore
 	@ManyToMany(mappedBy = "curtidas")
@@ -67,6 +80,14 @@ public class Usuario {
 	}
 
 	// Getters e Setters
+	  public Boolean getAtivo() {
+	        return ativo;
+	    }
+	    
+	    public void setAtivo(Boolean ativo) {
+	        this.ativo = ativo;
+	    }
+	
 	
 	public Long getId() {
 		return id;
@@ -124,4 +145,20 @@ public class Usuario {
 	    this.materiaisSalvos = materiaisSalvos;
 	}
 	
+	
+	public Boolean getSolicitacaoRedefinicaoSenha() {
+        return solicitacaoRedefinicaoSenha;
+    }
+    
+    public void setSolicitacaoRedefinicaoSenha(Boolean solicitacaoRedefinicaoSenha) {
+        this.solicitacaoRedefinicaoSenha = solicitacaoRedefinicaoSenha;
+    }
+    
+    public LocalDateTime getDataSolicitacaoSenha() {
+        return dataSolicitacaoSenha;
+    }
+    
+    public void setDataSolicitacaoSenha(LocalDateTime dataSolicitacaoSenha) {
+        this.dataSolicitacaoSenha = dataSolicitacaoSenha;
+    }
 }

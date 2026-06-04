@@ -19,6 +19,32 @@ public class UsuarioService {
 
     public Usuario registrar(Usuario usuario) {
 
+    	 // 1. Define role padrão se não vier
+        if (usuario.getRole() == null || usuario.getRole().isBlank()) {
+            usuario.setRole("ALUNO");
+        }
+        
+        // ==========================================
+        // 2. LÓGICA CONDICIONAL DO RA - ADICIONAR AQUI
+        // ==========================================
+        if ("ALUNO".equals(usuario.getRole())) {
+            // Para ALUNO: RA é obrigatório
+            if (usuario.getRa() == null || usuario.getRa().isBlank()) {
+                throw new RuntimeException("RA é obrigatório para alunos");
+            }
+            if (!usuario.getRa().matches("^\\d{13}$")) {
+                throw new RuntimeException("O RA deve ter 13 dígitos");
+            }
+            // Verifica se RA já existe
+            if (repository.findByRa(usuario.getRa()).isPresent()) {
+                throw new RuntimeException("RA já cadastrado");
+            }
+        } else {
+            // Para ADMIN/MONITOR: RA deve ser null
+            usuario.setRa(null);
+        }
+        // ==========================================
+    	
         if (usuario.getUsername() == null || usuario.getUsername().isBlank()) {
             throw new RuntimeException("Nome de usuário é obrigatório");
         }
@@ -37,18 +63,7 @@ public class UsuarioService {
 
         if (repository.findByEmail(usuario.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado");
-        }
-        
-        if (repository.findByRa(usuario.getRa()).isPresent()) {
-            throw new RuntimeException("Ra já cadastrado");
-        }
-        
-        
-
-        // Se quem mandou o JSON não enviou a role, define como Aluno por padrão
-        if (usuario.getRole() == null || usuario.getRole().isBlank()) {
-            usuario.setRole("ALUNO");
-        }
+        }    
 
         usuario.setSenha(encoder.encode(usuario.getSenha()));
 

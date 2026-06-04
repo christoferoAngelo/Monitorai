@@ -8,11 +8,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public class UsuarioDTO {
 	
 	private Long id;
+	private Boolean ativo;
+	private Boolean solicitacaoRedefinicaoSenha;
+	private LocalDateTime dataSolicitacaoSenha;
+
     
-    @NotBlank(message = "Usuário é obrigatório")
+    @NotBlank(message = "Usuário é obrigatória")
     @Size(min = 3, max = 20, message = "O usuário deve ter entre 3 e 20 caracteres")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "O usuário deve ser uma palavra só e sem caracteres especiais")
     private String username;
@@ -24,23 +30,16 @@ public class UsuarioDTO {
     )
     private String email;
 
-    // WRITE_ONLY impede que a senha seja enviada de volta nas respostas JSON da API
     @JsonProperty(access = Access.WRITE_ONLY)
     @NotBlank(message = "A senha é obrigatória")
     @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres")
     private String senha;
-
     private String role;
-
-    @NotBlank(message = "O RA é obrigatório")
-    @Pattern(regexp = "^\\d{13}$", message = "O RA deve conter exatamente 13 dígitos numéricos")
     private String ra;
 
-    // Construtor vazio padrão
     public UsuarioDTO() {
     }
 
-    // Construtor com campos (incluindo a senha se necessário)
     public UsuarioDTO(Long id, String username, String email, String senha, String role, String ra) {
         this.id = id;
         this.username = username;
@@ -51,43 +50,31 @@ public class UsuarioDTO {
     }
 
     // Getters e Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public String getUsername() {
-        return username;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getEmail() {
-        return email;
+    public String getRa() { return ra; }
+    public void setRa(String ra) { this.ra = ra; }
+    
+    public Boolean getAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+    
+    public Boolean getSolicitacaoRedefinicaoSenha() { return solicitacaoRedefinicaoSenha; }
+    public void setSolicitacaoRedefinicaoSenha(Boolean solicitacaoRedefinicaoSenha) { 
+        this.solicitacaoRedefinicaoSenha = solicitacaoRedefinicaoSenha; 
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getRa() {
-        return ra;
-    }
-
-    public void setRa(String ra) {
-        this.ra = ra;
+    
+    public LocalDateTime getDataSolicitacaoSenha() { return dataSolicitacaoSenha; }
+    public void setDataSolicitacaoSenha(LocalDateTime dataSolicitacaoSenha) { 
+        this.dataSolicitacaoSenha = dataSolicitacaoSenha; 
     }
 }

@@ -39,48 +39,37 @@
 		@Autowired
 	    private JwtFilter jwtFilter;
 		
-		@Bean
-		public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		    http
-		        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-		        .csrf(csrf -> csrf.disable())
-		        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-		        .authorizeHttpRequests(auth -> auth
-		        	    // 1. Libera preflight de CORS
-		        	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-		        	    	
-		        	    // Libera cursos
-		        	    .requestMatchers("/cursos/**").permitAll()
-		        	    
-		        	    // Libera cursos
-		        	    .requestMatchers("/disciplinas/**").permitAll()
-	
-		        	    // 2. Libera rotas públicas de login e registro
-		        	    .requestMatchers("/auth/**").permitAll()
-	
-		        	    // 3. Rotas específicas por Role
-		        	    // (O Spring vai procurar por ROLE_ADMIN, ROLE_MONITOR, ROLE_ALUNO)
-		        	    .requestMatchers("/admin/**").hasRole("ADMIN")
-						.requestMatchers("/usuarios/me/perfil",
-						"/usuarios/me/salvos"
-    					).authenticated()
-		        	    .requestMatchers("/usuarios/**").hasAnyRole("ADMIN","MONITOR")
-		        	    // 1. Libera a rota de monitorias ativas para TODOS
-		                .requestMatchers(HttpMethod.GET, "/monitorias/ativas").permitAll()
-		                
-		                // 2. Protege o resto do /monitorias/** apenas para ADMIN
-		                .requestMatchers("/monitorias/**").hasAnyRole("ADMIN", "MONITOR")
-		        	    .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MONITOR")
-		        	    // 4. Qualquer outra requisição precisa apenas estar logado (ex: portal do aluno)
-		        	    //.anyRequest().authenticated()
-		        	    .requestMatchers("/materiais/**").permitAll()
-						.anyRequest().authenticated()
-		        	);
-		    
-		    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-	
-		    return http.build();
-		}
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            // 1. Libera preflight de CORS
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            
+            // 2. Libera rotas públicas
+            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/cursos/**").permitAll()
+            .requestMatchers("/disciplinas/**").permitAll()
+            .requestMatchers("/materiais/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/monitorias/ativas").permitAll()
+            
+            // 3. Endpoints específicos SEM autenticação
+            .requestMatchers("/usuarios/verificar-solicitacao").permitAll()
+            .requestMatchers("/usuarios/pedidos-senha").hasRole("ADMIN")
+            .requestMatchers("/usuarios/**").permitAll()
+            
+            // 4. Protege o resto
+            .requestMatchers("/monitorias/**").hasAnyRole("ADMIN", "MONITOR")
+            .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MONITOR")
+            .anyRequest().authenticated()
+        );
+    
+    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+}
 	
 	    @Bean
 	    public BCryptPasswordEncoder passwordEncoder() {

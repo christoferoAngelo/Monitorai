@@ -16,10 +16,15 @@ export default function UsuarioModal({
         ra: '',
         role: tipoInicial || 'ALUNO'
     });
+    
+    // Novos campos para segurança
+    const [senhaAtual, setSenhaAtual] = useState('');
+    const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [erroConfirmacao, setErroConfirmacao] = useState('');
+    
     const [error, setError] = useState('');
     const [showSenha, setShowSenha] = useState(false);
 
-    // Efeito para preencher o formulário quando o modal abre (para edição ou criação)
     useEffect(() => {
         if (isOpen) {
             if (usuarioEditando) {
@@ -27,7 +32,7 @@ export default function UsuarioModal({
                 setForm({
                     username: usuarioEditando.username,
                     email: usuarioEditando.email,
-                    senha: '', // A senha vem vazia por segurança
+                    senha: '',
                     ra: usuarioEditando.ra || '',
                     role: usuarioEditando.role
                 });
@@ -41,6 +46,10 @@ export default function UsuarioModal({
                     role: tipoInicial
                 });
             }
+            // Limpa campos de senha
+            setSenhaAtual('');
+            setConfirmarSenha('');
+            setErroConfirmacao('');
             setError('');
             setShowSenha(false);
         }
@@ -55,14 +64,17 @@ export default function UsuarioModal({
             ra: '',
             role: novoTipo
         });
+        setSenhaAtual('');
+        setConfirmarSenha('');
         setError('');
     }
 
     async function salvar(e) {
         e.preventDefault();
         setError('');
+        setErroConfirmacao('');
 
-        // Validações
+        // Validações básicas
         if (!form.username.trim()) {
             return setError('O Usuário é obrigatório.');
         }
@@ -95,38 +107,74 @@ export default function UsuarioModal({
             }
         }
 
-        if (!usuarioEditando && !form.senha) {
-            return setError('A Senha é obrigatória para novos usuários.');
-        }
-        if (form.senha && form.senha.length < 8) {
-            return setError('A senha deve ter pelo menos 8 caracteres.');
+        // ========== VALIDAÇÕES DE SENHA ==========
+        
+        if (!usuarioEditando) {
+            // CRIAR USUÁRIO: senha obrigatória + confirmação
+            if (!form.senha) {
+                return setError('A Senha é obrigatória.');
+            }
+            if (form.senha.length < 8) {
+                return setError('A senha deve ter pelo menos 8 caracteres.');
+            }
+            if (form.senha !== confirmarSenha) {
+                return setErroConfirmacao('As senhas não conferem!');
+            }
+        } else {
+            // EDITAR USUÁRIO: se quiser mudar senha
+            if (form.senha || senhaAtual || confirmarSenha) {
+                // Se preencher pelo menos um campo de senha, todos são obrigatórios
+                if (!senhaAtual) {
+                    return setError('Digite a senha atual.');
+                }
+                if (!form.senha) {
+                    return setError('Digite a nova senha.');
+                }
+                if (form.senha.length < 8) {
+                    return setError('A nova senha deve ter pelo menos 8 caracteres.');
+                }
+                if (form.senha !== confirmarSenha) {
+                    return setErroConfirmacao('As senhas não conferem!');
+                }
+            }
         }
 
-        // Chamadas para a API
+        // ========== ENVIO PARA API ==========
+        
         try {
             if (usuarioEditando) {
+                if (form.senha) {
+                    // Tem senha para alterar - usa endpoint específico
+                    await api.put(`/usuarios/${usuarioEditando.id}/senha`, {
+                        senhaAtual: senhaAtual,
+                        novaSenha: form.senha
+                    });
+                    alert("Senha alterada com sucesso!");
+                }
+                
+                // Sempre atualiza username, email e role
                 const data = {
                     username: form.username,
                     email: form.email,
                     role: form.role
                 };
-                if (form.senha) data.senha = form.senha;
-                
                 await api.put(`/usuarios/${usuarioEditando.id}`, data);
                 alert("Usuário atualizado!");
             } else {
-                await api.post("/auth/register", form);
+                await api.post("/auth/register", {
+                    ...form,
+                    ra: tipoSelecionado === 'ALUNO' ? form.ra : null
+                });
                 alert("Usuário criado com sucesso!");
             }
             
-            // Avisa o componente pai que deu certo e ele pode fechar o modal e recarregar os dados
             onSuccess(); 
         } catch (err) {
-            setError(err.response?.data || "Erro ao salvar usuário");
+            const msg = err.response?.data || "Erro ao salvar usuário";
+            setError(typeof msg === 'string' ? msg : JSON.stringify(msg));
         }
     }
 
-    // Se o modal não estiver aberto, não renderiza nada
     if (!isOpen) return null;
 
     return (
@@ -193,14 +241,33 @@ export default function UsuarioModal({
                         </div>
                     )}
 
+                    {/* ========== CAMPOS DE SENHA ========== */}
+                    
+                    {usuarioEditando && form.senha && (
+                        <div className="form-group">
+                            <label>Senha Atual *</label>
+                            <div className="passwordFieldContainer">
+                                <input 
+                                    type={showSenha ? 'text' : 'password'} 
+                                    value={senhaAtual} 
+                                    onChange={e => setSenhaAtual(e.target.value)} 
+                                    placeholder="Digite a senha atual"
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     <div className="form-group">
-                        <label>{usuarioEditando ? 'Nova Senha (opcional)' : 'Senha *'}</label>
+                        <label>
+                            {usuarioEditando ? 'Nova Senha' : 'Senha *'}
+                            {usuarioEditando && <span className="label-hint"> (deixe em branco para manter a atual)</span>}
+                        </label>
                         <div className="passwordFieldContainer">
                             <input 
                                 type={showSenha ? 'text' : 'password'} 
                                 value={form.senha} 
                                 onChange={e => setForm({...form, senha: e.target.value})} 
-                                placeholder="Mínimo 8 caracteres" 
+                                placeholder={usuarioEditando ? "Nova senha (mínimo 8 caracteres)" : "Mínimo 8 caracteres"}
                             />
                             <button type="button" className="togglePasswordButton" onClick={() => setShowSenha(!showSenha)}>
                                 <img src={showSenha ? "/olho.png" : "/olho_aberto.png"} alt="Mostrar/Ocultar senha" style={{width: 20, height: 20}} />
@@ -208,7 +275,22 @@ export default function UsuarioModal({
                         </div>
                     </div>
 
+                    <div className="form-group">
+                        <label>
+                            {usuarioEditando ? 'Confirmar Nova Senha' : 'Confirmar Senha *'}
+                        </label>
+                        <div className="passwordFieldContainer">
+                            <input 
+                                type={showSenha ? 'text' : 'password'} 
+                                value={confirmarSenha} 
+                                onChange={e => setConfirmarSenha(e.target.value)} 
+                                placeholder={usuarioEditando ? "Confirme a nova senha" : "Confirme a senha"}
+                            />
+                        </div>
+                    </div>
+
                     {error && <div className="error-message">{error}</div>}
+                    {erroConfirmacao && <div className="error-message confirm-error">{erroConfirmacao}</div>}
 
                     <div className="modal-actions">
                         <button type="submit" className="btn-save">
