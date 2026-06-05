@@ -21,7 +21,7 @@ import HistoricoMonitoria from './pages/Admin/HistoricoMonitorias/HistoricoMonit
 import Usuarios from './pages/Admin/Usuarios/Usuarios';
 import AlunoDisciplina from './pages/Aluno/Disciplina/AlunoDisciplina';
 import MonitorRelatorio from './pages/Monitor/Relatorios/MonitorRelatorio';
-
+import AdminEditais from './pages/Admin/Editais/AdminEditais';
 // Layouts
 import AdminLayout from './pages/Admin/components/AdminLayout';
 import SharedLayout from './components/SharedLayout/SharedLayout';
@@ -73,6 +73,7 @@ function AppRoutes() {
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/admin-monitorias" element={<GerenciarMonitoria />} />
                 <Route path="/historico-monitorias" element={<HistoricoMonitoria />} />
+                <Route path="/admin-editais" element={<AdminEditais />} />
                 <Route path="/relatorios/novo" element={<RegistrarRelatorio />} />
                 <Route path="/grade-curricular" element={<GradeCurricular />} />
                 <Route path="/admin-usuarios" element={<PrivateRoute><Usuarios /></PrivateRoute>} />

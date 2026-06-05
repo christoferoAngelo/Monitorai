@@ -55,12 +55,14 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .requestMatchers("/disciplinas/**").permitAll()
             .requestMatchers("/materiais/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/monitorias/ativas").permitAll()
-            
+            .requestMatchers("/usuarios/**").authenticated()
+
             // 3. Endpoints específicos SEM autenticação
             .requestMatchers("/usuarios/verificar-solicitacao").permitAll()
             .requestMatchers("/usuarios/pedidos-senha").hasRole("ADMIN")
             .requestMatchers("/usuarios/**").permitAll()
-            
+            .requestMatchers("/editais/**").hasRole("ADMIN")
+
             // 4. Protege o resto
             .requestMatchers("/monitorias/**").hasAnyRole("ADMIN", "MONITOR")
             .requestMatchers("/relatorios/**").hasAnyRole("ADMIN", "MONITOR")

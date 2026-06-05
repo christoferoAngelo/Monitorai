@@ -113,6 +113,19 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuário inativado com sucesso!");
     }
     
+    @PutMapping("/{id}/alternar-status")
+    public ResponseEntity<?> alternarStatus(@PathVariable Long id) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        
+        // Alterna entre true e false
+        boolean novoStatus = !Boolean.TRUE.equals(usuario.getAtivo());
+        usuario.setAtivo(novoStatus);
+        repository.save(usuario);
+        
+        return ResponseEntity.ok(novoStatus ? "Usuário ativado!" : "Usuário inativado!");
+    }
+    
     @GetMapping("/me/perfil")
     public ResponseEntity<?> meuPerfil(Authentication auth) {
         String username = auth.getName();

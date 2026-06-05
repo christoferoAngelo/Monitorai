@@ -136,27 +136,23 @@ export default function Usuarios() {
         }
     }
 
-    async function toggleAtivo(usuario) {
-        const isAtivo = usuario.ativo !== false;
-        const msg = isAtivo 
-            ? ` Inativar o usuário ${usuario.username}?`
-            : ` Ativar o usuário ${usuario.username}?`;
-        
-        if (!window.confirm(msg)) return;
+async function toggleAtivo(usuario) {
+    const isAtivo = usuario.ativo !== false;
+    const msg = isAtivo 
+        ? `Inativar o usuário ${usuario.username}?`
+        : `Ativar o usuário ${usuario.username}?`;
+    
+    if (!window.confirm(msg)) return;
 
-        try {
-            if (isAtivo) {
-                await api.put(`/usuarios/${usuario.id}/inativar`);
-                alert("Usuário inativado!");
-            } else {
-                await api.put(`/usuarios/${usuario.id}/ativar`);
-                alert("Usuário ativado!");
-            }
-            carregarDados();
-        } catch (err) {
-            alert("Erro ao atualizar usuário");
-        }
+    try {
+        // Usa o endpoint correto
+        await api.put(`/usuarios/${usuario.id}/alternar-status`);
+        alert(isAtivo ? "Usuário inativado!" : "Usuário ativado!");
+        carregarDados();
+    } catch (err) {
+        alert("Erro ao atualizar usuário");
     }
+}
 
     if (loading) return <div className="admin-loading">Carregando...</div>;
 

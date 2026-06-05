@@ -423,3 +423,434 @@ body {
     padding: 4rem 2rem;
   }
 }
+
+
+/* EDITAIS */
+.editais-section {
+  padding: 80px 4rem;
+  background: #f8fafc;
+}
+
+.editais-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.edital-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.edital-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.edital-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #0F3D91, #B20000);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.edital-card h3 {
+  font-size: 1.25rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.edital-card p {
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+.edital-meta {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.btn-edital {
+  width: 100%;
+  padding: 0.75rem;
+  background: #0F3D91;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-edital:hover {
+  background: #B20000;
+}
+
+/* MONITORIAS */
+.monitorias-section {
+  padding: 80px 4rem;
+  background: white;
+}
+
+.monitorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.monitoria-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.monitoria-card:hover {
+  border-color: #0F3D91;
+  box-shadow: 0 10px 30px rgba(15, 61, 145, 0.15);
+}
+
+.monitoria-header {
+  margin-bottom: 1rem;
+}
+
+.disciplina-badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #0F3D91;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.monitoria-info h3 {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.monitoria-info p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.monitoria-actions {
+  margin-top: 1rem;
+}
+
+.btn-agendar {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #0F3D91, #B20000);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-agendar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(15, 61, 145, 0.4);
+}
+
+.empty-monitorias {
+  text-align: center;
+  padding: 3rem;
+  color: #64748b;
+}
+
+/* =========================================
+   SEÇÃO DE EDITAIS (VAGAS)
+   ========================================= */
+.editais-section {
+  padding: 80px 4rem;
+  background: #f8fafc;
+}
+
+.editais-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Card completo de edital */
+.edital-card-full {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.edital-card-full:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  border-color: #0F3D91;
+}
+
+.edital-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.edital-number {
+  background: linear-gradient(135deg, #0F3D91, #B20000);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.edital-status {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.edital-status {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.edital-card-full h3 {
+  font-size: 1.25rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.edital-periodo {
+  color: #0F3D91;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.edital-descricao {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.btn-edital-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #0F3D91;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-edital-pdf:hover {
+  background: #B20000;
+  transform: translateX(4px);
+}
+
+/* =========================================
+   SEÇÃO DE RESULTADOS
+   ========================================= */
+.resultados-section {
+  padding: 80px 4rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.resultados-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.resultado-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 2px solid #bfdbfe;
+  transition: all 0.3s ease;
+}
+
+.resultado-card:hover {
+  border-color: #0F3D91;
+  box-shadow: 0 8px 20px rgba(15, 61, 145, 0.15);
+}
+
+.resultado-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.resultado-card h3 {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.btn-resultado-pdf {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #0F3D91, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-resultado-pdf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(15, 61, 145, 0.4);
+}
+
+/* =========================================
+   MONITORIAS (mantém o existente)
+   ========================================= */
+.monitorias-section {
+  padding: 80px 4rem;
+  background: white;
+}
+
+.monitorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.monitoria-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.monitoria-card:hover {
+  border-color: #0F3D91;
+  box-shadow: 0 10px 30px rgba(15, 61, 145, 0.15);
+}
+
+.monitoria-header {
+  margin-bottom: 1rem;
+}
+
+.disciplina-badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #0F3D91;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.monitoria-info h3 {
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.monitoria-info p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.monitoria-actions {
+  margin-top: 1rem;
+}
+
+.btn-agendar {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #0F3D91, #B20000);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-agendar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(15, 61, 145, 0.4);
+}
+
+/* =========================================
+   ESTADOS VAZIOS
+   ========================================= */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #64748b;
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.empty-monitorias {
+  text-align: center;
+  padding: 3rem;
+  color: #64748b;
+}
+
+/* =========================================
+   RESPONSIVO
+   ========================================= */
+@media (max-width: 768px) {
+  .editais-section,
+  .resultados-section,
+  .monitorias-section {
+    padding: 60px 1.5rem;
+  }
+  
+  .editais-container,
+  .resultados-container,
+  .monitorias-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .edital-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}

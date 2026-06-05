@@ -10,16 +10,15 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
     if (onLogout) onLogout();
     navigate('/login');
   };
-
   const menuItems = [
     { id: 'Dashboard', label: 'Dashboard', icon: '📊', action: () => onNavigate('Dashboard') },
-{ id: 'Usuarios', label: 'Usuários', icon: '👥', action: () => navigate('/admin-usuarios') },    { id: 'Monitorias', label: 'Monitorias', icon: '📚', action: () => navigate('/admin-monitorias') },
+    { id: 'Usuarios', label: 'Usuários', icon: '👥', action: () => navigate('/admin-usuarios') },
+    { id: 'Monitorias', label: 'Monitorias', icon: '📚', action: () => navigate('/admin-monitorias') },
+    { id: 'Editais', label: 'Editais', icon: '📋', action: () => navigate('/admin-editais') },  // MUDOU!
     { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo') },
-    { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📋', action: () => navigate('/grade-curricular') },
-    { id: 'Pagamentos', label: 'Pagamentos', icon: '💰', action: () => alert('Em breve') },
+    { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📑', action: () => navigate('/grade-curricular') },
     { id: 'Configuracoes', label: 'Configurações', icon: '⚙️', action: () => navigate('/perfil') }
   ];
-
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
