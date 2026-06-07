@@ -32,10 +32,13 @@ function Perfil(){
       );
 
     });  
+    
 
   },[])
 
 
+
+  
   if(!perfil){
     return (
       <div className="perfil-loading">
@@ -100,6 +103,8 @@ function Perfil(){
       `/materiais/${materialId}/salvar`
     );
 
+
+
     setPerfil(prev => ({
       ...prev,
       materiaisSalvos:
@@ -120,6 +125,7 @@ function Perfil(){
 };
 
 console.log("CURTIDOS:", curtidos);
+
   return(
 
     <div className="perfil-page">
@@ -199,6 +205,9 @@ console.log("CURTIDOS:", curtidos);
 
           <button
             className="icon-btn"
+             onClick={() => {
+              alert("TESTE");
+          }}
           >
             <FaComment />
           </button>
