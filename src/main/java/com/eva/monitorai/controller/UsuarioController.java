@@ -298,6 +298,35 @@ public ResponseEntity<Map<String, Object>> verificarSolicitacao(@RequestParam St
     
     return ResponseEntity.ok(response);
 }
+
+@GetMapping("/me/curtidos")
+public ResponseEntity<?> listarCurtidos(Authentication auth) {
+
+    String username = auth.getName();
+
+    Usuario usuario = repository
+            .findByUsername(username)
+            .orElseThrow();
+
+    List<MaterialDTO> materiaisCurtidos =
+            usuario.getMateriaisSalvos()
+                   .stream()
+                   .filter(material ->
+                       material.getCurtidas().contains(usuario)
+                   )
+                   .map(material -> {
+
+                       MaterialDTO dto = new MaterialDTO();
+
+                       dto.setId(material.getId());
+
+                       return dto;
+
+                   })
+                   .toList();
+
+    return ResponseEntity.ok(materiaisCurtidos);
+}
     
     
 }
