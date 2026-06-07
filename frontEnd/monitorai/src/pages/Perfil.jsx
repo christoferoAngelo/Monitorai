@@ -18,12 +18,20 @@ function Perfil(){
     
     api.get("/usuarios/me/perfil")
       .then(res => {
-        console.log("PERFIL:", res.data);
         setPerfil(res.data)
       })
       .catch(err => {
         console.log(err)
       })
+
+    api.get("/usuarios/me/curtidos")
+    .then(res => {
+
+      setCurtidos(
+        res.data.map(material => material.id)
+      );
+
+    });  
 
   },[])
 
@@ -108,8 +116,10 @@ function Perfil(){
     );
 
   }
+  
 };
 
+console.log("CURTIDOS:", curtidos);
   return(
 
     <div className="perfil-page">
