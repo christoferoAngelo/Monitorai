@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
+
 // Você pode criar um SharedLayout.css e colocar as classes .dashboard-container, .dashboard-sidebar e .dashboard-main nele
 import './SharedLayout.css'; 
+
 
 function SharedLayout() {
   const [usuario, setUsuario] = useState(null);
@@ -77,6 +80,7 @@ function SharedLayout() {
 
       {/* CONTEÚDO PRINCIPAL (Scrollável na direita) */}
       <main className="dashboard-main">
+	  <GlobalSearch />
         {/* O <Outlet /> é onde as páginas (Dashboards ou Disciplina) vão aparecer! */}
         {/* Passamos o usuário via context para as páginas filhas não precisarem fazer outro api.get('/auth/me') */}
         <Outlet context={{ usuario }} />
