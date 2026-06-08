@@ -5,13 +5,19 @@ import "./MaterialCard.css";
 import {
   FaHeart,
   FaRegBookmark,
-  FaComment
+  FaComment,
+  FaPaperPlane
 } from "react-icons/fa";
 
 function Perfil(){
 
   const [perfil,setPerfil] = useState(null);
   const [curtidos, setCurtidos] = useState([]);
+
+  const [modalComentarios, setModalComentarios] = useState(false);
+  const [materialSelecionado, setMaterialSelecionado] = useState(null);
+  const [comentarios, setComentarios] = useState([]);
+  const [novoComentario, setNovoComentario] = useState("");
 
   useEffect(() => {
 
@@ -46,6 +52,34 @@ function Perfil(){
       </div>
     )
   }
+
+  const abrirComentarios = async (materialId) => {
+
+  try {
+
+    const res = await api.get(
+      `/comentarios/material/${materialId}`
+    );
+
+    console.log(res.data);
+
+    setComentarios(res.data);
+
+    setMaterialSelecionado(materialId);
+
+    setModalComentarios(true);
+
+    
+  } catch(err) {
+    
+    console.error(
+      "Erro ao carregar comentários",
+      err
+    );
+    
+  }
+  
+};
 
   const toggleCurtida = async(materialId) => {
 
@@ -122,6 +156,65 @@ function Perfil(){
 
   }
   
+};
+
+  const enviarComentario = async () => {
+
+  if(!novoComentario.trim()) return;
+
+  try {
+
+    await api.post(
+      "/comentarios",
+      {
+        texto: novoComentario,
+        materialId: materialSelecionado
+      }
+    );
+
+    const res = await api.get(
+      `/comentarios/material/${materialSelecionado}`
+    );
+
+    setComentarios(res.data);
+
+    setNovoComentario("");
+
+  } catch(err) {
+
+    console.error(
+      "Erro ao comentar",
+      err
+    );
+
+  }
+
+};
+
+  const excluirComentario = async (comentarioId) => {
+
+  try {
+
+    await api.delete(
+      `/comentarios/${comentarioId}`
+    );
+
+    setComentarios(prev =>
+      prev.filter(
+        comentario =>
+          comentario.id !== comentarioId
+      )
+    );
+
+  } catch(err) {
+
+    console.error(
+      "Erro ao excluir comentário",
+      err
+    );
+
+  }
+
 };
 
 console.log("CURTIDOS:", curtidos);
@@ -205,9 +298,9 @@ console.log("CURTIDOS:", curtidos);
 
           <button
             className="icon-btn"
-             onClick={() => {
-              alert("TESTE");
-          }}
+            onClick={() =>
+            abrirComentarios(material.id)
+            }
           >
             <FaComment />
           </button>
@@ -229,11 +322,112 @@ console.log("CURTIDOS:", curtidos);
 
   ))}
 
+  {modalComentarios && (
+
+  <div
+    className="modal-overlay"
+    onClick={() =>
+      setModalComentarios(false)
+    }
+  >
+
+    <div
+      className="modal-comentarios"
+      onClick={(e) =>
+        e.stopPropagation()
+      }
+    >
+
+      <div className="modal-header">
+
+      <h2>Comentários</h2>
+
+      <button
+    className="btn-fechar-modal"
+    onClick={() =>
+      setModalComentarios(false)
+    }
+  >
+    ✕
+  </button>
+
+      </div>
+
+      <div className="comentarios-lista">
+
+        {comentarios.map(comentario => (
+
+  <div
+    key={comentario.id}
+    className="comentario-item"
+  >
+
+    <div className="comentario-header">
+
+      <strong>
+        {comentario.username}
+      </strong>
+
+      {comentario.username === perfil.username && (
+
+        <button
+          className="btn-excluir-comentario"
+          onClick={() => {
+            if(window.confirm(
+              "Tem certeza que deseja excluir este comentário?"
+            )) {
+              excluirComentario(comentario.id);
+            }
+          }} 
+        >
+          ✕
+        </button>
+
+      )}
+
+    </div>
+
+    <p>
+      {comentario.texto}
+    </p>
+
+  </div>
+
+))}
+
+      </div>
+
+      <div className="comentario-input-area">
+
+        <input
+          type="text"
+          placeholder="Escreva um comentário..."
+          value={novoComentario}
+          onChange={(e) =>
+            setNovoComentario(
+              e.target.value
+            )
+          }
+        />
+
+        <button onClick={enviarComentario}>
+        <FaPaperPlane />
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
+
 </div>
 
       </div>
 
     </div>
+    
   );
 }
 
