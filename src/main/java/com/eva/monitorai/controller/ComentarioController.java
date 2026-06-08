@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.eva.monitorai.dto.ComentarioDTO;
+import com.eva.monitorai.dto.ComentarioResponseDTO;
 import com.eva.monitorai.model.entity.Comentario;
 import com.eva.monitorai.model.entity.Material;
 import com.eva.monitorai.model.entity.Usuario;
@@ -61,14 +62,22 @@ public class ComentarioController {
 
     // LISTAR COMENTÁRIOS DO MATERIAL
     @GetMapping("/material/{id}")
-    public ResponseEntity<List<Comentario>> listarComentarios(
+    public ResponseEntity<List<ComentarioResponseDTO>> listarComentarios(
             @PathVariable Long id
     ){
 
-        List<Comentario> comentarios =
-                comentarioRepository.findByMaterialId(id);
+    	List<ComentarioResponseDTO> comentarios =
+    		    comentarioRepository.findByMaterialId(id)
+    		        .stream()
+    		        .map(c -> new ComentarioResponseDTO(
+    		            c.getId(),
+    		            c.getTexto(),
+    		            c.getUsuario().getUsername(),
+    		            c.getDataCriacao()
+    		        ))
+    		        .toList();
 
-        return ResponseEntity.ok(comentarios);
+    		return ResponseEntity.ok(comentarios);
     }
 
 
