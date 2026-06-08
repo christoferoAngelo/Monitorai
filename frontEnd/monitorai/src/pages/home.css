@@ -23,7 +23,9 @@ body {
   overflow-x: hidden;
 }
 
-/* HEADER */
+/* =========================================
+   HEADER
+   ========================================= */
 .home-header {
   position: fixed;
   top: 0;
@@ -108,7 +110,9 @@ body {
   color: var(--primary);
 }
 
-/* BOTÕES */
+/* =========================================
+   BOTÕES GERAIS
+   ========================================= */
 .btn-primary, .btn-secondary, .btn-ghost {
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
@@ -153,7 +157,9 @@ body {
   font-size: 1.1rem;
 }
 
-/* HERO */
+/* =========================================
+   HERO SECTION
+   ========================================= */
 .hero-section {
   display: flex;
   align-items: center;
@@ -274,12 +280,9 @@ body {
   border-radius: 20px;
 }
 
-/* FEATURES */
-.features-section {
-  padding: 120px 4rem;
-  background: white;
-}
-
+/* =========================================
+   CABEÇALHOS DE SEÇÃO
+   ========================================= */
 .section-header {
   text-align: center;
   max-width: 600px;
@@ -298,284 +301,6 @@ body {
   color: var(--gray);
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.feature-card {
-  background: var(--light);
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
-  text-align: center;
-  border: 1px solid var(--glass);
-  transition: all 0.3s ease;
-  height: 100%;
-}
-
-.feature-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.feature-icon {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-}
-
-.feature-card h3 {
-  font-size: 1.5rem;
-  color: var(--primary);
-  margin-bottom: 1rem;
-  font-weight: 700;
-}
-
-.feature-card p {
-  color: var(--gray);
-  line-height: 1.7;
-}
-
-/* STATS */
-.stats-section {
-  padding: 120px 4rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.stats-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-number {
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, white, rgba(255,255,255,0.8));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.stat-label {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-/* CTA */
-.cta-section {
-  padding: 80px 4rem;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-  border-radius: 24px;
-  margin: 4rem auto;
-}
-
-.cta-content h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-}
-
-.cta-content p {
-  font-size: 1.2rem;
-  opacity: 0.9;
-}
-
-/* RESPONSIVO */
-@media (max-width: 768px) {
-  .home-header {
-    padding: 1rem 2rem;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .hero-section {
-    flex-direction: column;
-    padding: 100px 2rem 60px;
-    text-align: center;
-  }
-  
-  .hero-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .cta-section {
-    flex-direction: column;
-    text-align: center;
-    gap: 2rem;
-    padding: 4rem 2rem;
-  }
-}
-
-
-/* EDITAIS */
-.editais-section {
-  padding: 80px 4rem;
-  background: #f8fafc;
-}
-
-.editais-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.edital-card {
-  background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.edital-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.edital-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, #0F3D91, #B20000);
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.edital-card h3 {
-  font-size: 1.25rem;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-}
-
-.edital-card p {
-  color: #64748b;
-  margin-bottom: 1rem;
-}
-
-.edital-meta {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-}
-
-.btn-edital {
-  width: 100%;
-  padding: 0.75rem;
-  background: #0F3D91;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.btn-edital:hover {
-  background: #B20000;
-}
-
-/* MONITORIAS */
-.monitorias-section {
-  padding: 80px 4rem;
-  background: white;
-}
-
-.monitorias-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.monitoria-card {
-  background: white;
-  border-radius: 16px;
-  padding: 1.5rem;
-  border: 2px solid #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.monitoria-card:hover {
-  border-color: #0F3D91;
-  box-shadow: 0 10px 30px rgba(15, 61, 145, 0.15);
-}
-
-.monitoria-header {
-  margin-bottom: 1rem;
-}
-
-.disciplina-badge {
-  display: inline-block;
-  background: #dbeafe;
-  color: #0F3D91;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.monitoria-info h3 {
-  font-size: 1.1rem;
-  color: #1e293b;
-  margin-bottom: 0.75rem;
-}
-
-.monitoria-info p {
-  color: #64748b;
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
-}
-
-.monitoria-actions {
-  margin-top: 1rem;
-}
-
-.btn-agendar {
-  width: 100%;
-  padding: 0.75rem;
-  background: linear-gradient(135deg, #0F3D91, #B20000);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-agendar:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(15, 61, 145, 0.4);
-}
-
-.empty-monitorias {
-  text-align: center;
-  padding: 3rem;
-  color: #64748b;
-}
-
 /* =========================================
    SEÇÃO DE EDITAIS (VAGAS)
    ========================================= */
@@ -592,7 +317,6 @@ body {
   margin: 0 auto;
 }
 
-/* Card completo de edital */
 .edital-card-full {
   background: white;
   border-radius: 16px;
@@ -605,7 +329,7 @@ body {
 .edital-card-full:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-  border-color: #0F3D91;
+  border-color: var(--primary);
 }
 
 .edital-header {
@@ -616,7 +340,7 @@ body {
 }
 
 .edital-number {
-  background: linear-gradient(135deg, #0F3D91, #B20000);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -629,9 +353,6 @@ body {
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-}
-
-.edital-status {
   background: #dcfce7;
   color: #166534;
 }
@@ -644,7 +365,7 @@ body {
 }
 
 .edital-periodo {
-  color: #0F3D91;
+  color: var(--primary);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
@@ -662,16 +383,18 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: #0F3D91;
+  background: var(--primary);
   color: white;
   text-decoration: none;
+  border: none;
   border-radius: 8px;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-edital-pdf:hover {
-  background: #B20000;
+  background: var(--secondary);
   transform: translateX(4px);
 }
 
@@ -700,7 +423,7 @@ body {
 }
 
 .resultado-card:hover {
-  border-color: #0F3D91;
+  border-color: var(--primary);
   box-shadow: 0 8px 20px rgba(15, 61, 145, 0.15);
 }
 
@@ -723,7 +446,7 @@ body {
 .btn-resultado-pdf {
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #0F3D91, #2563eb);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   border: none;
   border-radius: 8px;
@@ -738,7 +461,7 @@ body {
 }
 
 /* =========================================
-   MONITORIAS (mantém o existente)
+   MONITORIAS ATIVAS
    ========================================= */
 .monitorias-section {
   padding: 80px 4rem;
@@ -762,7 +485,7 @@ body {
 }
 
 .monitoria-card:hover {
-  border-color: #0F3D91;
+  border-color: var(--primary);
   box-shadow: 0 10px 30px rgba(15, 61, 145, 0.15);
 }
 
@@ -773,7 +496,7 @@ body {
 .disciplina-badge {
   display: inline-block;
   background: #dbeafe;
-  color: #0F3D91;
+  color: var(--primary);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -799,7 +522,7 @@ body {
 .btn-agendar {
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #0F3D91, #B20000);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
   border: none;
   border-radius: 8px;
@@ -833,9 +556,52 @@ body {
 }
 
 /* =========================================
+   CTA SECTION
+   ========================================= */
+.cta-section {
+  padding: 80px 4rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 4rem auto;
+  border-radius: 24px;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.cta-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* =========================================
    RESPONSIVO
    ========================================= */
 @media (max-width: 768px) {
+  .home-header {
+    padding: 1rem 2rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .hero-section {
+    flex-direction: column;
+    padding: 100px 2rem 60px;
+    text-align: center;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
   .editais-section,
   .resultados-section,
   .monitorias-section {
@@ -853,4 +619,87 @@ body {
     gap: 0.5rem;
     align-items: flex-start;
   }
+
+  .cta-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+    padding: 4rem 2rem;
+    margin: 2rem;
+  }
+}
+
+/* =========================================
+   MENU DROPDOWN
+   ========================================= */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem 0;
+}
+
+.dropdown-content span {
+  color: var(--dark);
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.dropdown-content span:hover {
+  background-color: var(--light);
+  color: var(--primary);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+/* home.css */
+
+.pdf-inline-container {
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-edital-pdf, .btn-resultado-pdf {
+  background-color: #2563eb;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-edital-pdf:hover, .btn-resultado-pdf:hover {
+  background-color: #1d4ed8;
 }
