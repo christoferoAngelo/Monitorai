@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../../../services/api";
 import "./GradeCurricular.css";
+import { useSearchParams, useLocation } from 'react-router-dom'; // NOVO IMPORT PARA ADMIN SEARCH
 
 export default function GradeCurricular() {
     const [cursos, setCursos] = useState([]);
     const [disciplinas, setDisciplinas] = useState([]);
     const [tab, setTab] = useState('cursos');
     const [loading, setLoading] = useState(true);
+	const [searchParams] = useSearchParams(); 
     
     // Filtros
     const [cursoSelecionado, setCursoSelecionado] = useState(null);
@@ -21,6 +23,7 @@ export default function GradeCurricular() {
     // Grade
     const [gradeCurso, setGradeCurso] = useState(null);
     const [disciplinasGrade, setDisciplinasGrade] = useState([]);
+	
 
     useEffect(() => { carregarDados(); }, []);
 
@@ -54,7 +57,30 @@ export default function GradeCurricular() {
         setDisciplinasFiltradas(lista);
     }, [cursoSelecionado, semestreSelecionado, disciplinas]);
 
-    // ========== CURSOS ==========
+	// ADICIONE ESTE useEffect para capturar disciplina vinda do AdminSearch
+	useEffect(() => {
+	  const tabParam = searchParams.get('tab');
+	  const editarId = searchParams.get('editar');
+	  
+	  // Se veio da busca, muda para a aba de disciplinas
+	  if (tabParam === 'disciplinas') {
+	    setTab('disciplinas');
+	  }
+	  
+	  // Se tem ID para editar, abre o formulário com a disciplina
+	  if (editarId) {
+	    const disciplina = disciplinas.find(d => d.id === parseInt(editarId));
+	    if (disciplina) {
+	      editarDisciplina(disciplina);
+	      setMostrarForm(true);
+	    }
+	    // Limpa os parâmetros da URL
+	    window.history.replaceState({}, document.title, '/grade-curricular');
+	  }
+	}, [searchParams, disciplinas]);
+	
+	
+	// ========== CURSOS ==========
     async function salvarCurso(e) {
         e.preventDefault();
         try {
