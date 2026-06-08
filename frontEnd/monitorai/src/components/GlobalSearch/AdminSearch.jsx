@@ -112,7 +112,7 @@ function AdminSearch() {
 	  
 	  switch (tipo) {
 	    case 'disciplina':
-	      navigate(`/disciplina/${item.id}`);
+			navigate(`/grade-curricular?tab=disciplinas&editar=${item.id}`);
 	      break;
 	    case 'monitoria':
 	      if (item?.disciplina?.id) {
