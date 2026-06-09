@@ -57,15 +57,20 @@ export default function GradeCurricular() {
         setDisciplinasFiltradas(lista);
     }, [cursoSelecionado, semestreSelecionado, disciplinas]);
 
-	// ADICIONE ESTE useEffect para capturar disciplina vinda do AdminSearch
+	// useEffect para capturar disciplina vinda do AdminSearch
 	useEffect(() => {
 	  const tabParam = searchParams.get('tab');
 	  const editarId = searchParams.get('editar');
+
 	  
 	  // Se veio da busca, muda para a aba de disciplinas
 	  if (tabParam === 'disciplinas') {
 	    setTab('disciplinas');
 	  }
+	  
+	  if (tabParam === 'cursos') {  
+	     setTab('cursos');
+	   }
 	  
 	  // Se tem ID para editar, abre o formulário com a disciplina
 	  if (editarId) {
@@ -74,10 +79,22 @@ export default function GradeCurricular() {
 	      editarDisciplina(disciplina);
 	      setMostrarForm(true);
 	    }
+		
+		
 	    // Limpa os parâmetros da URL
 	    window.history.replaceState({}, document.title, '/grade-curricular');
 	  }
-	}, [searchParams, disciplinas]);
+	  
+	  if (editarId && cursos.length > 0 && tabParam === 'cursos') {
+	     const curso = cursos.find(c => c.id === parseInt(editarId));
+	     if (curso) {
+	       editarCurso(curso);
+	       setMostrarForm(true);
+	     }
+	     window.history.replaceState({}, document.title, '/grade-curricular');
+	   }
+	  
+	}, [searchParams, disciplinas, cursos]);
 	
 	
 	// ========== CURSOS ==========
