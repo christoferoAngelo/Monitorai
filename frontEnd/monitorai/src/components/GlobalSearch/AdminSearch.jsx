@@ -12,6 +12,7 @@ function AdminSearch() {
   const [disciplinas, setDisciplinas] = useState([]);
   const [monitorias, setMonitorias] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [cursos, setCursos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const searchRef = useRef(null);
@@ -21,14 +22,21 @@ function AdminSearch() {
   const carregarDados = useCallback(async () => {
     setIsLoading(true);
     try {
+	 // Buscar por Disciplinas
       const disciplinasRes = await api.get('/disciplinas');
       setDisciplinas(disciplinasRes.data || []);
 
+	  // Buscar por monitorias ATIVAS
       const monitoriasRes = await api.get('/monitorias');
       setMonitorias(monitoriasRes.data || []);
       
+	  // Buscar por Usuarios
       const usuariosRes = await api.get('/usuarios');
       setUsuarios(usuariosRes.data || []);
+	  
+	  // Buscar por Cursos - EM ANDAMENTO
+	  const cursosRes = await api.get('/cursos');
+	      setCursos(cursosRes.data || []);
       
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -70,12 +78,30 @@ function AdminSearch() {
   }, []);
 
   const disciplinasFiltradas = Array.isArray(disciplinas)
-    ? disciplinas.filter(
-        (disciplina) =>
-          disciplina?.nome?.toLowerCase().includes(termo.toLowerCase()) ||
-          disciplina?.codigo?.toLowerCase().includes(termo.toLowerCase())
-      )
+    ? disciplinas.filter((disciplina) => {
+        const termoLower = termo.toLowerCase();
+        
+        // Busca pelo nome da disciplina
+        if (disciplina?.nome?.toLowerCase().includes(termoLower)) return true;
+        
+        // Busca pelo código da disciplina
+        if (disciplina?.codigo?.toLowerCase().includes(termoLower)) return true;
+        
+        
+        
+        return false;
+      })
     : [];
+	
+	const cursosFiltrados = Array.isArray(cursos)
+	  ? cursos.filter((curso) => {
+	      const termoLower = termo.toLowerCase();
+	      return (
+	        curso?.nome?.toLowerCase().includes(termoLower) ||
+	        curso?.codigo?.toLowerCase().includes(termoLower)
+	      );
+	    })
+	  : [];
 
   const monitoriasFiltradas = Array.isArray(monitorias)
     ? monitorias.filter((monitoria) => {
@@ -114,6 +140,9 @@ function AdminSearch() {
 	    case 'disciplina':
 			navigate(`/grade-curricular?tab=disciplinas&editar=${item.id}`);
 	      break;
+		  case 'curso':  
+		        navigate(`/grade-curricular?tab=cursos&editar=${item.id}`);
+		        break;
 	    case 'monitoria':
 	      if (item?.disciplina?.id) {
 	        navigate(`/disciplina/${item.disciplina.id}`);
@@ -150,6 +179,7 @@ function AdminSearch() {
   const hasResults = 
     disciplinasFiltradas.length > 0 ||
     monitoriasFiltradas.length > 0 ||
+	cursosFiltrados.length > 0 ||
     usuariosFiltrados.length > 0;
 
   return (
@@ -205,11 +235,14 @@ function AdminSearch() {
                   <div className="admin-search-category">
                     MONITORIAS ({monitoriasFiltradas.length})
                   </div>
+				  
+				  
 
                   {monitoriasFiltradas.map((monitoria) => {
                     const disciplinaNome = monitoria?.disciplina?.nome || 'Monitoria';
                     const monitorNome = monitoria?.monitor?.usuario?.nome || 'N/A';
                     
+					
                     return (
                       <div
                         key={`monitoria-${monitoria.id}`}
@@ -232,6 +265,34 @@ function AdminSearch() {
                   })}
                 </>
               )}
+			  
+			  {/* CURSOS */}
+			  {cursosFiltrados.length > 0 && (
+			    <>
+			      <div className="admin-search-category">
+			        🎓 CURSOS ({cursosFiltrados.length})
+			      </div>
+
+			      {cursosFiltrados.map((curso) => (
+			        <div
+			          key={`curso-${curso.id}`}
+			          className="admin-search-result-item"
+			          onClick={() => handleResultClick('curso', curso)}
+			        >
+			          <div className="admin-search-result-content">
+			            <div className="admin-search-result-title">
+			              <strong>{curso.nome}</strong>
+			            </div>
+			            {curso.codigo && (
+			              <div className="admin-search-result-subtitle">
+			                Código: {curso.codigo}
+			              </div>
+			            )}
+			          </div>
+			        </div>
+			      ))}
+			    </>
+			  )}
 
               {/* DISCIPLINAS */}
               {disciplinasFiltradas.length > 0 && (
@@ -240,7 +301,10 @@ function AdminSearch() {
                     DISCIPLINAS ({disciplinasFiltradas.length})
                   </div>
 
-                  {disciplinasFiltradas.map((disciplina) => (
+                  {disciplinasFiltradas.map((disciplina) => ( 
+					
+					
+		
                     <div
                       key={`d-${disciplina.id}`}
                       className="admin-search-result-item"
