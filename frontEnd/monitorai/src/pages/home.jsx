@@ -51,7 +51,7 @@ export default function Home() {
 
   // Função para alternar o PDF aberto
   function togglePdf(edital) {
-    if (editalPdfExpandido === edital.id) {  // CORRIGIDO: edil.id -> edil.id (mesmo o param sendo "edital")
+    if (editalPdfExpandido === edital.id) {  
       setEditalPdfExpandido(null);
     } else {
       setEditalPdfExpandido(edital.id);
@@ -181,7 +181,7 @@ export default function Home() {
             <button className="btn-primary btn-large" onClick={() => navigate('/login')}>
               Começar agora
             </button>
-            <button className="btn-secondary btn-large" onClick={() => navigate('/materiais')}>
+            <button className="btn-secondary btn-large" onClick={() => navigate('/perfil/salvos')}>
               Ver materiais
             </button>
           </div>
