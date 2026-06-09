@@ -131,6 +131,7 @@ body {
 .filter-group {
     display: flex;
     gap: 12px;
+    align-items: center;
 }
 
 .filter-select {
@@ -173,14 +174,14 @@ body {
 /* GRID DE MONITORIAS */
 .monitorias-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
 }
 
 .monitoria-card {
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 20px;
+    padding: 14px;
     background: white;
     transition: 0.25s ease;
 }
@@ -200,7 +201,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .monitoria-discipline {
@@ -229,23 +230,25 @@ body {
 .monitoria-info {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 4px;
+    margin-bottom: 12px;
 }
 
 .info-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 4px;
 }
 
 .info-row .info-icon {
     background: #f1f5f9;
-    padding: 6px 10px;
+    padding: 3px 6px; 
     border-radius: 8px;
-    font-size: 13px;
-    width: 28px;
-    text-align: center;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
 }
 
 .info-row .info-text {
@@ -260,8 +263,8 @@ body {
 /* AÇÕES */
 .monitoria-actions {
     display: flex;
-    gap: 10px;
-    padding-top: 16px;
+    gap: 8px;
+    padding-top: 12px;
     border-top: 1px solid #f1f5f9;
 }
 
@@ -483,6 +486,14 @@ body {
     font-weight: 600;
     margin-bottom: 18px;
 }
+/* Container que agrupa a busca, filtro e botões principais */
+.controls-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
 
 /* BOTÕES DO MODAL */
 .modal-actions {
@@ -541,7 +552,7 @@ body {
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
+    white-space: nowrap;
 }
 
 .btn-historic:hover {
@@ -571,13 +582,22 @@ body {
     background: #dc2626;
     color: white;
     border: none;
-    padding: 14px 20px;
+    padding: 14px 28px;
     border-radius: 12px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);
 }
 
 .btn-finalizar:hover {
     background: #b91c1c;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinha o conteúdo à direita */
+    margin-top: 32px;         /* Espaçamento em relação à lista acima */
+    padding-bottom: 20px;     /* Espaçamento extra para não colar no rodapé da página */
 }

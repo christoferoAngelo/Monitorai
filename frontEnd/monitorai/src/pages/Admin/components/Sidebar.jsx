@@ -17,7 +17,7 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
     { id: 'Editais', label: 'Editais', icon: '📋', action: () => navigate('/admin-editais') },  // MUDOU!
     { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo') },
     { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📑', action: () => navigate('/grade-curricular') },
-    { id: 'Configuracoes', label: 'Configurações', icon: '⚙️', action: () => navigate('/perfil') }
+    { id: 'VerHome', label: 'Visualizar Home', icon: '🏠', action: () => window.open('/', '_blank') }
   ];
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>

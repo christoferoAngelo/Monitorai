@@ -135,37 +135,52 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
         </div>
 
         <form onSubmit={salvar}>
-          <div className="form-group">
-            <label>Buscar Monitor *</label>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="Digite nome ou RA..."
-              value={busca}
-              onChange={e => setBusca(e.target.value)}
-            />
-            {mostrarBusca && resultadosBusca.length > 0 && (
-              <div className="search-dropdown">
-                {resultadosBusca.map(u => (
-                  <div key={u.id} className="search-item" onClick={() => {
-                    setMonitorSelecionado(u);
-                    setBusca(u.username);
-                    setMostrarBusca(false);
-                  }}>
-                    <strong>{u.username}</strong>
-                    <small>{u.email}</small>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {monitorSelecionado && (
-            <div className="selected-badge">
-              ✓ Monitor: {monitorSelecionado.username}
+        {/* Se NÃO tem monitor selecionado, mostra o campo de busca */}
+          {!monitorSelecionado && (
+            <div className="form-group">
+              <label>Buscar Monitor *</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Digite nome ou RA..."
+                value={busca}
+                onChange={e => setBusca(e.target.value)}
+              />
+              {mostrarBusca && resultadosBusca.length > 0 && (
+                <div className="search-dropdown">
+                  {resultadosBusca.map(u => (
+                    <div key={u.id} className="search-item" onClick={() => {
+                      setMonitorSelecionado(u);
+                      setBusca(""); // Limpa o texto da busca
+                      setMostrarBusca(false);
+                    }}>
+                      <strong>{u.username}</strong>
+                      <small>{u.email}</small>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
+          {/* Se TEM monitor, mostra o badge com opção de remover */}
+          {monitorSelecionado && (
+            <div className="form-group">
+              <label>Monitor Selecionado</label>
+              <div className="selected-badge" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span>✓ {monitorSelecionado.username}</span>
+                {/* Botão para trocar o monitor */}
+                <button 
+                  type="button" 
+                  onClick={() => setMonitorSelecionado(null)}
+                  style={{ background: "transparent", border: "none", cursor: "pointer", fontWeight: "bold" }}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+          
           <div className="form-group">
             <label>Curso</label>
             <select

@@ -6,7 +6,6 @@ function QuickActions({ onAction }) {
     { label: '📚 Nova Monitoria', key: 'Nova Monitoria' },
     { label: '📄 Novo Relatório', key: 'Novo Relatório' },
     { label: '📋 Grade Curricular', key: 'Grade Curricular' }, 
-    { label: '💰 Lançar Pagamento', key: 'Lançar Pagamento' },
   ];
 
   return (

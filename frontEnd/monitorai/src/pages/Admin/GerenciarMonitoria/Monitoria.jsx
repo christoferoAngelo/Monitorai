@@ -106,25 +106,12 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
 
   return (
     <div className="monitoria-page">
-      <header className="page-header">
+<header className="page-header">
         <div>
           <h1>Gerenciamento de Monitorias</h1>
           <p className="page-subtitle">Cadastre e gerencie as monitorias ativas por semestre</p>
         </div>
-        <div className="header-buttons">
-          <button className="btn-historic" onClick={irParaHistorico}>
-            📜 Histórico
-          </button>
-          <button className="btn-new" onClick={criarNova}>
-            ➕ Nova Monitoria
-          </button>
-          <button className="btn-finalizar" onClick={finalizarSemestre}>
-            🏁 Finalizar Semestre
-          </button>
-        </div>
-
-        
-        
+        {/* Header limpo, apenas título */}
       </header>
 
 
@@ -152,28 +139,28 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
         </div>
       </div>
 
-      <div className="filters-row">
+<div className="controls-row">
         <div className="search-box">
           <span className="search-icon">🔍</span>
           <input
             type="text"
             className="search-input"
-            placeholder="Buscar monitoria, monitor, sala ou dia..."
+            placeholder="Buscar..."
             value={busca}
             onChange={e => setBusca(e.target.value)}
           />
         </div>
-        
+
         <div className="filter-group">
-          <select
-            className="filter-select"
-            value={filtroStatus}
-            onChange={e => setFiltroStatus(e.target.value)}
-          >
+          <select className="filter-select" value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
             <option value="todos">Todos</option>
             <option value="ativas">Apenas Ativas</option>
             <option value="inativas">Apenas Inativas</option>
           </select>
+          
+          {/* Botões movidos para cá */}
+          <button className="btn-historic" onClick={irParaHistorico}>📜 Histórico</button>
+          <button className="btn-new" onClick={criarNova}>➕ Nova Monitoria</button>
         </div>
       </div>
 
@@ -230,6 +217,14 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
             ))}
           </div>
         )}
+
+       
+      </div>
+
+      <div className="footer-actions">
+        <button className="btn-finalizar" onClick={finalizarSemestre}>
+          🏁 Finalizar Semestre
+        </button>
       </div>
 
       {mostrarModal && (
