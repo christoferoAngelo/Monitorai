@@ -226,14 +226,13 @@ body {
 
 .hero-visual {
   flex: 1;
-  position: relative;
   display: flex;
+  justify-content: center; /* NÃO empurrar pra direita */
   align-items: center;
-  justify-content: flex-start; /* Alinha mais à esquerda do bloco da direita, trazendo para o centro */
-  padding-left: 2rem; /* Espaçamento controlado em relação ao texto */
-  gap: 1.5rem; /* Distância horizontal entre os cards */
-  
+  position: relative;
+  overflow: visible;
 }
+
 
 .floating-card {
   position: relative;
@@ -254,23 +253,27 @@ body {
 .floating-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}.floating-card {
-  position: relative;       
+}
+
+.floating-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
-  padding: 1.5rem 1rem;     
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+
+  padding: 1rem 1.25rem;
+  min-width: 180px;   /* reduzido pra não cortar */
+
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+
   display: flex;
-  flex-direction: column;    /* Alinha o ícone e o texto verticalmente dentro do card */
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  min-width: 130px;     
   text-align: center;
+
   transition: all 0.3s ease;
 }
+
 
 .floating-card:hover {
   transform: translateY(-10px); 
@@ -278,9 +281,9 @@ body {
 }
 
 
-.card-1 { bottom: 15%; right: 178%; left: 156%; animation: float1 6s ease-in-out infinite; }
-.card-2 { bottom: 60%; left: 175%; animation: float2 6s ease-in-out infinite 1s; }
-.card-3 { bottom: 80%; left: 105%; animation: float3 6s ease-in-out infinite 2s; }
+.card-1 { top: 15%; right: 8%;animation: float1 6s ease-in-out infinite; }
+.card-2 { top: 60%; left: 5%; animation: float2 6s ease-in-out infinite 1s; }
+.card-3 { top: 80%; left: 15%; animation: float3 6s ease-in-out infinite 2s; }
 
 .card-icon {
   font-size: 2rem;
@@ -291,6 +294,17 @@ body {
   color: var(--primary);
   margin: 0;
   font-size: 1rem;
+}
+
+.floating-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  align-items: center;   /* NÃO colar na direita */
+  justify-content: center;
+
+  max-width: 260px;      /* 🔥 limita largura pra não cortar */
 }
 
 @keyframes float1 {
