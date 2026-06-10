@@ -395,3 +395,30 @@
     height: 20px;
     object-fit: contain;
 }
+
+.icon-small {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.search-wrapper img {
+  width: 18px;
+  margin-right: 8px;
+}
+
+.search-wrapper input {
+  border: none;
+  outline: none;
+  width: 100%;
+}

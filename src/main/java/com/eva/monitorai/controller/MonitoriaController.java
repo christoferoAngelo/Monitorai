@@ -1,12 +1,14 @@
 package com.eva.monitorai.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.eva.monitorai.dto.MonitoriaDTO;
+import com.eva.monitorai.dto.MonitoriaResponseDTO;
 import com.eva.monitorai.model.entity.Monitoria;
 import com.eva.monitorai.model.entity.AtuacaoMonitoria;
 import com.eva.monitorai.repository.AtuacaoMonitoriaRepository;
@@ -29,37 +31,41 @@ public class MonitoriaController {
 
     // Criar monitoria
     @PostMapping
-    public Monitoria criar(@RequestBody MonitoriaDTO dto) {
-        return monitoriaService.criarMonitoria(dto);
+    public MonitoriaResponseDTO criar(@RequestBody MonitoriaDTO dto) {
+        Monitoria monitoriaSalva = monitoriaService.criarMonitoria(dto);
+        return monitoriaService.converterParaDTO(monitoriaSalva);
     }
 
     // Listar todas
     @GetMapping
-    public List<Monitoria> listarTodas() {
-        return monitoriaService.listarTodas();
+    public List<MonitoriaResponseDTO> listarTodas() {
+        return monitoriaService.listarTodas().stream()
+                .map(monitoriaService::converterParaDTO)
+                .collect(Collectors.toList());
     }
 
     // Buscar por ID
     @GetMapping("/{id}")
-    public Monitoria buscarPorId(@PathVariable Long id) {
-        return monitoriaService.buscarPorId(id);
+    public MonitoriaResponseDTO buscarPorId(@PathVariable Long id) {
+        Monitoria monitoria = monitoriaService.buscarPorId(id);
+        return monitoriaService.converterParaDTO(monitoria);
     }
 
     // Atualizar
     @PutMapping("/{id}")
-    public Monitoria atualizar(@PathVariable Long id, @RequestBody MonitoriaDTO dto) {
-        return monitoriaService.atualizar(id, dto);
+    public MonitoriaResponseDTO atualizar(@PathVariable Long id, @RequestBody MonitoriaDTO dto) {
+        Monitoria monitoriaAtualizada = monitoriaService.atualizar(id, dto);
+        return monitoriaService.converterParaDTO(monitoriaAtualizada);
     }
 
     // Trocar monitor
     @PutMapping("/{monitoriaId}/trocar-monitor/{novoUsuarioId}")
-    public Monitoria trocarMonitor(
+    public MonitoriaResponseDTO trocarMonitor(
             @PathVariable Long monitoriaId,
             @PathVariable Long novoUsuarioId) {
-        return monitoriaService.trocarMonitor(monitoriaId, novoUsuarioId);
+        Monitoria monitoriaModificada = monitoriaService.trocarMonitor(monitoriaId, novoUsuarioId);
+        return monitoriaService.converterParaDTO(monitoriaModificada);
     }
-    
-    
 
     // Deletar
     @DeleteMapping("/{id}")
@@ -69,32 +75,37 @@ public class MonitoriaController {
 
     // Listar apenas monitorias ativas
     @GetMapping("/ativas")
-    public List<Monitoria> listarAtivas() {
-        return monitoriaService.listarAtivas();
+    public List<MonitoriaResponseDTO> listarAtivas() {
+        return monitoriaService.listarAtivas().stream()
+                .map(monitoriaService::converterParaDTO)
+                .collect(Collectors.toList());
     }
 
     // Reativar
     @PutMapping("/{id}/reativar")
-    public Monitoria reativar(@PathVariable Long id) {
+    public MonitoriaResponseDTO reativar(@PathVariable Long id) {
         Monitoria monitoria = monitoriaService.buscarPorId(id);
         monitoria.setAtiva(true);
-        return monitoriaService.salvar(monitoria);
+        Monitoria monitoriaSalva = monitoriaService.salvar(monitoria);
+        return monitoriaService.converterParaDTO(monitoriaSalva);
     }
 
     // Listar atuações de uma monitoria
     @GetMapping("/{id}/atuacoes")
     public List<AtuacaoMonitoria> listarAtuacoes(@PathVariable Long id) {
+        // Como não refatoramos AtuacaoMonitoria, ela permanece igual.
+        // Fique de olho se ela também não causará circularidade no futuro!
         return atuacaoRepository.findByMonitoriaId(id);
     }
-    
 
-	// Buscar monitoria por usuário (para o monitor acessar a dele)
+    // Buscar monitoria por usuário (para o monitor acessar a dele)
     @GetMapping("/monitor/{usuarioId}")
-    public List<Monitoria> buscarPorMonitor(@PathVariable Long usuarioId) {
-        return monitoriaRepository.findByUsuarioId(usuarioId); 
+    public List<MonitoriaResponseDTO> buscarPorMonitor(@PathVariable Long usuarioId) {
+        return monitoriaRepository.findByUsuarioId(usuarioId).stream()
+                .map(monitoriaService::converterParaDTO)
+                .collect(Collectors.toList());
     }
-    
-    
+
     @GetMapping("/historico")
     public ResponseEntity<List<AtuacaoMonitoria>> listarHistorico(
         @RequestParam(required = false) Long monitorId,
@@ -103,12 +114,12 @@ public class MonitoriaController {
     ) {
         return ResponseEntity.ok(atuacaoRepository.buscarHistorico(monitorId, disciplinaId, anoSemestre));
     }
-    
+
     @PostMapping("/finalizar-semestre")
     public ResponseEntity<String> finalizarSemestre() {
         return ResponseEntity.ok(monitoriaService.finalizarSemestre());
     }
-    
+
     @GetMapping("/atuacoes/todas")
     public List<AtuacaoMonitoria> listarTodasAtuacoes() {
         return atuacaoRepository.findAll();

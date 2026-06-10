@@ -159,17 +159,17 @@ export default function GerenciarRecursos() {
 
   // Função auxiliar para definir o ícone correto na listagem
   const renderizarIconeTipo = (tipo) => {
-    if (tipo === 'DOCUMENTO') return '📄';
-    if (tipo === 'QUIZZ' || tipo === 'QUIZZ') return '🧩';
-    if (tipo === 'VIDEO') return '▶️';
-    return '📁';
+    if (tipo === 'DOCUMENTO') return <img src="/icone_documento.png" width={20} height={20} />;
+    if (tipo === 'QUIZZ' || tipo === 'QUIZZ') return <img src="/icone_quizz.png" width={20} height={20} />;
+    if (tipo === 'VIDEO') return <img src="/icone_video.png" width={20} height={20} />;
+    return <img src="/icone_monitorias.png" width={20} height={20} />;
   };
 
   return (
     <div className="recursos-container">
       <header className="recursos-header-principal">
         <div>
-          <h1 style={{ margin: 0, fontSize: '1.75rem' }}>👨‍🏫 Gerenciar Recursos</h1>
+          <h1 style={{ margin: 0, fontSize: '1.75rem' }}>Gerenciar Recursos</h1>
           <p style={{ margin: '0.25rem 0 0 0', opacity: 0.9 }}>
             Publique e gerencie os materiais da sua turma
           </p>
@@ -182,8 +182,9 @@ export default function GerenciarRecursos() {
         <button 
           className={`btn-toggle-form ${formAberto ? 'fechar' : 'abrir'}`}
           onClick={() => setFormAberto(!formAberto)}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}
         >
-          {formAberto ? '❌ Cancelar Publicação' : '➕ Novo Material'}
+          {formAberto ? <><img src="/icone_x.png" height={20} width={20} /> Cancelar Publicação</> : <><img src="/icone_mais.png" height={20} width={20} /> Novo Material</>}
         </button>
       </div>
 
@@ -194,20 +195,23 @@ export default function GerenciarRecursos() {
             <button
               className={`aba-btn ${abaAtiva === 'pdf' ? 'ativa' : ''}`}
               onClick={() => { setAbaAtiva('pdf'); setUrl(''); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}
             >
-              📄 Upload de PDF
+              <img src="/icone_documento.png" width={20} height={20}/> Upload de PDF
             </button>
             <button
               className={`aba-btn ${abaAtiva === 'quizz' ? 'ativa' : ''}`}
               onClick={() => { setAbaAtiva('quizz'); setArquivoPdf(null); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}
             >
-              🧩 Link de Quizz
+              <img src="/icone_quizz.png" width={20} height={20}/> Link de Quizz
             </button>
             <button
               className={`aba-btn ${abaAtiva === 'video' ? 'ativa' : ''}`}
               onClick={() => { setAbaAtiva('video'); setArquivoPdf(null); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}
             >
-              ▶️ Vídeo YouTube
+              <img src="/icone_video.png" width={20} height={20}/> Vídeo YouTube
             </button>
           </nav>
 

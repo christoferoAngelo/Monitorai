@@ -158,15 +158,18 @@ export default function MonitorRelatorio() {
                     <div className="monitoria-info-card">
                         <div className="monitoria-info-item">
                             <label>Sua Disciplina</label>
-                            <span>{minhaMonitoria.disciplina?.nome}</span>
+                            <span>{minhaMonitoria.disciplinaNome || "Não informada"}</span>
                         </div>
                         <div className="monitoria-info-item">
                             <label>Local de Atendimento</label>
-                            <span>{minhaMonitoria.sala}</span>
+                            <span>{minhaMonitoria.sala || "Não definida"}</span>
                         </div>
                         <div className="monitoria-info-item">
-                            <label>Horário Fixo ({minhaMonitoria.diaSemana})</label>
-                            <span>{minhaMonitoria.horarioInicio} - {minhaMonitoria.horarioFim}</span>
+                            <label>Horário Fixo ({minhaMonitoria.diaSemana || "Dia não definido"})</label>
+                            {/* ATUALIZADO: Proteção nos horários com o substring */}
+                            <span>
+                                {minhaMonitoria.horarioInicio?.substring(0,5) || "--:--"} - {minhaMonitoria.horarioFim?.substring(0,5) || "--:--"}
+                            </span>
                         </div>
                     </div>
 

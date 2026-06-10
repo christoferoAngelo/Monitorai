@@ -231,14 +231,14 @@ console.log("CURTIDOS:", curtidos);
 
         <div className="perfil-info">
 
-          <h1>{perfil.username}</h1>
+          <h1>{perfil.username?.substring(0, 1)?.toUpperCase() + perfil.username?.substring(1) || "Usuário"}</h1>
 
           <span className="perfil-role">
             {perfil.role}
           </span>
 
-          <p>📧 {perfil.email}</p>
-          <p>🆔 RA: {perfil.ra}</p>
+          <p>Email: {perfil.email}</p>
+          <p>RA: {perfil.ra}</p>
 
         </div>
 
@@ -246,8 +246,17 @@ console.log("CURTIDOS:", curtidos);
 
       <div className="salvos-section">
 
-        <h2>📚 Materiais Salvos</h2>
-
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <h2 style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "10px", 
+              margin: 0
+          }}>
+              <img src="/icone_salvo.png" height={32} width={32} alt="Ícone" /> 
+              Materiais Salvos
+          </h2>
+        </div>
         <div className="salvos-grid">
 
   {perfil.materiaisSalvos?.map(material => (

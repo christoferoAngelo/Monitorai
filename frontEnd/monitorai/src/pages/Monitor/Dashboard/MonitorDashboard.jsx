@@ -7,7 +7,6 @@ function MonitorDashboard() {
   // Consome os dados do usuário injetados pelo SharedLayout pai
   const { usuario } = useOutletContext();
   
-  // Atualizado para usar o estado de monitorias igual ao AlunoDashboard
   const [monitorias, setMonitorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -15,11 +14,17 @@ function MonitorDashboard() {
   useEffect(() => {
     const carregarMonitorias = async () => {
       try {
-        // Buscando da rota correta e atualizada de monitorias
+        // Buscando da rota atualizada de monitorias
         const monitoriasRes = await api.get('/monitorias/ativas');
-        setMonitorias(monitoriasRes.data);
+        
+        if (Array.isArray(monitoriasRes.data)) {
+          setMonitorias(monitoriasRes.data);
+        } else {
+          setMonitorias([]);
+        }
       } catch (error) {
         console.error("Erro ao carregar dados do painel do monitor:", error);
+        setMonitorias([]);
       } finally {
         setLoading(false);
       }
@@ -33,7 +38,7 @@ function MonitorDashboard() {
   return (
     <>
       <header className="dashboard-header">
-        <h1>Bem-vindo, {usuario?.username}!</h1>
+        <h1>Bem-vindo, {usuario?.username?.substring(0, 1)?.toUpperCase() + usuario?.username?.substring(1) || "Usuário"}!</h1>
         <p>Seu painel de gerenciamento de monitoria e ambiente de estudos.</p>
       </header>
 
@@ -42,7 +47,6 @@ function MonitorDashboard() {
       <div className="cards-grid" style={{ marginBottom: '40px' }}>
         
         <div className="card" onClick={() => navigate('/gerenciar-recursos')}>
-          {/* Envolvendo o Ícone e o Texto em um flex container */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
             <img src="/icone_clipe.png" alt="Recursos" width="20" height="20"/>
             <strong>Recursos</strong>
@@ -51,7 +55,6 @@ function MonitorDashboard() {
         </div>
 
         <div className="card" onClick={() => navigate('/monitor/relatorio')}>
-          {/* Envolvendo o Ícone e o Texto em um flex container */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
             <img src="/icone_editais.png" alt="Relatórios" width="20" height="20"/>
             <strong>Relatórios</strong>
@@ -76,37 +79,41 @@ function MonitorDashboard() {
           ) : (
             <div className="cards-grid">
               {monitorias.map((monitoria) => {
-                // Modificado para checar o username dentro da nova estrutura de objetos aninhados
-                const isMinhaMonitoria = monitoria.monitor?.usuario?.username === usuario?.username;
+                // Checagem atualizada para a estrutura plana do DTO
+                const isMinhaMonitoria = monitoria.monitorNome === usuario?.username;
 
                 return (
                   <div 
                     key={monitoria.id} 
                     className={`card disciplina-card-aluno ${isMinhaMonitoria ? 'minha-disciplina' : ''}`}
-                    onClick={() => navigate(`/disciplina/${monitoria.disciplina?.id}`)}
+                    // Redirecionamento atualizado
+                    onClick={() => navigate(`/disciplina/${monitoria.disciplinaId}`)}
                   >
                     <div className="disciplina-card-header">
                       <h4>
-                        {monitoria.disciplina?.nome} 
+                        {/* Nome da disciplina atualizado */}
+                        {monitoria.disciplinaNome} 
                         {isMinhaMonitoria && <span title="Esta é a sua monitoria!"> ⭐</span>}
                       </h4>
-                      {monitoria.disciplina?.codigo && (
-                        <span className="disciplina-code">{monitoria.disciplina.codigo}</span>
+                      {/* Código da disciplina atualizado */}
+                      {monitoria.disciplinaCodigo && (
+                        <span className="disciplina-code">{monitoria.disciplinaCodigo}</span>
                       )}
                     </div>
                     
                     <div className="disciplina-card-body">
                       <p>
-                        {/* Exibe o nome usando a mesma associação mapeada no AlunoDashboard */}
-                        <strong>Monitor:</strong> {monitoria.monitor?.usuario?.username || "Sem monitor atribuído"}
+                        {/* Nome do monitor formatado e atualizado */}
+                        <strong>Monitor:</strong> {monitoria.monitorNome 
+                          ? monitoria.monitorNome.substring(0, 1).toUpperCase() + monitoria.monitorNome.substring(1) 
+                          : "Sem monitor atribuído"}
                         {isMinhaMonitoria && <span className="tag-voce"> (Você)</span>}
                       </p>
                       <p>
+                        {/* Cursos atualizados de forma simplificada */}
                         <strong>Cursos:</strong> {monitoria.cursosNomes && monitoria.cursosNomes.length > 0 
                           ? monitoria.cursosNomes.join(" | ") 
-                          : (monitoria.disciplina?.cursosNomes && monitoria.disciplina.cursosNomes.length > 0 
-                              ? monitoria.disciplina.cursosNomes.join(" | ") 
-                              : "Geral")}
+                          : "Geral"}
                       </p>
                     </div>
                   </div>

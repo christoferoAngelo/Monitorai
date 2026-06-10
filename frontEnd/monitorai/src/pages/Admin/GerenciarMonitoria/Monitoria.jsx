@@ -17,13 +17,22 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
   const navigate = useNavigate();
 
   async function carregarMonitorias() {
-    try {
-      const response = await api.get("/monitorias");
+  try {
+    const response = await api.get("/monitorias");
+    console.log("Dados recebidos da API:", response.data); // <--- Adicione isso!
+    
+    // Verifique se o dado é realmente um array
+    if (Array.isArray(response.data)) {
       setMonitorias(response.data);
-    } catch (error) {
-      console.error("Erro ao carregar monitorias", error);
+    } else {
+      console.warn("A API não retornou um array!", response.data);
+      setMonitorias([]); // Garante que fique vazio ao invés de quebrar
     }
+  } catch (error) {
+    console.error("Erro ao carregar monitorias", error);
+    setMonitorias([]);
   }
+}
 
   async function carregarCursos() {
     try {
@@ -43,11 +52,13 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
     carregarCursos();
   }, []);
 
-  const monitoriasFiltradas = monitorias.filter(m => {
-    if (filtroStatus === "ativas" && !m.ativa) return false;
-    if (filtroStatus === "inativas" && m.ativa) return false;
-    return true;
-  });
+  const monitoriasFiltradas = Array.isArray(monitorias) 
+  ? monitorias.filter(m => {
+      if (filtroStatus === "ativas" && !m.ativa) return false;
+      if (filtroStatus === "inativas" && m.ativa) return false;
+      return true;
+    })
+  : []; // Se não for array, retorna array vazio
 
   function criarNova() {
     setMonitoriaEditando(null);
@@ -101,8 +112,8 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
     }
   }
 
-  const ativas = monitorias.filter(m => m.ativa).length;
-  const inativas = monitorias.filter(m => !m.ativa).length;
+  const ativas = Array.isArray(monitorias) ? monitorias.filter(m => m.ativa).length : 0;
+  const inativas = Array.isArray(monitorias) ? monitorias.filter(m => !m.ativa).length : 0;
 
   return (
     <div className="monitoria-page">

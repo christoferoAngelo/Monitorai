@@ -14,9 +14,25 @@ function AlunoDashboard() {
     const carregarMonitorias = async () => {
       try {
         const monitoriasRes = await api.get('/monitorias/ativas');
-        setMonitorias(monitoriasRes.data);
+        
+        // --- ADICIONE ESTE LOG PARA DEBUGAR ---
+        console.log("DADOS RECEBIDOS DA API:", monitoriasRes.data);
+        
+        // Verifica se é array, caso contrário, tenta acessar alguma chave comum (como .content ou .data)
+        // ou força o estado para um array vazio para não quebrar a tela.
+        if (Array.isArray(monitoriasRes.data)) {
+          setMonitorias(monitoriasRes.data);
+        } else if (monitoriasRes.data && typeof monitoriasRes.data === 'object') {
+           // Se a API retornar um objeto com os dados dentro, ajuste aqui
+           // Ex: setMonitorias(monitoriasRes.data.content); 
+           console.warn("A API retornou um objeto, não um array. Verifique a estrutura.");
+           setMonitorias([]); 
+        } else {
+          setMonitorias([]);
+        }
       } catch (error) {
         console.error("Erro ao carregar monitorias do painel:", error);
+        setMonitorias([]); // Define como vazio para evitar que o .map quebre
       } finally {
         setLoading(false);
       }
@@ -31,7 +47,7 @@ function AlunoDashboard() {
     // Retornamos apenas o fragmento/conteúdo principal que vai preencher o <Outlet />
     <>
       <header className="dashboard-header">
-        <h1>Bem-vindo, {usuario?.username}</h1>
+        <h1>Bem-vindo(a), {usuario.username?.substring(0, 1)?.toUpperCase() + usuario.username?.substring(1) || "Usuário"}!</h1>
         <p>Seu ambiente de estudos e monitorias.</p>
       </header>
 
@@ -52,25 +68,29 @@ function AlunoDashboard() {
                 <div 
                   key={monitoria.id} 
                   className="card disciplina-card-aluno" 
-                  onClick={() => navigate(`/disciplina/${monitoria.disciplina?.id}`)}
+                  // 1. URL CORRIGIDA: Usa disciplinaId direto da raiz do objeto
+                  onClick={() => navigate(`/disciplina/${monitoria.disciplinaId}`)}
                 >
                   <div className="disciplina-card-header">
-                    <h4>{monitoria.disciplina?.nome}</h4>
-                    {monitoria.disciplina?.codigo && (
-                      <span className="disciplina-code">{monitoria.disciplina.codigo}</span>
+                    {/* 2. NOME DA DISCIPLINA CORRIGIDO */}
+                    <h4>{monitoria.disciplinaNome}</h4>
+                    {monitoria.disciplinaCodigo && (
+                      <span className="disciplina-code">{monitoria.disciplinaCodigo}</span>
                     )}
                   </div>
                   
                   <div className="disciplina-card-body">
                     <p>
-                      <strong>Monitor:</strong> {monitoria.monitor?.usuario?.username || "Sem monitor atribuído"}
+                      {/* 3. NOME DO MONITOR CORRIGIDO */}
+                      <strong>Monitor:</strong> {monitoria.monitorNome 
+                        ? monitoria.monitorNome.substring(0, 1).toUpperCase() + monitoria.monitorNome.substring(1) 
+                        : "Sem monitor atribuído"}
                     </p>
                     <p>
+                      {/* 4. CURSOS CORRIGIDO */}
                       <strong>Cursos:</strong> {monitoria.cursosNomes && monitoria.cursosNomes.length > 0 
                         ? monitoria.cursosNomes.join(" | ") 
-                        : (monitoria.disciplina?.cursosNomes && monitoria.disciplina.cursosNomes.length > 0 
-                            ? monitoria.disciplina.cursosNomes.join(" | ") 
-                            : "Geral")}
+                        : "Geral"}
                     </p>
                   </div>
                 </div>

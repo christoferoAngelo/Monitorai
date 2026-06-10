@@ -78,12 +78,6 @@ function SharedLayout() {
       label: 'Meus Salvos', 
       icon: <img src="/icone_salvo.png" alt="Meus Salvos" width="20" height="20" />, 
       action: () => navigate('/perfil/salvos') 
-    },
-    { 
-      id: 'MeuPerfil', 
-      label: 'Meu Perfil', 
-      icon: <img src="/icone_perfil.png" alt="Meu Perfil" width="20" height="20" />, 
-      action: () => navigate('/perfil') 
     }
   );
 

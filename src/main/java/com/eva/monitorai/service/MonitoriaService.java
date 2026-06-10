@@ -297,4 +297,38 @@ public class MonitoriaService {
         
         return "Semestre finalizado! " + total + " monitorias inativadas e monitores desvinculados.";
     }
+    
+ // =========================================
+    // FUNÇÃO AUXILIAR: CONVERTER PARA DTO (OUTPUT)
+    // =========================================
+    public com.eva.monitorai.dto.MonitoriaResponseDTO converterParaDTO(Monitoria monitoria) {
+        if (monitoria == null) {
+            return null;
+        }
+
+        com.eva.monitorai.dto.MonitoriaResponseDTO dto = new com.eva.monitorai.dto.MonitoriaResponseDTO();
+        dto.setId(monitoria.getId());
+        dto.setDiaSemana(monitoria.getDiaSemana());
+        dto.setHorarioInicio(monitoria.getHorarioInicio());
+        dto.setHorarioFim(monitoria.getHorarioFim());
+        dto.setSala(monitoria.getSala());
+        dto.setAtiva(monitoria.isAtiva());
+
+        // Mapeando dados do Monitor
+        if (monitoria.getMonitor() != null && monitoria.getMonitor().getUsuario() != null) {
+            dto.setMonitorNome(monitoria.getMonitor().getUsuario().getUsername());
+        }
+        
+        // Mapeando dados da Disciplina
+        if (monitoria.getDisciplina() != null) {
+            dto.setDisciplinaId(monitoria.getDisciplina().getId());
+            dto.setDisciplinaNome(monitoria.getDisciplina().getNome());
+            dto.setDisciplinaCodigo(monitoria.getDisciplina().getCodigo()); // Se existir
+            
+            // Reutilizando o método que você já tinha na entidade Monitoria para pegar os cursos
+            dto.setCursosNomes(monitoria.getCursosNomes()); 
+        }
+
+        return dto;
+    }
 }
