@@ -70,18 +70,52 @@ public class ComentarioController {
     // LISTAR COMENTÁRIOS DO MATERIAL
     @GetMapping("/material/{id}")
     public ResponseEntity<List<ComentarioResponseDTO>> listarComentarios(
-            @PathVariable Long id
+            @PathVariable Long id,
+            Authentication auth
     ){
+    	
+    	String username = auth.getName();
+
+    	Usuario usuario = usuarioRepository
+    	        .findByUsername(username)
+    	        .orElseThrow();
 
     	List<ComentarioResponseDTO> comentarios =
     		    comentarioRepository.findByMaterialId(id)
     		        .stream()
-    		        .map(c -> new ComentarioResponseDTO(
-    		            c.getId(),
-    		            c.getTexto(),
-    		            c.getUsuario().getUsername(),
-    		            c.getDataCriacao()
-    		        ))
+    		        .map(c -> {
+
+    		            boolean ehDonoComentario =
+    		                c.getUsuario().getId()
+    		                 .equals(usuario.getId());
+
+    		            boolean ehAutorDoMaterial =
+    		                c.getMaterial()
+    		                 .getAutor()
+    		                 .getUsuario()
+    		                 .getId()
+    		                 .equals(usuario.getId());
+
+    		            boolean ehAdmin =
+    		                usuario.getRole().equals("ADMIN");
+
+    		            ComentarioResponseDTO dto =
+    		                new ComentarioResponseDTO(
+    		                    c.getId(),
+    		                    c.getTexto(),
+    		                    c.getUsuario().getUsername(),
+    		                    c.getDataCriacao()
+    		                );
+
+    		            dto.setPodeExcluir(
+    		                ehDonoComentario
+    		                || ehAutorDoMaterial
+    		                || ehAdmin
+    		            );
+
+    		            return dto;
+
+    		        })
     		        .toList();
 
     		return ResponseEntity.ok(comentarios);

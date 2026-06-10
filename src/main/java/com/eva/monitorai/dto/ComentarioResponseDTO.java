@@ -8,8 +8,17 @@ public class ComentarioResponseDTO {
     private String texto;
     private String username;
     private LocalDateTime dataCriacao;
+    private boolean podeExcluir;
 
-    public ComentarioResponseDTO(Long id, String texto, String username, LocalDateTime dataCriacao) {
+    public boolean isPodeExcluir() {
+		return podeExcluir;
+	}
+
+	public void setPodeExcluir(boolean podeExcluir) {
+		this.podeExcluir = podeExcluir;
+	}
+
+	public ComentarioResponseDTO(Long id, String texto, String username, LocalDateTime dataCriacao) {
         this.id = id;
         this.texto = texto;
         this.username = username;
