@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
-
-
 
 import StatCard from '../components/StatCard';
 import MonitoriasTable from '../components/MonitoriasTable';
@@ -21,53 +19,20 @@ function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
-  
-  
 
-  // Função para limpar objetos ruins antes de renderizar
-
-  const sanitizeMonitorias = (data) => {
-  if (!Array.isArray(data)) return [];
-  return data.map(m => {
-    // Trata disciplina - pode estar em m.disciplina OU m.monitor.disciplina
-    let disciplinaStr = '—';
-    if (m.disciplina) {
-      if (typeof m.disciplina === 'string') {
-        disciplinaStr = m.disciplina;
-      } else if (typeof m.disciplina === 'object') {
-        disciplinaStr = m.disciplina.nome || m.disciplina.name || '—';
-      }
-    } else if (m.monitor?.disciplina) {
-      // Se não tem disciplina direto, pega do monitor
-      const disp = m.monitor.disciplina;
-      disciplinaStr = disp.nome || disp.name || '—';
-    }
-    
-    // Trata monitor - está em m.monitor.usuario
-    let monitorStr = '—';
-    if (m.monitor) {
-      if (typeof m.monitor === 'string') {
-        monitorStr = m.monitor;
-      } else if (typeof m.monitor === 'object') {
-        // Tenta pegarusuario dentro do monitor
-        const usuario = m.monitor.usuario;
-        monitorStr = usuario?.username || usuario?.usuario || '—';
-      }}
-    
-    return {
-      ...m,
-      disciplina: disciplinaStr,
-      monitor: monitorStr,
-      sala: m.sala || '—',
-      ativa: Boolean(m.ativa)
-    };
+  // Função simplificada para mapear os dados da API (DTO)
+  const formatMonitoria = (m) => ({
+    ...m,
+    id: m.id,
+    // Acessa as propriedades de forma direta e segura
+    disciplina: m.disciplinaNome|| '—',
+    monitor: m.monitorNome || '—',
+    sala: m.sala || '—',
+    ativa: Boolean(m.ativa)
   });
-};
 
-  // Buscar dados ao carregar
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
     if (!token) {
       navigate('/login');
       return;
@@ -75,70 +40,59 @@ function AdminDashboard() {
 
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    Promise.all([
-      api.get('/auth/me'),
-      api.get('/usuarios/stats'),
-      api.get('/monitorias')
-    ])
-.then(([resUser, resStats, resMonitorias]) => {
-  console.log('Primeiro item:', resMonitorias.data[0]);
+    async function carregarDados() {
+      try {
+        const [resUser, resStats, resMonitorias] = await Promise.all([
+          api.get('/auth/me'),
+          api.get('/usuarios/stats'),
+          api.get('/monitorias')
+        ]);
 
-      const userData = resUser.data;
-      setUsuario({
-        username: userData.username || userData.usuario || 'Admin',
-        role: userData.role || 'ADMIN'
-      });
-      
-      const s = resStats.data || {};
-      const monitoriasData = sanitizeMonitorias(resMonitorias.data || []);
-      const inativas = monitoriasData.filter(m => !m.ativa).length;
+        setUsuario({
+          username: resUser.data.username || 'Admin',
+          role: resUser.data.role || 'ADMIN'
+        });
 
-      setStats({
-        totalUsuarios: (Number(s.totalAlunos) || 0) + (Number(s.totalMonitores) || 0) + (Number(s.totalAdmins) || 0),
-        totalMateriais: Number(s.totalMateriais) || 0,
-        totalRelatorios: Number(s.totalRelatorios) || 0,
-        breakdown: [
-          { name: 'Alunos', value: Number(s.totalAlunos) || 0 },
-          { name: 'Monitores', value: Number(s.totalMonitores) || 0 },
-          { name: 'Admins', value: Number(s.totalAdmins) || 0 }
-        ]
-      });
+        const s = resStats.data || {};
+        const monitoriasFormatadas = (resMonitorias.data || []).map(formatMonitoria);
 
-      setMonitorias(monitoriasData);
+        setStats({
+          totalUsuarios: (Number(s.totalAlunos) || 0) + (Number(s.totalMonitores) || 0) + (Number(s.totalAdmins) || 0),
+          totalMateriais: Number(s.totalMateriais) || 0,
+          totalRelatorios: Number(s.totalRelatorios) || 0
+        });
 
-      const novosAlertas = [];
-      if (inativas > 0) {
-        novosAlertas.push({ type: 'danger', message: `${inativas} monitorias inativas` });
+        setMonitorias(monitoriasFormatadas);
+
+        // Gerar Alertas
+        const inativas = monitoriasFormatadas.filter(m => !m.ativa).length;
+        setAlertas([
+          inativas > 0 && { type: 'danger', message: `${inativas} monitorias inativas` },
+          Number(s.totalRelatorios) > 0 && { type: 'warning', message: `${s.totalRelatorios} relatórios pendentes` },
+          { type: 'info', message: 'Sistema online' }
+        ].filter(Boolean));
+
+      } catch (err) {
+        console.error('Erro ao carregar:', err);
+        navigate('/login');
+      } finally {
+        setLoading(false);
       }
-      if (Number(s.totalRelatorios) > 0) {
-        novosAlertas.push({ type: 'warning', message: `${s.totalRelatorios} relatórios enviados` });
-      }
-      novosAlertas.push({ type: 'info', message: 'Sistema online' });
-      setAlertas(novosAlertas);
+    }
 
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error('❌ Erro ao carregar:', err);
-      navigate('/login');
-    });
+    carregarDados();
   }, [navigate]);
 
-  // Filtrar monitorias baseadas na busca
-  const monitoriasFiltradas = monitorias.filter(m => {
-    if (!searchTerm) return true;
+  // Uso de useMemo para performance ao filtrar
+  const monitoriasFiltradas = useMemo(() => {
+    if (!searchTerm) return monitorias;
     const term = searchTerm.toLowerCase();
-    
-    const disciplinaStr = String(m.disciplina || '');
-    const monitorStr = String(m.monitor || '');
-    const salaStr = String(m.sala || '');
-    
-    return (
-      disciplinaStr.toLowerCase().includes(term) ||
-      monitorStr.toLowerCase().includes(term) ||
-      salaStr.toLowerCase().includes(term)
+    return monitorias.filter(m => 
+      m.disciplina.toLowerCase().includes(term) ||
+      m.monitor.toLowerCase().includes(term) ||
+      m.sala.toLowerCase().includes(term)
     );
-  });
+  }, [monitorias, searchTerm]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -183,67 +137,33 @@ function AdminDashboard() {
     navigate('/admin-monitorias');
   };
 
-  if (loading) {
-    return (
-      <div className="admin-loading">
-        <div className="spinner"></div>
-        <p>Carregando painel...</p>
-      </div>
-    );
-  }
-
-  const dataAtual = new Date().toLocaleDateString('pt-BR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  if (loading) return <div className="admin-loading">Carregando painel...</div>;
 
   return (
     <div className="admin-layout">
-	
-
       <main className="admin-main">
-	  <div className="admin-header">
-	      <AdminSearch />
-	    </div>
+        <div className="admin-header">
+          <AdminSearch />
+        </div>
 
         <header className="main-header">
           <div>
-            <h1>Bem-vindo, {usuario?.username || 'Administrador'}</h1>
+            <h1>Bem-vindo, {usuario?.username}</h1>
             <p>Gerencie usuários, monitorias, relatórios e conteúdos.</p>
           </div>
-          <div className="header-date">{dataAtual}</div>
+          <div className="header-date">
+            {new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </div>
         </header>
 
         <section className="stats-grid">
-          <StatCard 
-            title="Usuários" 
-            value={Number(stats.totalUsuarios) || 0} 
-            subtitle="Total de usuários" 
-            variant="blue" 
-          />
-          <StatCard 
-            title="Monitorias" 
-            value={Number(monitorias.length) || 0} 
-            subtitle={`${(monitorias.filter(m => !m.ativa) || []).length} inativas`} 
-            variant="red" 
-          />
-          <StatCard 
-            title="Materiais" 
-            value={Number(stats.totalMateriais) || 0} 
-            subtitle="Total de materiais" 
-            variant="dark" 
-          />
-          <StatCard 
-            title="Relatórios" 
-            value={Number(stats.totalRelatorios) || 0} 
-            subtitle="Total de relatórios" 
-            variant="blue" 
-          />
+          <StatCard title="Usuários" value={stats.totalUsuarios} subtitle="Total" variant="blue" />
+          <StatCard title="Monitorias" value={monitorias.length} subtitle={`${monitorias.filter(m => !m.ativa).length} inativas`} variant="red" />
+          <StatCard title="Materiais" value={stats.totalMateriais} subtitle="Total" variant="dark" />
+          <StatCard title="Relatórios" value={stats.totalRelatorios} subtitle="Total" variant="blue" />
         </section>
 
         <section className="content-grid">
-
           <MonitoriasTable 
             monitorias={monitoriasFiltradas} 
             onEdit={handleEditMonitoria}
@@ -256,11 +176,8 @@ function AdminDashboard() {
             <QuickActions onAction={handleQuickAction} />
             <AlertsPanel alertas={alertas} />
           </div>
-
         </section>
-
       </main>
-
     </div>
   );
 }
