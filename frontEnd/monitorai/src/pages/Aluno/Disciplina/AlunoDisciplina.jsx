@@ -7,7 +7,8 @@ import {
   FaRegHeart,
   FaBookmark,
   FaRegBookmark,
-  FaComment
+  FaComment,
+  FaPaperPlane
 } from "react-icons/fa";
 
 function AlunoDisciplina() {
@@ -32,6 +33,11 @@ function AlunoDisciplina() {
   // Estados dos cards
   const [curtidos, setCurtidos] = useState([]);
   const [salvos, setSalvos] = useState([]);
+
+  const [modalComentarios, setModalComentarios] = useState(false);
+  const [comentarios, setComentarios] = useState([]);
+  const [novoComentario, setNovoComentario] = useState("");
+  const [materialSelecionado, setMaterialSelecionado] = useState(null);
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -172,6 +178,76 @@ function AlunoDisciplina() {
     }
 };
 
+const enviarComentario = async () => {
+
+  if(!novoComentario.trim()) return;
+
+  try {
+
+    await api.post("/comentarios", {
+
+      texto: novoComentario,
+      materialId: materialSelecionado
+
+    });
+
+    abrirComentarios(materialSelecionado);
+
+    setNovoComentario("");
+
+  } catch(err) {
+
+    console.error(err);
+
+  }
+
+};
+const abrirComentarios = async (materialId) => {
+
+  console.log("ABRINDO", materialId);
+  setMaterialSelecionado(materialId);
+
+  try {
+
+    const res = await api.get(
+      `/comentarios/material/${materialId}`
+    );
+
+    console.log("RESPOSTA", res.data);
+
+    setComentarios(res.data);
+    setModalComentarios(true);
+
+  } catch(err) {
+
+    console.error(err);
+
+  }
+
+};
+
+const excluirComentario = async (comentarioId) => {
+
+  try {
+
+    await api.delete(
+      `/comentarios/${comentarioId}`
+    );
+
+    setComentarios(prev =>
+      prev.filter(
+        c => c.id !== comentarioId
+      )
+    );
+
+  } catch(err) {
+
+    console.error(err);
+
+  }
+
+};
+
   return (
     <div className="disciplina-detalhe-container">
       {/* Cabeçalho superior */}
@@ -265,9 +341,15 @@ function AlunoDisciplina() {
                               <FaRegBookmark />
                           </button>
 
-                          <button className="icon-btn">
-                              <FaComment />
-                          </button>
+                          <button
+  className="icon-btn"
+  onClick={() => {
+    console.log("CLICOU COMENTARIO");
+    abrirComentarios(material.id);
+  }}
+>
+  <FaComment />
+</button>
                       </div>
 
                       <a
@@ -322,7 +404,106 @@ function AlunoDisciplina() {
         </aside>
 
       </div>
+
+                 {modalComentarios && (
+
+      <div
+        className="modal-overlay"
+        onClick={() =>
+          setModalComentarios(false)
+        }
+      >
+
+        <div
+          className="modal-comentarios"
+          onClick={(e) =>
+            e.stopPropagation()
+          }
+        >
+
+          <div className="modal-header">
+
+            <h2>Comentários</h2>
+
+            <button
+              className="btn-fechar-modal"
+              onClick={() =>
+                setModalComentarios(false)
+              }
+            >
+              ✕
+            </button>
+
+          </div>
+
+          <div className="comentarios-lista">
+
+            {comentarios.map(comentario => (
+
+              <div
+                key={comentario.id}
+                className="comentario-item"
+              >
+
+                <div className="comentario-header">
+
+                  <strong>
+                    {comentario.username}
+                  </strong>
+
+                  {comentario.username === usuario?.username && (
+
+                    <button
+                      className="btn-excluir-comentario"
+                      onClick={() =>
+                        excluirComentario(comentario.id)
+                      }
+                    >
+                      ✕
+                    </button>
+
+                  )}
+
+                </div>
+
+                <p>{comentario.texto}</p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+          <div className="comentario-input-area">
+
+            <input
+              type="text"
+              placeholder="Escreva um comentário..."
+              value={novoComentario}
+              onChange={(e) =>
+                setNovoComentario(e.target.value)
+              }
+            />
+
+            <button
+              onClick={enviarComentario}
+            >
+              <FaPaperPlane />
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    )}
+
     </div>
+
+    
+                  
+
   );
 }
 

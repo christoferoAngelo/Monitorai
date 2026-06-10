@@ -298,7 +298,7 @@ console.log("CURTIDOS:", curtidos);
 
           <button
             className="icon-btn"
-            onClick={() =>
+            onClick={() =>     
             abrirComentarios(material.id)
             }
           >

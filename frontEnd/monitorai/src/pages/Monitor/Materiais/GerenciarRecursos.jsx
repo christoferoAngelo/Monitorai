@@ -27,6 +27,9 @@ export default function GerenciarRecursos() {
   const [ordenacao, setOrdenacao] = useState('recente'); // 'recente' ou 'antigo'
 
   // Lógica de filtragem (O "filtro dinâmico")
+  console.log("MEUS MATERIAIS:", meusMateriais);
+  console.log("É ARRAY?", Array.isArray(meusMateriais));
+
   const materiaisFiltrados = meusMateriais.filter((item) => {
     const atendeBusca = item.titulo.toLowerCase().includes(termoBusca.toLowerCase());
     const atendeTipo = filtroTipo === 'TODOS' || item.tipo === filtroTipo;
