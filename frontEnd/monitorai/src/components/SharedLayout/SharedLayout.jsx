@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import GlobalSearch from '../GlobalSearch/GlobalSearch';
-
-// Você pode criar um SharedLayout.css e colocar as classes .dashboard-container, .dashboard-sidebar e .dashboard-main nele
 import './SharedLayout.css'; 
-
 
 function SharedLayout() {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,57 +30,127 @@ function SharedLayout() {
 
   if (loading) return <div className="loading">Carregando ambiente...</div>;
 
-  // Verifica a role (ajuste a string 'MONITOR' de acordo com o que seu backend retorna)
   const isMonitor = usuario?.role === 'MONITOR' || usuario?.role === 'ROLE_MONITOR';
+
+  // 🔥 Mapeamento dinâmico dos itens do menu baseado no cargo (Monitor ou Aluno)
+  const menuItems = [];
+
+  if (isMonitor) {
+    menuItems.push(
+      { 
+        id: 'GerenciarRecursos', 
+        label: 'Gerenciar Recursos', 
+        icon: <img src="/icone_clipe.png" alt="Recursos" width="20" height="20" />, 
+        action: () => navigate('/gerenciar-recursos') 
+      },
+      { 
+        id: 'Relatorios', 
+        label: 'Relatórios', 
+        icon: <img src="/icone_relatorios.png" alt="Relatórios" width="20" height="20" />, 
+        action: () => navigate('/monitor/relatorio') 
+      }
+    );
+  }
+
+  // Itens comuns visíveis para todos
+  menuItems.push(
+    { 
+      id: 'Monitorias', 
+      label: 'Monitorias', 
+      icon: <img src="/icone_monitorias.png" alt="Monitorias" width="20" height="20" />, 
+      action: () => navigate(isMonitor ? '/monitor-dashboard' : '/aluno-dashboard') 
+    },
+    { 
+      id: 'MeusSalvos', 
+      label: 'Meus Salvos', 
+      icon: <img src="/icone_salvo.png" alt="Meus Salvos" width="20" height="20" />, 
+      action: () => navigate('/perfil/salvos') 
+    },
+    { 
+      id: 'MeuPerfil', 
+      label: 'Meu Perfil', 
+      icon: <img src="/icone_perfil.png" alt="Meu Perfil" width="20" height="20" />, 
+      action: () => navigate('/perfil') 
+    }
+  );
 
   return (
     <div className="dashboard-container">
-      {/* SIDEBAR INTELIGENTE (Fixa na esquerda) */}
-      <aside className="dashboard-sidebar">
-        <div>
-          <h2 className="sidebar-title">
-            {isMonitor ? "Portal Monitor" : "Portal Aluno"}
-          </h2>
-
-          <div className="sidebar-menu">
-            
-            {/* Renderiza itens específicos do Monitor SE ele for monitor */}
-            {isMonitor && (
-              <>
-                <div className="menu-section-title">Ações do Monitor</div>
-                <button className="sidebar-btn" onClick={() => navigate('/gerenciar-recursos')}>
-                  Gerenciar Recursos
-                </button>
-                <button className="sidebar-btn" onClick={() => navigate('/monitor/relatorio')}>
-                  Relatórios
-                </button>
-                <div className="menu-section-title" style={{ marginTop: '20px' }}>Área do Aluno</div>
-              </>
+      {/* SIDEBAR INTELIGENTE COLAPSÁVEL */}
+      <aside className={`dashboard-sidebar ${collapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar-top-wrapper">
+          <div className="sidebar-header">
+            {!collapsed && (
+              <div className="logo-area">
+                <div className="logo-icon">
+                  <img src="/icone_chapeu.png" alt="Logo" width="24" height="24" />
+                </div>
+                <div>
+                  <h2>Monitoraí</h2>
+                  <span>{isMonitor ? "Portal Monitor" : "Portal Aluno"}</span>
+                </div>
+              </div>
             )}
 
-            {/* Botões comuns para TODOS (Alunos e Monitores) */}
-            <button className="sidebar-btn" onClick={() => navigate(isMonitor ? '/monitor-dashboard' : '/aluno-dashboard')}>
-              Monitorias
-            </button>
-            <button className="sidebar-btn" onClick={() => navigate('/perfil/salvos')}>
-              Meus Salvos
-            </button>
-            <button className="sidebar-btn" onClick={() => navigate('/perfil')}>
-              Meu Perfil
+            <button
+              className="collapse-toggle"
+              onClick={() => setCollapsed(!collapsed)}
+              title={collapsed ? "Expandir Menu" : "Recolher Menu"}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+                {collapsed ? <path d="M13 12h5" /> : <path d="M18 12h-5" />}
+              </svg>
             </button>
           </div>
+
+          {/* MENU DE NAVEGAÇÃO COMPARTILHADO */}
+          <nav className="sidebar-nav">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                className="nav-btn"
+                onClick={item.action}
+                title={collapsed ? item.label : ''}
+              >
+                <span className="btn-icon">
+                  {item.icon}
+                </span>
+                {!collapsed && <span className="btn-label">{item.label}</span>}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        <button className="logout-btn" onClick={handleLogout}>
-          SAIR
-        </button>
+        {/* FOOTER DA SIDEBAR (DADOS DO USUÁRIO CONECTADO E SAIR) */}
+        <div className="sidebar-user">
+          {!collapsed ? (
+            <>
+              <div className="user-info">
+                <strong>{usuario?.username || 'Usuário'}</strong>
+                <span>{isMonitor ? "Monitor" : "Aluno"}</span>
+              </div>
+              <button className="logout-btn" onClick={handleLogout}>
+                <img src="/icone_sair.png" alt="Sair" width="16" height="16" />
+                Sair
+              </button>
+            </>
+          ) : (
+            <button 
+              className="logout-btn collapsed-logout" 
+              onClick={handleLogout} 
+              title="Sair do sistema"
+            >
+              <img src="/icone_sair.png" alt="Sair" width="20" height="20" />
+            </button>
+          )}
+        </div>
       </aside>
 
-      {/* CONTEÚDO PRINCIPAL (Scrollável na direita) */}
+      {/* CONTEÚDO PRINCIPAL DINÂMICO */}
       <main className="dashboard-main">
-	  <GlobalSearch />
-        {/* O <Outlet /> é onde as páginas (Dashboards ou Disciplina) vão aparecer! */}
-        {/* Passamos o usuário via context para as páginas filhas não precisarem fazer outro api.get('/auth/me') */}
+        <GlobalSearch />
         <Outlet context={{ usuario }} />
       </main>
     </div>

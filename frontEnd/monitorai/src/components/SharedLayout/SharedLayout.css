@@ -2,61 +2,211 @@
   display: flex;
   min-height: 100vh;
   background: #f5f7fb;
-  font-family:'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* SIDEBAR */
+/* SIDEBAR BASE */
 .dashboard-sidebar {
-  width: 250px;
+  box-sizing: border-box; /* Fundamental: impede que o padding deixe a barra gorda */
+  width: 260px;
+  min-width: 260px;
   background: linear-gradient(180deg, #002b5c, #00152e);
   color: white;
   padding: 25px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Esconde os textos cortados enquanto a barra fecha */
 }
 
-.sidebar-title {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 30px;
+/* SIDEBAR QUANDO RECOLHIDA */
+.dashboard-sidebar.collapsed {
+  width: 80px;
+  min-width: 80px; /* Força limites severos para ela ficar pequena */
+  max-width: 80px;
+  padding: 25px 12px;
 }
 
-.sidebar-menu {
+.sidebar-top-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  width: 100%;
 }
 
-.sidebar-btn {
-  font-family:'Inter', system-ui, -apple-system, sans-serif;
+/* HEADER DA SIDEBAR */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  width: 100%;
+}
+
+.dashboard-sidebar.collapsed .sidebar-header {
+  justify-content: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap; /* Impede do texto quebrar para a linha debaixo */
+}
+
+.logo-icon {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-area h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.logo-area span {
+  font-size: 12px;
+  opacity: 0.7;
+  display: block;
+}
+
+/* BOTÃO DE RECOLHER/EXPANDIR (TOGGLE) */
+.collapse-toggle {
   background: transparent;
   border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.collapse-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
+}
+
+/* NAVEGAÇÃO / BOTÕES DO MENU */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.nav-btn {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
   text-align: left;
   padding: 14px;
   border-radius: 10px;
   cursor: pointer;
   font-size: 15px;
-  transition: 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+  width: 100%;
+  white-space: nowrap; /* Muito importante pro texto não alongar o botão */
 }
 
-.sidebar-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Ajuste dos ícones quando colapsado */
+.dashboard-sidebar.collapsed .nav-btn {
+  justify-content: center;
+  padding: 14px 0;
+  gap: 0;
+}
+
+/* RODAPÉ DO USUÁRIO */
+.sidebar-user {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.user-info strong {
+  font-size: 14px;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-info span {
+  font-size: 12px;
+  color: #38ef7d;
+  font-weight: 500;
+}
+
+/* BOTÃO SAIR */
 .logout-btn {
   background: #b20000;
   color: white;
   border: none;
-  padding: 14px;
+  padding: 12px;
   border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.2s;
+  width: 100%;
+  white-space: nowrap;
 }
 
-/* MAIN */
+.logout-btn:hover {
+  background: #d60000;
+}
+
+/* 🔥 O SEGREDO DO BOTÃO SAIR PEQUENININHO: Transforma em um quadradinho centrado */
+.dashboard-sidebar.collapsed .logout-btn {
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+/* MAIN CONTENT */
 .dashboard-main {
   flex: 1;
   padding: 35px;
+  overflow-y: auto;
+  height: 100vh;
+  box-sizing: border-box;
 }
