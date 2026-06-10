@@ -56,9 +56,16 @@ public class ComentarioController {
 
         comentarioRepository.save(comentario);
 
-        return ResponseEntity.ok(comentario);
-    }
+        ComentarioResponseDTO response =
+                new ComentarioResponseDTO(
+                        comentario.getId(),
+                        comentario.getTexto(),
+                        usuario.getUsername(),
+                        comentario.getDataCriacao()
+                );
 
+        return ResponseEntity.ok(response);
+    }
 
     // LISTAR COMENTÁRIOS DO MATERIAL
     @GetMapping("/material/{id}")
@@ -101,8 +108,15 @@ public class ComentarioController {
 
         boolean ehAdmin =
                 usuario.getRole().equals("ADMIN");
+        
+        boolean ehAutorDoMaterial =
+        	    comentario.getMaterial()
+        	              .getAutor()
+        	              .getUsuario()
+        	              .getId()
+        	              .equals(usuario.getId());
 
-        if(!ehDono && !ehAdmin){
+        if(!ehDono && !ehAdmin && !ehAutorDoMaterial){
             return ResponseEntity.status(403)
                     .body("Você não pode excluir este comentário");
         }

@@ -261,4 +261,28 @@ public class MaterialController {
 
         return ResponseEntity.ok(response);
     }
+    
+    @GetMapping
+    public ResponseEntity<List<MaterialDTO>> listarTodos() {
+
+        List<MaterialDTO> materiais =
+            materialRepository.findAll()
+                .stream()
+                .map(material -> {
+
+                    MaterialDTO dto = new MaterialDTO();
+
+                    dto.setId(material.getId());
+                    dto.setTitulo(material.getTitulo());
+                    dto.setConteudo(material.getConteudo());
+                    dto.setUrl(material.getUrl());
+                    dto.setTipo(material.getTipo().name());
+
+                    return dto;
+
+                })
+                .toList();
+
+        return ResponseEntity.ok(materiais);
+    }
 }
