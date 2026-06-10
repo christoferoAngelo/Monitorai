@@ -182,3 +182,140 @@
     font-size: 14px;
   }
 }
+
+/* NOVO: Fundo escurecido atrás da pesquisa */
+.global-search {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh; /* Distância do topo */
+}
+
+/* O input principal agora age como um container absoluto para segurar os resultados */
+.global-search-input {
+  width: 90%;
+  max-width: 600px; 
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.global-search-input:focus {
+  outline: none;
+  box-shadow: 0 10px 40px rgba(74, 144, 226, 0.3);
+}
+
+.search-results {
+  position: absolute;
+  top: calc(10vh + 65px); /* Abaixo do input no topo */
+  width: 90%;
+  max-width: 600px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease;
+  padding: 16px 20px;
+  margin-left: 30px;
+}
+
+/* O modal que cobre a tela */
+.global-search {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 5vh; /* Elevado: Antes era 10vh, agora fica mais no topo */
+  padding-inline: 20px; /* Impede de encostar nas bordas no celular */
+}
+
+/* O container que segura o botão e o input na mesma linha */
+.search-input-wrapper {
+  display: flex;
+  align-items: flex-start; /* Mantém no topo para os resultados descerem livremente */
+  gap: 12px;
+  width: 100%;
+  max-width: 650px; /* Largura um pouco maior pra acomodar o botão */
+}
+
+/* O novo botão de voltar */
+.close-search-btn {
+  background: white;
+  border: none;
+  cursor: pointer;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px; /* Combina com o arredondamento do input */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  flex-shrink: 0; /* Impede o botão de ser espremido */
+}
+
+.close-search-btn:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+/* Container do input + os resultados que flutuam embaixo dele */
+.input-and-results-container {
+  position: relative;
+  flex: 1; /* Ocupa todo o resto do espaço disponível na linha */
+  width: 100%;
+}
+
+.global-search-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.global-search-input:focus {
+  outline: none;
+  box-shadow: 0 10px 40px rgba(74, 144, 226, 0.3);
+}
+
+/* Caixa de resultados fica presa abaixo do input */
+.search-results {
+  position: absolute;
+  top: calc(100% + 12px); /* Sempre 12px abaixo do input */
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease;
+}
+
+

@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './GlobalSearch.css';
 
-function GlobalSearch() {
+function GlobalSearch({ onClose }) {
   const [termo, setTermo] = useState('');
   const [disciplinas, setDisciplinas] = useState([]);
-  const [materiais, setMateriais] = useState([]);
   const [monitorias, setMonitorias] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -14,22 +13,33 @@ function GlobalSearch() {
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
+  // Autofocus ao abrir a pesquisa
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   const carregarDados = useCallback(async () => {
     setIsLoading(true);
     try {
-      const disciplinasRes = await api.get('/disciplinas');
-      setDisciplinas(disciplinasRes.data || []);
-
+      // 1. Primeiro buscamos as monitorias ativas
       const monitoriasRes = await api.get('/monitorias/ativas');
-      setMonitorias(monitoriasRes.data || []);
+      const monitoriasAtivas = monitoriasRes.data || [];
+      setMonitorias(monitoriasAtivas);
+
+      // 2. Buscamos as disciplinas
+      const disciplinasRes = await api.get('/disciplinas');
+      const todasDisciplinas = disciplinasRes.data || [];
+
+      // 3. Lógica para filtrar APENAS disciplinas que têm monitoria ativa
+      const idsDisciplinasComMonitoria = new Set(
+        monitoriasAtivas.map(m => m.disciplina?.id || m.disciplinaId)
+      );
       
-      try {
-        const materiaisRes = await api.get('/materiais');
-        setMateriais(materiaisRes.data || []);
-      } catch (error) {
-        console.warn('Endpoint /materiais não disponível');
-        setMateriais([]);
-      }
+      const disciplinasAtivas = todasDisciplinas.filter(d => 
+        idsDisciplinasComMonitoria.has(d.id)
+      );
+      
+      setDisciplinas(disciplinasAtivas);
       
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -42,11 +52,11 @@ function GlobalSearch() {
     carregarDados();
   }, [carregarDados]);
 
-  // Fechar resultados ao clicar fora
+  // Fechar toda a pesquisa ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowResults(false);
+        if (onClose) onClose();
       }
     };
 
@@ -54,13 +64,17 @@ function GlobalSearch() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [onClose]);
 
-  // Fechar ao pressionar ESC
+  // Fechar resultados OU a pesquisa inteira ao pressionar ESC
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === 'Escape') {
-        setShowResults(false);
+        if (showResults) {
+          setShowResults(false);
+        } else {
+          if (onClose) onClose();
+        }
       }
     };
 
@@ -68,21 +82,13 @@ function GlobalSearch() {
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, []);
+  }, [showResults, onClose]);
 
   const disciplinasFiltradas = Array.isArray(disciplinas)
     ? disciplinas.filter(
         (disciplina) =>
           disciplina?.nome?.toLowerCase().includes(termo.toLowerCase()) ||
           disciplina?.codigo?.toLowerCase().includes(termo.toLowerCase())
-      )
-    : [];
-
-  const materiaisFiltrados = Array.isArray(materiais) && materiais.length > 0
-    ? materiais.filter(
-        (material) =>
-          material?.titulo?.toLowerCase().includes(termo.toLowerCase()) ||
-          material?.conteudo?.toLowerCase().includes(termo.toLowerCase())
       )
     : [];
 
@@ -95,7 +101,6 @@ function GlobalSearch() {
         if (monitoria?.disciplina?.nome?.toLowerCase().includes(termoLower)) return true;
         if (monitoria?.disciplina?.codigo?.toLowerCase().includes(termoLower)) return true;
         
-        // Busca no nome do monitor via usuario
         if (monitoria?.monitor?.usuario?.nome?.toLowerCase().includes(termoLower)) return true;
         if (monitoria?.monitor?.usuario?.username?.toLowerCase().includes(termoLower)) return true;
         if (monitoria?.monitor?.usuario?.email?.toLowerCase().includes(termoLower)) return true;
@@ -106,36 +111,24 @@ function GlobalSearch() {
       })
     : [];
 
-	const handleResultClick = (tipo, item) => {
-	  console.log('Navegando para:', tipo, item);
-	  
-	  // Fecha os resultados
-	  setShowResults(false);
-	  setTermo('');
-	  inputRef.current?.blur();
-	  
-	  switch (tipo) {
-	    case 'disciplina':
-	      // Navega para a página da disciplina
-	      navigate(`/disciplina/${item.id}`);
-	      break;
-	    case 'monitoria':
-	      // Navega para a página da disciplina relacionada à monitoria
-	      if (item?.disciplina?.id) {
-	        navigate(`/disciplina/${item.disciplina.id}`);
-	      } else if (item?.disciplinaId) {
-	        navigate(`/disciplina/${item.disciplinaId}`);
-	      } else {
-	        console.error('Monitoria sem disciplina associada:', item);
-	      }
-	      break;
-	    case 'material':
-	      if (item.id) navigate(`/material/${item.id}`);
-	      break;
-	    default:
-	      break;
-	  }
-	};
+  const handleResultClick = (tipo, item) => {
+    if (onClose) onClose(); 
+    
+    switch (tipo) {
+      case 'disciplina':
+        navigate(`/disciplina/${item.id}`);
+        break;
+      case 'monitoria':
+        if (item?.disciplina?.id) {
+          navigate(`/disciplina/${item.disciplina.id}`);
+        } else if (item?.disciplinaId) {
+          navigate(`/disciplina/${item.disciplinaId}`);
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -145,8 +138,7 @@ function GlobalSearch() {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      // Se tiver resultados, fecha e limpa
-      if (monitoriasFiltradas.length > 0 || disciplinasFiltradas.length > 0 || materiaisFiltrados.length > 0) {
+      if (monitoriasFiltradas.length > 0 || disciplinasFiltradas.length > 0) {
         setShowResults(false);
         setTermo('');
         inputRef.current?.blur();
@@ -161,165 +153,115 @@ function GlobalSearch() {
     return null;
   };
 
-  const hasResults = 
-    disciplinasFiltradas.length > 0 ||
-    materiaisFiltrados.length > 0 ||
-    monitoriasFiltradas.length > 0;
+  const hasResults = disciplinasFiltradas.length > 0 || monitoriasFiltradas.length > 0;
 
-  // Mapeia dias da semana
   const diasSemanaMap = {
-    'MONDAY': 'Segunda-feira',
-    'TUESDAY': 'Terça-feira',
-    'WEDNESDAY': 'Quarta-feira',
-    'THURSDAY': 'Quinta-feira',
-    'FRIDAY': 'Sexta-feira',
-    'SATURDAY': 'Sábado',
-    'SUNDAY': 'Domingo',
-    'SEGUNDA': 'Segunda-feira',
-    'TERCA': 'Terça-feira',
-    'QUARTA': 'Quarta-feira',
-    'QUINTA': 'Quinta-feira',
-    'SEXTA': 'Sexta-feira',
-    'SABADO': 'Sábado',
-    'DOMINGO': 'Domingo'
+    'MONDAY': 'Segunda-feira', 'TUESDAY': 'Terça-feira', 'WEDNESDAY': 'Quarta-feira',
+    'THURSDAY': 'Quinta-feira', 'FRIDAY': 'Sexta-feira', 'SATURDAY': 'Sábado', 'SUNDAY': 'Domingo',
+    'SEGUNDA': 'Segunda-feira', 'TERCA': 'Terça-feira', 'QUARTA': 'Quarta-feira',
+    'QUINTA': 'Quinta-feira', 'SEXTA': 'Sexta-feira', 'SABADO': 'Sábado', 'DOMINGO': 'Domingo'
   };
 
   return (
     <div className="global-search" ref={searchRef}>
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Pesquisar disciplinas, monitorias ou monitores..."
-        value={termo}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyPress}
-        onFocus={() => termo.trim() !== '' && setShowResults(true)}
-        className="global-search-input"
-      />
+      
+      {/* Wrapper flex para colocar o botão e o input lado a lado */}
+      <div className="search-input-wrapper">
+        
+        {/* Botão de voltar/fechar */}
+        <button className="close-search-btn" onClick={() => onClose && onClose()} title="Fechar pesquisa">
+          <img src="/icone_voltar.png" alt="Voltar" width="20" height="20" />
+        </button>
 
-      {showResults && termo.trim() !== '' && (
-        <div className="search-results">
-          {isLoading && (
-            <div className="search-loading">Carregando...</div>
-          )}
+        {/* Container relativo para prender os resultados embaixo do input */}
+        <div className="input-and-results-container">
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Pesquisar disciplinas ou monitorias ativas..."
+            value={termo}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
+            onFocus={() => termo.trim() !== '' && setShowResults(true)}
+            className="global-search-input"
+          />
 
-          {!isLoading && (
-            <>
-              {/* MONITORIAS ATIVAS */}
-              {monitoriasFiltradas.length > 0 && (
-                <>
-                  <div className="search-category">
-                    MONITORIAS ATIVAS ({monitoriasFiltradas.length})
-                  </div>
-
-                  {monitoriasFiltradas.map((monitoria) => {
-                    const monitorNome = getMonitorNome(monitoria);
-                    const disciplinaNome = monitoria?.disciplina?.nome;
-                    const diaSemana = diasSemanaMap[monitoria?.dia_semana] || monitoria?.dia_semana;
-                    const horarioInicio = monitoria?.horario_inicio;
-                    const horarioFim = monitoria?.horario_fim;
-                    const horario = horarioInicio && horarioFim 
-                      ? `${horarioInicio} - ${horarioFim}`
-                      : null;
-                    
-                    return (
-                      <div
-                        key={`monitoria-${monitoria.id}`}
-                        className="search-result-item"
-                        onClick={() => handleResultClick('monitoria', monitoria)}
-                      >
-                        <div className="search-result-title">
-                          <strong>{disciplinaNome || 'Monitoria'}</strong>
-                        </div>
-                        
-                        {monitorNome && (
-                          <div className="search-result-monitor">
-                             {monitorNome}
-                          </div>
-                        )}
-                        
-                        {diaSemana && horario && (
-                          <div className="search-result-horario">
-                             {diaSemana} • {horario}
-                          </div>
-                        )}
-                        
-                        {monitoria?.sala && (
-                          <div className="search-result-local">
-                             {monitoria.sala}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </>
+          {showResults && termo.trim() !== '' && (
+            <div className="search-results">
+              {isLoading && (
+                <div className="search-loading">Carregando...</div>
               )}
 
-              {/* MATERIAIS */}
-              {materiaisFiltrados.length > 0 && (
+              {!isLoading && (
                 <>
-                  <div className="search-category">
-                    MATERIAIS ({materiaisFiltrados.length})
-                  </div>
-
-                  {materiaisFiltrados.map((material) => (
-                    <div
-                      key={`m-${material.id}`}
-                      className="search-result-item"
-                      onClick={() => handleResultClick('material', material)}
-                    >
-                      <div className="search-result-title">
-                        <strong>{material.titulo}</strong>
+                  {/* MONITORIAS ATIVAS */}
+                  {monitoriasFiltradas.length > 0 && (
+                    <>
+                      <div className="search-category">
+                        MONITORIAS ATIVAS ({monitoriasFiltradas.length})
                       </div>
-                      
-                      {material.conteudo && (
-                        <div className="search-result-desc">
-                          {material.conteudo.substring(0, 100)}
-                          {material.conteudo.length > 100 && '...'}
+
+                      {monitoriasFiltradas.map((monitoria) => {
+                        const monitorNome = getMonitorNome(monitoria);
+                        const disciplinaNome = monitoria?.disciplina?.nome;
+                        const diaSemana = diasSemanaMap[monitoria?.dia_semana] || monitoria?.dia_semana;
+                        const horario = monitoria?.horario_inicio && monitoria?.horario_fim 
+                          ? `${monitoria.horario_inicio} - ${monitoria.horario_fim}` : null;
+                        
+                        return (
+                          <div
+                            key={`monitoria-${monitoria.id}`}
+                            className="search-result-item"
+                            onClick={() => handleResultClick('monitoria', monitoria)}
+                          >
+                            <div className="search-result-title">
+                              <strong>{disciplinaNome || 'Monitoria'}</strong>
+                            </div>
+                            {monitorNome && <div className="search-result-monitor">{monitorNome}</div>}
+                            {diaSemana && horario && <div className="search-result-horario">{diaSemana} • {horario}</div>}
+                            {monitoria?.sala && <div className="search-result-local">{monitoria.sala}</div>}
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+
+                  {/* DISCIPLINAS */}
+                  {disciplinasFiltradas.length > 0 && (
+                    <>
+                      <div className="search-category">
+                        DISCIPLINAS COM MONITORIA ({disciplinasFiltradas.length})
+                      </div>
+
+                      {disciplinasFiltradas.map((disciplina) => (
+                        <div
+                          key={`d-${disciplina.id}`}
+                          className="search-result-item"
+                          onClick={() => handleResultClick('disciplina', disciplina)}
+                        >
+                          <div className="search-result-title">
+                             <strong>{disciplina.nome}</strong>
+                          </div>
+                          {disciplina.codigo && (
+                            <div className="search-result-codigo">Código: {disciplina.codigo}</div>
+                          )}
                         </div>
-                      )}
+                      ))}
+                    </>
+                  )}
+
+                  {/* NENHUM RESULTADO */}
+                  {!hasResults && (
+                    <div className="search-no-results">
+                      Nenhum resultado encontrado para "{termo}"
                     </div>
-                  ))}
+                  )}
                 </>
               )}
-
-              {/* DISCIPLINAS */}
-              {disciplinasFiltradas.length > 0 && (
-                <>
-                  <div className="search-category">
-                    DISCIPLINAS ({disciplinasFiltradas.length})
-                  </div>
-
-                  {disciplinasFiltradas.map((disciplina) => (
-                    <div
-                      key={`d-${disciplina.id}`}
-                      className="search-result-item"
-                      onClick={() => handleResultClick('disciplina', disciplina)}
-                    >
-                      <div className="search-result-title">
-                         <strong>{disciplina.nome}</strong>
-                      </div>
-                      
-                      {disciplina.codigo && (
-                        <div className="search-result-codigo">
-                          Código: {disciplina.codigo}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </>
-              )}
-
-              {/* NENHUM RESULTADO */}
-              {!hasResults && (
-                <div className="search-no-results">
-                  Nenhum resultado encontrado para "{termo}"
-                </div>
-              )}
-            </>
+            </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

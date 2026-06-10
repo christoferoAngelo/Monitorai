@@ -8,6 +8,8 @@ function SharedLayout() {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
+  // NOVO: Estado para controlar a visibilidade da pesquisa
+  const [showSearch, setShowSearch] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +33,20 @@ function SharedLayout() {
 
   const isMonitor = usuario?.role === 'MONITOR' || usuario?.role === 'ROLE_MONITOR';
 
-
   const menuItems = [];
+
+  // NOVO: Botão de pesquisa fixo para todos (inserido antes dos outros)
+  menuItems.push({
+    id: 'Pesquisar',
+    label: 'Pesquisar',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    ),
+    action: () => setShowSearch(true)
+  });
 
   if (isMonitor) {
     menuItems.push(
@@ -45,7 +59,7 @@ function SharedLayout() {
       { 
         id: 'Relatorios', 
         label: 'Relatórios', 
-        icon: <img src="/icone_relatorios.png" alt="Relatórios" width="20" height="20" />, 
+        icon: <img src="/icone_editais.png" alt="Relatórios" width="20" height="20" />, 
         action: () => navigate('/monitor/relatorio') 
       }
     );
@@ -75,7 +89,7 @@ function SharedLayout() {
 
   return (
     <div className="dashboard-container">
-      {/* SIDEBAR */}
+      {/* SIDEBAR MANTIDA IGUAL */}
       <aside className={`dashboard-sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-top-wrapper">
           <div className="sidebar-header">
@@ -104,7 +118,6 @@ function SharedLayout() {
             </button>
           </div>
 
-          {/* MENU DE NAVEGAÇÃO COMPARTILHADO */}
           <nav className="sidebar-nav">
             {menuItems.map((item) => (
               <button
@@ -122,7 +135,6 @@ function SharedLayout() {
           </nav>
         </div>
 
-        {/* FOOTER DA SIDEBAR (DADOS DO USUÁRIO CONECTADO E SAIR) */}
         <div className="sidebar-user">
           {!collapsed ? (
             <>
@@ -149,7 +161,8 @@ function SharedLayout() {
 
       {/* CONTEÚDO PRINCIPAL DINÂMICO */}
       <main className="dashboard-main">
-        <GlobalSearch />
+        {/* NOVO: Passando a função onClose para o GlobalSearch e renderizando condicionalmente */}
+        {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} />}
         <Outlet context={{ usuario }} />
       </main>
     </div>
