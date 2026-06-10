@@ -16,16 +16,20 @@ body {
 }
 
 /* ===================== SIDEBAR ===================== */
+/* ===================== SIDEBAR ===================== */
 .sidebar {
     width: 280px;
-    min-height: 100vh;
+    height: 100vh; /* Trocado de min-height para height fixo na tela */
+    position: sticky; /* Faz a sidebar ficar presa ao rolar a página */
+    top: 0; /* Alinha o topo da sidebar no topo da tela */
     background: linear-gradient(180deg, #00163A, #002868);
     color: white;
     display: flex;
     flex-direction: column;
     padding: 24px;
     transition: width 0.25s ease, padding 0.25s ease;
-    overflow: hidden; /* Evita que o texto vaze ao encolher */
+    overflow-x: hidden; /* Evita barra de rolagem horizontal ao colapsar */
+    overflow-y: auto;   /* Permite rolar os menus internos se a tela for muito baixa (ex: notebooks) */
 }
 
 /* SIDEBAR COLAPSADA */
@@ -47,6 +51,7 @@ body {
 }
 
 .logo-area {
+    padding: 12px;
     display: flex;
     gap: 14px;
     align-items: center;
@@ -142,7 +147,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: auto;
 }
 
 .sidebar.collapsed .sidebar-user {

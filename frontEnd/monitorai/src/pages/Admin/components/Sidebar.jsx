@@ -10,23 +10,52 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
     if (onLogout) onLogout();
     navigate('/login');
   };
+
+  // Mapeamento dos itens do menu utilizando os arquivos .png da pasta public
   const menuItems = [
-    { id: 'Dashboard', label: 'Dashboard', icon: '📊', action: () => onNavigate('Dashboard') },
-    { id: 'Usuarios', label: 'Usuários', icon: '👥', action: () => navigate('/admin-usuarios') },
-    { id: 'Monitorias', label: 'Monitorias', icon: '📚', action: () => navigate('/admin-monitorias') },
-    { id: 'Editais', label: 'Editais', icon: '📋', action: () => navigate('/admin-editais') },  // MUDOU!
-    { id: 'Relatorios', label: 'Relatórios', icon: '📝', action: () => navigate('/relatorios/novo') },
-    { id: 'GradeCurricular', label: 'Grade Curricular', icon: '📑', action: () => navigate('/grade-curricular') },
-    { id: 'VerHome', label: 'Visualizar Home', icon: '🏠', action: () => window.open('/', '_blank') }
+    { 
+      id: 'Dashboard', 
+      label: 'Dashboard', 
+      icon: <img src="/icone_dashboard.png" alt="Dashboard" width="20" height="20" />, 
+      action: () => onNavigate('Dashboard') 
+    },
+    { 
+      id: 'Usuarios', 
+      label: 'Usuários', 
+      icon: <img src="/icone_users.png" alt="Usuários" width="20" height="20" />, 
+      action: () => navigate('/admin-usuarios') 
+    },
+    { 
+      id: 'Monitorias', 
+      label: 'Monitorias', 
+      icon: <img src="/icone_monitorias.png" alt="Monitorias" width="20" height="20" />, 
+      action: () => navigate('/admin-monitorias') 
+    },
+    { 
+      id: 'Relatorios', 
+      label: 'Relatórios', 
+      icon: <img src="/icone_relatorios.png" alt="Relatórios" width="20" height="20" />, 
+      action: () => navigate('/relatorios/novo') 
+    },
+    { 
+      id: 'GradeCurricular', 
+      label: 'Grade Curricular', 
+      icon: <img src="/icone_grade.png" alt="Grade Curricular" width="20" height="20" />, 
+      action: () => navigate('/grade-curricular') 
+    }
   ];
+
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         {!collapsed && (
           <div className="logo-area">
-            <div className="logo-icon">🎓</div>
+            <div className="logo-icon">
+              {/* Substituído o emoji de formatura pelo ícone de monitorias ou grade (ajuste se preferir outro) */}
+              <img src="/icone_chapeu.png" alt="Logo" width="24" height="24" />
+            </div>
             <div>
-              <h2>Fatec Monitorias</h2>
+              <h2>Monitoraí</h2>
               <span>Painel</span>
             </div>
           </div>
@@ -60,7 +89,9 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
             onClick={item.action}
             title={collapsed ? item.label : ''}
           >
-            <span className="btn-icon">{item.icon}</span>
+            <span className="btn-icon" style={{ display: 'flex', alignItems: 'center' }}>
+              {item.icon}
+            </span>
             {!collapsed && <span className="btn-label">{item.label}</span>}
           </button>
         ))}
@@ -73,7 +104,8 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
               <strong>{usuario?.username || 'Usuário'}</strong>
               <span>Administrador</span>
             </div>
-            <button className="logout-btn" onClick={handleLogout}>
+            <button className="logout-btn" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <img src="/icone_sair.png" alt="Sair" width="16" height="16" />
               Sair
             </button>
           </>
@@ -82,9 +114,10 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
             className="logout-btn" 
             onClick={handleLogout} 
             title="Sair do sistema"
-            style={{ padding: '12px 0' }}
+            style={{ padding: '12px 0', display: 'flex', justifyContent: 'center', width: '100%' }}
           >
-            🚪
+            {/* Substituído o emoji de porta pelo icone_sair.png */}
+            <img src="/icone_sair.png" alt="Sair" width="20" height="20" />
           </button>
         )}
       </div>
