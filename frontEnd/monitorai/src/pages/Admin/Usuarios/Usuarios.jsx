@@ -5,7 +5,7 @@ import "./Usuarios.css";
 import { useLocation } from "react-router-dom"; 
 
 export default function Usuarios() {
-	const location = useLocation(); 
+    const location = useLocation(); 
     const [usuarios, setUsuarios] = useState([]);
     const [monitorias, setMonitorias] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,16 +28,16 @@ export default function Usuarios() {
         if (token) api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         carregarDados();
     }, []);
-	
-	useEffect(() => {
-	    if (location.state?.usuarioParaEditar) {
-	        const usuario = location.state.usuarioParaEditar;
-	        setUsuarioEditando(usuario);
-	        setTipoModal(usuario.role);
-	        setMostrarModal(true);
-	        window.history.replaceState({}, document.title);
-	    }
-	}, [location]);
+    
+    useEffect(() => {
+        if (location.state?.usuarioParaEditar) {
+            const usuario = location.state.usuarioParaEditar;
+            setUsuarioEditando(usuario);
+            setTipoModal(usuario.role);
+            setMostrarModal(true);
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     async function carregarDados() {
         try {
@@ -124,11 +124,11 @@ export default function Usuarios() {
     }
 
     async function autorizarPedido(usuario) {
-        if (!window.confirm(` Autorizar redefinição de senha para ${usuario.username}?`)) return;
+        if (!window.confirm(`Autorizar redefinição de senha para ${usuario.username}?`)) return;
 
         try {
             await api.put(`/usuarios/${usuario.id}/aprovar-redefinicao`);
-            alert(" Pedido autorizados! O usuário podrá redefinir a senha.");
+            alert("Pedido autorizado! O usuário poderá redefinir a senha.");
             carregarDados();
             setMostrarModalPedidos(false);
         } catch (err) {
@@ -137,34 +137,33 @@ export default function Usuarios() {
     }
 
     async function negarPedido(usuario) {
-        if (!window.confirm(` Negar redefinição de senha para ${usuario.username}?`)) return;
+        if (!window.confirm(`Negar redefinição de senha para ${usuario.username}?`)) return;
 
         try {
             await api.put(`/usuarios/${usuario.id}/negar-redefinicao`);
-            alert(" Pedido negado!");
+            alert("Pedido negado!");
             carregarDados();
         } catch (err) {
             alert("Erro ao negar pedido");
         }
     }
 
-async function toggleAtivo(usuario) {
-    const isAtivo = usuario.ativo !== false;
-    const msg = isAtivo 
-        ? `Inativar o usuário ${usuario.username}?`
-        : `Ativar o usuário ${usuario.username}?`;
-    
-    if (!window.confirm(msg)) return;
+    async function toggleAtivo(usuario) {
+        const isAtivo = usuario.ativo !== false;
+        const msg = isAtivo 
+            ? `Inativar o usuário ${usuario.username}?`
+            : `Ativar o usuário ${usuario.username}?`;
+        
+        if (!window.confirm(msg)) return;
 
-    try {
-        // Usa o endpoint correto
-        await api.put(`/usuarios/${usuario.id}/alternar-status`);
-        alert(isAtivo ? "Usuário inativado!" : "Usuário ativado!");
-        carregarDados();
-    } catch (err) {
-        alert("Erro ao atualizar usuário");
+        try {
+            await api.put(`/usuarios/${usuario.id}/alternar-status`);
+            alert(isAtivo ? "Usuário inativado!" : "Usuário ativado!");
+            carregarDados();
+        } catch (err) {
+            alert("Erro ao atualizar usuário");
+        }
     }
-}
 
     if (loading) return <div className="admin-loading">Carregando...</div>;
 
@@ -205,39 +204,67 @@ async function toggleAtivo(usuario) {
         <div className="usuarios-page">
             <div className="page-header">
                 <div>
-                    <h1>👥 Gerenciamento de Usuários</h1>
+                    <h1 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/icone_users.png" alt="" width="28" height="28" />
+                        Gerenciamento de Usuários
+                    </h1>
                     <p>Cadastre e gerencie alunos e administradores</p>
                 </div>
                 
                 {/* BOTÃO DE PEDIDOS DE SENHA */}
                 <div className="header-actions">
-                    <button className="btn-pedidos" onClick={abrirModalPedidos}>
-                        🔑 Pedidos de Senha
+                    <button 
+                        className="btn-pedidos" 
+                        onClick={abrirModalPedidos}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <img src="/icone_chave.png" alt="" width="16" height="16" />
+                        Pedidos de Senha
                         {pedidosSenha.length > 0 && (
                             <span className="badge-pedidos">{pedidosSenha.length}</span>
                         )}
                     </button>
-                    <button className="btn-new" onClick={abrirNovoModal}>
-                        ➕ Novo Usuário
+                    <button 
+                        className="btn-new" 
+                        onClick={abrirNovoModal}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <img src="/icone_mais.png" alt="" width="14" height="14" />
+                        Novo Usuário
                     </button>
                 </div>
             </div>
 
             <div className="abas">
-                <button className={`aba-btn ${aba === 'alunos' ? 'active' : ''}`} onClick={() => setAba('alunos')}>
-                    👨‍🎓 Alunos ({totalAlunos})
+                <button 
+                    className={`aba-btn ${aba === 'alunos' ? 'active' : ''}`} 
+                    onClick={() => setAba('alunos')}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                    <img src="/icone_chapeu.png" alt="" width="16" height="16" />
+                    Alunos ({totalAlunos})
                 </button>
-                <button className={`aba-btn ${aba === 'monitores' ? 'active' : ''}`} onClick={() => setAba('monitores')}>
-                    🎓 Monitores ({totalMonitores})
+                <button 
+                    className={`aba-btn ${aba === 'monitores' ? 'active' : ''}`} 
+                    onClick={() => setAba('monitores')}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                    <img src="/icone_monitorias.png" alt="" width="16" height="16" />
+                    Monitores ({totalMonitores})
                 </button>
-                <button className={`aba-btn ${aba === 'admins' ? 'active' : ''}`} onClick={() => setAba('admins')}>
-                    ⚙️ Administradores ({totalAdmins})
+                <button 
+                    className={`aba-btn ${aba === 'admins' ? 'active' : ''}`} 
+                    onClick={() => setAba('admins')}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                >
+                    <img src="/icone_engrenagem.png" alt="" width="16" height="16" />
+                    Administradores ({totalAdmins})
                 </button>
             </div>
 
             <div className="filters-row">
-                <div className="search-box">
-                    <span>🔍</span>
+                <div className="search-box" style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src="/icone_busca.png" alt="" width="16" height="16" style={{ marginRight: '8px' }} />
                     <input 
                         type="text" 
                         placeholder="Buscar por nome, email ou RA..." 
@@ -361,7 +388,10 @@ async function toggleAtivo(usuario) {
                 <div className="modal-overlay" onClick={fecharModalPedidos}>
                     <div className="modal-content pedidos-modal" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2>🔑 Pedidos de Redefinição de Senha</h2>
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <img src="/icone_chave.png" alt="" width="20" height="20" />
+                                Pedidos de Redefinição de Senha
+                            </h2>
                             <button className="modal-close" onClick={fecharModalPedidos}>✕</button>
                         </div>
                         
@@ -384,13 +414,13 @@ async function toggleAtivo(usuario) {
                                         <div className="pedido-actions">
                                             <button 
                                                 className="btn-autorizar"
-onClick={() => autorizarPedido(p)}
+                                                onClick={() => autorizarPedido(p)}
                                             >
                                                 ✓ Autorizar
                                             </button>
                                             <button 
                                                 className="btn-negar"
-onClick={() => negarPedido(p)}
+                                                onClick={() => negarPedido(p)}
                                             >
                                                 ✕ Negar
                                             </button>

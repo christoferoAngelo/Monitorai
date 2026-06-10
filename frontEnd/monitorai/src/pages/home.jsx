@@ -37,13 +37,12 @@ export default function Home() {
     };
   }, []);
 
-  // Effect para abrir o PDF automaticamente ao carregar os editais (inline)
   useEffect(() => {
     if (editais.length > 0 && !editalPdfExpandido) {
       const editalComPdf = editais.find(e => e.urlPdf);
       
       if (editalComPdf) {
-        setEditalPdfExpandido(editalComPdf.id); // Abre o PDF inline automaticamente
+        setEditalPdfExpandido(editalComPdf.id); 
       }
     }
   }, [editais]);

@@ -23,7 +23,7 @@ function MonitoriasTable({ monitorias, onEdit, onNova, searchTerm, onSearchChang
       <div className="search-bar" style={{ marginBottom: '16px' }}>
         <input 
           type="text" 
-          placeholder="🔍 Buscar monitoria..." 
+          placeholder="Buscar monitoria..." 
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           style={{
