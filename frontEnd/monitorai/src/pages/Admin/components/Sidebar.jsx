@@ -42,6 +42,12 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
       label: 'Grade Curricular', 
       icon: <img src="/icone_grade.png" alt="Grade Curricular" width="20" height="20" />, 
       action: () => navigate('/grade-curricular') 
+    },
+    { 
+      id: 'Editais', 
+      label: 'Editais', 
+      icon: <img src="/icone_editais.png" alt="Editais" width="20" height="20" />, 
+      action: () => navigate('/admin-editais') 
     }
   ];
 

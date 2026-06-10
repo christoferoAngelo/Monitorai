@@ -40,14 +40,25 @@ function MonitorDashboard() {
       {/* 1. SEÇÃO DE GERENCIAMENTO (Exclusiva do Monitor) */}
       <h2 className="section-title">Suas Ferramentas</h2>
       <div className="cards-grid" style={{ marginBottom: '40px' }}>
+        
         <div className="card" onClick={() => navigate('/gerenciar-recursos')}>
-          Recursos
+          {/* Envolvendo o Ícone e o Texto em um flex container */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <img src="/icone_clipe.png" alt="Recursos" width="20" height="20"/>
+            <strong>Recursos</strong>
+          </div>
           <small>Poste PDFs, Vídeos e Quizzes</small>
         </div>
+
         <div className="card" onClick={() => navigate('/monitor/relatorio')}>
-          Relatórios
+          {/* Envolvendo o Ícone e o Texto em um flex container */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <img src="/icone_editais.png" alt="Relatórios" width="20" height="20"/>
+            <strong>Relatórios</strong>
+          </div>
           <small>Registre suas atividades semanais</small>
         </div>
+
       </div>
 
       {/* 2. SEÇÃO DE ALUNO (Hero Section com as Monitorias Ativas) */}
