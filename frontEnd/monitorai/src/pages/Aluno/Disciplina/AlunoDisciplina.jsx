@@ -451,16 +451,20 @@ const excluirComentario = async (comentarioId) => {
                     {comentario.username}
                   </strong>
 
-                  {comentario.username === usuario?.username && (
-
-                    <button
-                      className="btn-excluir-comentario"
-                      onClick={() =>
-                        excluirComentario(comentario.id)
-                      }
-                    >
-                      ✕
-                    </button>
+                  {comentario.podeExcluir && (
+  <button
+          className="btn-excluir-comentario"
+          onClick={() => {
+            if(window.confirm(
+              "Tem certeza que deseja excluir este comentário?"
+            )) {
+              excluirComentario(comentario.id);
+            }
+          }} 
+        >
+          ✕
+        </button>
+                    
 
                   )}
 

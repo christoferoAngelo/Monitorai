@@ -368,7 +368,7 @@ console.log("CURTIDOS:", curtidos);
         {comentario.username}
       </strong>
 
-      {comentario.username === perfil.username && (
+      {comentario.podeExcluir && (
 
         <button
           className="btn-excluir-comentario"
