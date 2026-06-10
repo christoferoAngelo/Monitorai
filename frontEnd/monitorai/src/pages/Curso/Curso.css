@@ -64,7 +64,7 @@
 }
 
 .tab-btn.active {
-  border-bottom: 3px solid #28a745; /* Verde para destacar Cursos */
+  border-bottom: 3px solid #28a745; 
   color: #28a745;
 }
 

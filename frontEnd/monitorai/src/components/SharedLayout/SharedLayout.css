@@ -21,10 +21,10 @@
   overflow: hidden; /* Esconde os textos cortados enquanto a barra fecha */
 }
 
-/* SIDEBAR QUANDO RECOLHIDA */
+/* SIDEBAR RECOLHIDA */
 .dashboard-sidebar.collapsed {
   width: 80px;
-  min-width: 80px; /* Força limites severos para ela ficar pequena */
+  min-width: 80px; 
   max-width: 80px;
   padding: 25px 12px;
 }
@@ -52,7 +52,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  white-space: nowrap; /* Impede do texto quebrar para a linha debaixo */
+  white-space: nowrap; 
 }
 
 .logo-icon {
@@ -77,7 +77,7 @@
   display: block;
 }
 
-/* BOTÃO DE RECOLHER/EXPANDIR (TOGGLE) */
+/* BOTÃO DE RECOLHER/EXPANDIR*/
 .collapse-toggle {
   background: transparent;
   border: none;
@@ -120,7 +120,7 @@
   gap: 14px;
   transition: all 0.2s ease;
   width: 100%;
-  white-space: nowrap; /* Muito importante pro texto não alongar o botão */
+  white-space: nowrap; 
 }
 
 .nav-btn:hover {
@@ -194,7 +194,6 @@
   background: #d60000;
 }
 
-/* 🔥 O SEGREDO DO BOTÃO SAIR PEQUENININHO: Transforma em um quadradinho centrado */
 .dashboard-sidebar.collapsed .logout-btn {
   width: 45px;
   height: 45px;
@@ -202,7 +201,7 @@
   margin: 0 auto;
 }
 
-/* MAIN CONTENT */
+
 .dashboard-main {
   flex: 1;
   padding: 35px;

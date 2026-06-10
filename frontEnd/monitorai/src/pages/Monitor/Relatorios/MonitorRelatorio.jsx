@@ -4,7 +4,6 @@ import api from "/src/services/api";
 import "./MonitorRelatorio.css";
 
 export default function MonitorRelatorio() {
-    // Puxa o usuário que o SharedLayout já carregou!
     const { usuario } = useOutletContext();
     
     const [minhaMonitoria, setMinhaMonitoria] = useState(null);
@@ -12,7 +11,7 @@ export default function MonitorRelatorio() {
     const [media, setMedia] = useState(0);
     const [loading, setLoading] = useState(true);
     
-    const [modo, setModo] = useState('list'); // 'list' ou 'form'
+    const [modo, setModo] = useState('list');
     const [relatorioEditando, setRelatorioEditando] = useState(null);
 
     const [form, setForm] = useState({
@@ -31,7 +30,6 @@ export default function MonitorRelatorio() {
             // 1. Verificamos se temos o username textual
             if (usuario.username) {
                 
-                // 2. Usamos a rota "/usuarios/buscar" que JÁ EXISTE no seu UsuarioController
                 const searchRes = await api.get(`/usuarios/buscar?termo=${usuario.username}`);
                 
                 // O back-end retorna uma lista. Achamos exatamente o cara com o mesmo username:
@@ -39,7 +37,6 @@ export default function MonitorRelatorio() {
                 const idNumerico = usuarioCompleto?.id;
 
                 if (idNumerico) {
-                    // 3. Agora sim, com o ID numérico, buscamos a monitoria sem dar erro 500!
                     const mRes = await api.get(`/monitorias/monitor/${idNumerico}`);
                     
                     if (mRes.data && Array.isArray(mRes.data)) {

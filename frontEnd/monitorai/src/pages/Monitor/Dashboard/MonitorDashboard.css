@@ -25,7 +25,7 @@
 
 /* Destaca levemente o card que pertence ao próprio monitor */
 .card.disciplina-card-aluno.minha-disciplina {
-  border: 2px solid #002b5c; /* Borda azul para destacar a matéria dele */
+  border: 2px solid #002b5c; 
   box-shadow: 0 8px 25px rgba(0, 43, 92, 0.2);
 }
 
@@ -42,26 +42,24 @@
 
 .dashboard-container {
   display: flex;
-  height: 100vh;      /* Força o container a ter exatamente a altura da tela */
+  height: 100vh;     
   width: 100%;
   background: #f5f7fb;
   font-family: 'Segoe UI', sans-serif;
-  overflow: hidden;   /* Impede que a página inteira crie uma barra de rolagem */
+  overflow: hidden;   
 }
 
 /* SIDEBAR FIXA */
 .dashboard-sidebar {
   width: 250px;
-  min-width: 250px;   /* Garante que ela não vai espremer em telas menores */
-  height: 100vh;      /* Ocupa toda a altura da tela */
+  min-width: 250px;   
+  height: 100vh;     
   background: linear-gradient(180deg, #002b5c, #00152e);
   color: white;
   padding: 25px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  
-  /* O segredo para ela não sair do lugar se houver qualquer evento */
   position: sticky;
   top: 0;
   left: 0;
@@ -71,6 +69,6 @@
 .dashboard-main {
   flex: 1;
   padding: 35px;
-  height: 100vh;      /* Ocupa a altura da tela */
-  overflow-y: auto;   /* Ativa a barra de rolagem vertical APENAS aqui dentro */
+  height: 100vh;       
+  overflow-y: auto;  
 }

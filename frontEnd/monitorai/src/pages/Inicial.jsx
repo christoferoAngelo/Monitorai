@@ -14,7 +14,6 @@ function Inicial() {
         .then(res => {
           console.log("🔐 Role:", res.data.role);
           
-          // 👈 REDIRECIONA PARA DASHBOARDS
           switch(res.data.role) {
             case 'ADMIN':
               navigate('/admin-dashboard');

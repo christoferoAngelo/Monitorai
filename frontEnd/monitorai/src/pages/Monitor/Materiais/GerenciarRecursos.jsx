@@ -106,8 +106,7 @@ export default function GerenciarRecursos() {
         
         let urlObtida = await fazerUploadCloudinary(arquivoPdf);
         
-        // 🔥 O TRUQUE DE OURO AQUI:
-        // Removemos qualquer extensão errada que o Cloudinary mande (ex: .png, .webp) 
+        // Remove qualquer extensão errada que o Cloudinary mande (ex: .png, .webp) 
         // e colamos um .pdf no final da URL
         if (urlObtida.includes('.')) {
           urlObtida = urlObtida.substring(0, urlObtida.lastIndexOf('.')) + '.pdf';
@@ -314,14 +313,14 @@ export default function GerenciarRecursos() {
 
       </div>
 
-      {/* ✅ LISTAGEM DOS MATERIAIS (Agora usando materiaisFiltrados) */}
+      {/*LISTAGEM DOS MATERIAIS */}
       <div className="materiais-grid">
         {materiaisFiltrados.length === 0 ? (
           <p className="materiais-vazio">Nenhum material encontrado com esses filtros.</p>
         ) : materiaisFiltrados.map((material) => (
         <div key={material.id} className="material-card">
           
-          {/* ✅ Header com Badge e Botão de Excluir */}
+          {/* Header com Badge e Botão de Excluir */}
           <div className="material-card-header">
             <div className="material-tipo-badge">
               {renderizarIconeTipo(material.tipo)} {material.tipo}

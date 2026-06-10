@@ -103,7 +103,6 @@
   gap: 20px;
   margin: 20px;
   padding: 20px;
-  /* Removido o align-items: center para o grid poder esticar até as pontas */
   width: 100%; 
   margin-top:0px;
 }
@@ -137,10 +136,9 @@
 /* CARDS */
 .cards-grid {
   display: grid;
-  /* Ajustamos o tamanho mínimo para 240px para que divida em 3 colunas perfeitamente */
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
-  width: 100%; /* Força o grid a ocupar a largura total do quadro azul */
+  width: 100%; 
 }
 
 .card {
@@ -178,7 +176,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  align-items: flex-start; /* Evita que o texto centralize estranho */
+  align-items: flex-start; 
 }
 
 .disciplina-card-header {
@@ -202,7 +200,7 @@
   color: #002b5c;
   padding: 4px 10px;
   border-radius: 8px;
-  align-self: flex-start; /* Fica no cantinho esquerdo */
+  align-self: flex-start;  
 }
 
 .disciplina-card-body {
@@ -240,8 +238,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  align-items: flex-start; /* Evita que o texto centralize estranho */
-  text-align: left; /* Garante o alinhamento à esquerda mesmo dentro do hero */
+  align-items: flex-start;
+  text-align: left;
 }
 
 .disciplina-card-header {
@@ -287,7 +285,7 @@
 }
 
 .no-data-text {
-  color: #002b5c; /* Ajustado para azul escuro para ler bem no fundo branco */
+  color: #002b5c; 
   font-size: 15px;
   font-weight: 500;
   background: white;

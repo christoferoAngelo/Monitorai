@@ -11,7 +11,6 @@ function SharedLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // O Layout busca quem é o usuário uma única vez
     api.get('/auth/me')
       .then(res => {
         setUsuario(res.data);
@@ -32,7 +31,7 @@ function SharedLayout() {
 
   const isMonitor = usuario?.role === 'MONITOR' || usuario?.role === 'ROLE_MONITOR';
 
-  // 🔥 Mapeamento dinâmico dos itens do menu baseado no cargo (Monitor ou Aluno)
+
   const menuItems = [];
 
   if (isMonitor) {
@@ -76,7 +75,7 @@ function SharedLayout() {
 
   return (
     <div className="dashboard-container">
-      {/* SIDEBAR INTELIGENTE COLAPSÁVEL */}
+      {/* SIDEBAR */}
       <aside className={`dashboard-sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-top-wrapper">
           <div className="sidebar-header">

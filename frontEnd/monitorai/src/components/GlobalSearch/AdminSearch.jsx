@@ -1,10 +1,7 @@
-/* eslint-disable react-hooks/immutability */
-/* eslint-disable no-unused-vars */
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './AdminSearch.css';
-// src/components/GlobalSearch/AdminSearch.jsx
 import { useUsuario } from './UsuarioContext'; 
 
 function AdminSearch() {

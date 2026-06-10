@@ -11,7 +11,7 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
     navigate('/login');
   };
 
-  // Mapeamento dos itens do menu utilizando os arquivos .png da pasta public
+  // Mapeamento dos itens do menu
   const menuItems = [
     { 
       id: 'Dashboard', 
@@ -51,7 +51,6 @@ function Sidebar({ usuario, onLogout, onNavigate }) {
         {!collapsed && (
           <div className="logo-area">
             <div className="logo-icon">
-              {/* Substituído o emoji de formatura pelo ícone de monitorias ou grade (ajuste se preferir outro) */}
               <img src="/icone_chapeu.png" alt="Logo" width="24" height="24" />
             </div>
             <div>

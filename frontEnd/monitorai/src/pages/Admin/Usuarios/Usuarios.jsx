@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../../../services/api";
 import UsuarioModal from "./UsuarioModal";
 import "./Usuarios.css";
-import { useLocation } from "react-router-dom"; // <-- NOVA IMPORTAÇÃO
+import { useLocation } from "react-router-dom"; 
 
 export default function Usuarios() {
-	const location = useLocation(); // NOVA CONST
+	const location = useLocation(); 
     const [usuarios, setUsuarios] = useState([]);
     const [monitorias, setMonitorias] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,14 +29,12 @@ export default function Usuarios() {
         carregarDados();
     }, []);
 	
-	// 👇 ADICIONE ESTE useEffect AQUI
 	useEffect(() => {
 	    if (location.state?.usuarioParaEditar) {
 	        const usuario = location.state.usuarioParaEditar;
 	        setUsuarioEditando(usuario);
 	        setTipoModal(usuario.role);
 	        setMostrarModal(true);
-	        // Limpa o state para não abrir novamente ao recarregar
 	        window.history.replaceState({}, document.title);
 	    }
 	}, [location]);

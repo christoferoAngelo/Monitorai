@@ -78,8 +78,6 @@ function Login() {
         return;
       }
 
-      // Envia a solicitação (no endpoint, marca comopendente de aprovação)
-      // Na verdade, vou usar um endpoint simples que cria a solicitação
       await api.put(`/usuarios/${usuario.id}/solicitar-redefinicao`);
       
       setSuccess('Solicitação enviada! Entre em contato com o administrador para aprovar.');

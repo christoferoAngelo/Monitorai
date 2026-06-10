@@ -1,4 +1,3 @@
-// src/components/GlobalSearch/UsuarioContext.jsx
 import { createContext, useContext, useState } from 'react';
 
 const UsuarioContext = createContext({});

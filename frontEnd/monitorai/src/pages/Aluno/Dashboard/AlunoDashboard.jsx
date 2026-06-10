@@ -13,7 +13,6 @@ function AlunoDashboard() {
   useEffect(() => {
     const carregarMonitorias = async () => {
       try {
-        // Agora busca apenas as monitorias ativas, já que o usuário vem do layout
         const monitoriasRes = await api.get('/monitorias/ativas');
         setMonitorias(monitoriasRes.data);
       } catch (error) {

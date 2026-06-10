@@ -73,7 +73,7 @@ const historicoFiltrado = historico.filter(a => {
     async function verRelatorios(atuacaoId) {
         try {
             // Busca a partir da monitoria
-            const res = await api.get(`/relatorios/monitoria/${atuacaoId}`);  // <-- CORRIGIDO
+            const res = await api.get(`/relatorios/monitoria/${atuacaoId}`);
             if (res.data.length === 0) {
                 alert("Nenhum relatório encontrado para esta atuação.");
             } else {

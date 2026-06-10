@@ -228,7 +228,7 @@ body {
 .hero-visual {
   flex: 1;
   display: flex;
-  justify-content: center; /* NÃO empurrar pra direita */
+  justify-content: center;
   align-items: center;
   position: relative;
   overflow: visible;
@@ -242,13 +242,13 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
-  padding: 1rem 1.5rem; /* Padding equilibrado */
+  padding: 1rem 1.5rem; 
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: row; /* Mantém ícone e texto lado a lado */
+  flex-direction: row; 
   align-items: center;
   gap: 0.75rem;
-  white-space: nowrap; /* Impede que o texto quebre linha */
+  white-space: nowrap; 
   transition: all 0.3s ease;
 }
 
@@ -264,7 +264,7 @@ body {
   border-radius: 16px;
 
   padding: 1rem 1.25rem;
-  min-width: 180px;   /* reduzido pra não cortar */
+  min-width: 180px;   
 
   box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 
@@ -303,10 +303,10 @@ body {
   flex-direction: column;
   gap: 1.2rem;
 
-  align-items: center;   /* NÃO colar na direita */
+  align-items: center;   
   justify-content: center;
 
-  max-width: 260px;      /* 🔥 limita largura pra não cortar */
+  max-width: 260px;      
 }
 
 @keyframes float1 {

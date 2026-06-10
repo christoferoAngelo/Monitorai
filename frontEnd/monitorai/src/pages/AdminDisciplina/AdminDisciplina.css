@@ -1,5 +1,5 @@
 /* =========================================================================
-   VARIÁVEIS DE DESIGN SYSTEM (Inspirado no Painel Premium)
+   VARIÁVEIS DE DESIGN SYSTEM 
    ========================================================================= */
 :root {
     --fatec-blue-primary: #0D3B73;       /* Azul institucional */
@@ -15,7 +15,7 @@
     --radius-lg: 20px;                   /* Arredondamento dos cards principais */
     --radius-md: 12px;                   /* Arredondamento dos botões e abas */
     
-    /* Sombra suave de elevação (Estilo Taskify) */
+    /* Sombra suave de elevação */
     --shadow-premium: 0 10px 30px -5px rgba(13, 59, 115, 0.04), 0 8px 20px -6px rgba(0, 0, 0, 0.02);
     --shadow-hover: 0 20px 40px -10px rgba(13, 59, 115, 0.1);
 }
@@ -178,7 +178,7 @@
 /* =========================================================================
    BOTÕES DE AÇÃO INTERNA DO CARD
    ========================================================================= */
-/* Editar Vínculos (Clean/Outline Moderno) */
+/* Editar Vínculos  */
 .btn-secondary {
     background-color: rgba(13, 59, 115, 0.06);
     color: var(--fatec-blue-primary);
@@ -198,7 +198,7 @@
     color: #FFFFFF;
 }
 
-/* Deletar (Seu Vermelho rgb(178,0,0) - Perigo Semântico) */
+/* Deletar */
 .btn-danger {
     background-color: var(--fatec-red-danger);
     color: #FFFFFF;
@@ -312,14 +312,14 @@
 }
 
 /* =========================================================================
-   LAYOUT DE CORREÇÃO: SEÇÃO DE ALOCAÇÕES INTEGRADA (Estilo Taskify Premium)
+   LAYOUT DE CORREÇÃO: SEÇÃO DE ALOCAÇÕES INTEGRADA
    ========================================================================= */
 
 /* Transforma o container geral em um fluxo vertical onde nada fica espremido */
 .dashboard-main-grid {
     display: flex;
     flex-direction: column;
-    gap: 40px; /* Cria um super respiro vertical entre os blocos */
+    gap: 40px;
     width: 100%;
 }
 
@@ -327,7 +327,7 @@
     width: 100%;
 }
 
-/* Painel de Alocações - Agora横 (Horizontal) e panorâmico para não sumir */
+/* Painel de Alocações */
 .alocacoes-sidebar {
     width: 100%;
     margin-bottom: 12px;
@@ -369,14 +369,14 @@
     letter-spacing: 0.2px;
 }
 
-/* Lista de Monitores: Agora se distribui em Grid Fluido (Estilo Módulos do Taskify) */
+/* Lista de Monitores */
 .alocacoes-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
-/* O Item Individual de cada Monitor reformulado como um Mini-Card limpo */
+/* Item Individual de cada Monitor */
 .monitor-item {
     display: flex;
     align-items: center;
@@ -391,7 +391,7 @@
 .monitor-item:hover {
     background-color: #FFFFFF;
     border-color: var(--fatec-blue-primary);
-    transform: translateY(-3px); /* Efeito flutuante individualizado */
+    transform: translateY(-3px); 
     box-shadow: 0 10px 20px -5px rgba(13, 59, 115, 0.06);
 }
 
@@ -433,7 +433,7 @@
     font-weight: 500;
 }
 
-/* Badges de Status Lateral sutil */
+/* Badges de Status Lateral */
 .monitor-status {
     font-size: 10px;
     font-weight: 700;

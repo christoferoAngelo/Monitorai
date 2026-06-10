@@ -5,7 +5,6 @@ import "./AdminDisciplina.css";
 
 
 export default function Disciplina() {
-  // Controle de Abas ("listar" ou "criar")
   const [abaAtiva, setAbaAtiva] = useState("listar");
 
   const [disciplinas, setDisciplinas] = useState([]);
@@ -50,7 +49,7 @@ export default function Disciplina() {
     }
   }
 
-  // Ação de Cadastrar uma Nova Disciplina (Sem vincular na hora se não quiser)
+  // Ação de Cadastrar uma Nova Disciplina
   async function cadastrarNova(e) {
     e.preventDefault();
     const dados = { nome, codigo: null, cursosIds: [], monitorId: null };
@@ -60,7 +59,7 @@ export default function Disciplina() {
       alert("Nova disciplina criada com sucesso!");
       limparFormulario();
       carregarDados();
-      setAbaAtiva("listar"); // Volta para a listagem para vincular
+      setAbaAtiva("listar"); 
     } catch (error) {
       console.error("Erro ao criar disciplina:", error);
     }

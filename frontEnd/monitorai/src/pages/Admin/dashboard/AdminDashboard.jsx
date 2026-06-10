@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
 
 
-// Componentes Locais
+
 import StatCard from '../components/StatCard';
 import MonitoriasTable from '../components/MonitoriasTable';
 import QuickActions from '../components/QuickActions';

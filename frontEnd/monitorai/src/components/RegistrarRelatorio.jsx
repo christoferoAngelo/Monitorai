@@ -13,7 +13,6 @@ export default function RegistrarRelatorio() {
     const [modo, setModo] = useState('list');
     const [relatorioEditando, setRelatorioEditando] = useState(null);
 
-    // 🔑 LE O PARÂMETRO DA URL
     const [searchParams] = useSearchParams();
     const monitoriaIdFromUrl = searchParams.get('monitoriaId');
 

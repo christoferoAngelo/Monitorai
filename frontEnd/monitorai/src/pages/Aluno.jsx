@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-// IMPORTANTE: Mude o caminho abaixo para onde o seu arquivo api.js realmente está!
 import api from "../services/api"; 
 
 export default function Aluno() {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Note que aqui só precisamos do /usuarios, pois a baseURL já está no api.js
   const ENDPOINT = "/usuarios";
 
   async function carregarUsuarios() {
@@ -31,7 +29,6 @@ export default function Aluno() {
 
   async function promoverParaMonitor(usuario) {
     try {
-      // Usando 'api' ao invés de 'axios'
       await api.put(`${ENDPOINT}/${usuario.id}`, {
         role: "MONITOR",
       });
@@ -76,7 +73,6 @@ export default function Aluno() {
             <strong>Role:</strong> {usuario.role}
           </p>
 
-          {/* Cuidado: no banco provavelmente está "ROLE_MONITOR" */}
           {usuario.role !== "ADMIN" && usuario.role !== "MONITOR" ? (
             <button onClick={() => promoverParaMonitor(usuario)}>
               Promover para MONITOR

@@ -1,4 +1,4 @@
-import './PdfViewerModal.css'; // Você precisará criar este CSS abaixo
+import './PdfViewerModal.css'; 
 
 export default function PdfViewerModal({ url, onClose }) {
   if (!url) return null;
@@ -11,7 +11,6 @@ export default function PdfViewerModal({ url, onClose }) {
           <button onClick={onClose}>Fechar ✕</button>
         </div>
         <div className="pdf-viewer-container">
-          {/* O embed permite visualizar o PDF incorporado */}
           <embed src={url} type="application/pdf" width="100%" height="100%" />
         </div>
       </div>

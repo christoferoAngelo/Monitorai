@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../../services/api";
 import "./GradeCurricular.css";
-import { useSearchParams, useLocation } from 'react-router-dom'; // NOVO IMPORT PARA ADMIN SEARCH
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 export default function GradeCurricular() {
     const [cursos, setCursos] = useState([]);
@@ -57,7 +57,7 @@ export default function GradeCurricular() {
         setDisciplinasFiltradas(lista);
     }, [cursoSelecionado, semestreSelecionado, disciplinas]);
 
-	// useEffect para capturar disciplina vinda do AdminSearch
+	
 	useEffect(() => {
 	  const tabParam = searchParams.get('tab');
 	  const editarId = searchParams.get('editar');
@@ -81,7 +81,7 @@ export default function GradeCurricular() {
 	    }
 		
 		
-	    // Limpa os parâmetros da URL
+	    
 	    window.history.replaceState({}, document.title, '/grade-curricular');
 	  }
 	  
