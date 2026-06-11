@@ -5,6 +5,7 @@ import java.util.List;
 
 public class MonitoriaResponseDTO {
     private Long id;
+    private Long monitorId;
     private String monitorNome; // Apenas o nome, não o objeto Monitor inteiro
     private String disciplinaNome; // Apenas o nome da disciplina
     private String diaSemana;
@@ -22,11 +23,16 @@ public class MonitoriaResponseDTO {
 	
 	
 
-	public MonitoriaResponseDTO(Long id, String monitorNome, String disciplinaNome, String diaSemana,
+	
+
+
+
+	public MonitoriaResponseDTO(Long id, Long monitorId, String monitorNome, String disciplinaNome, String diaSemana,
 			LocalTime horarioInicio, LocalTime horarioFim, String sala, boolean ativa, Long disciplinaId,
 			String disciplinaCodigo, List<String> cursosNomes) {
 		super();
 		this.id = id;
+		this.monitorId = monitorId;
 		this.monitorNome = monitorNome;
 		this.disciplinaNome = disciplinaNome;
 		this.diaSemana = diaSemana;
@@ -38,6 +44,10 @@ public class MonitoriaResponseDTO {
 		this.disciplinaCodigo = disciplinaCodigo;
 		this.cursosNomes = cursosNomes;
 	}
+
+
+
+
 
 
 
@@ -127,6 +137,18 @@ public class MonitoriaResponseDTO {
 
 	public void setCursosNomes(List<String> cursosNomes) {
 		this.cursosNomes = cursosNomes;
+	}
+
+
+
+	public Long getMonitorId() {
+		return monitorId;
+	}
+
+
+
+	public void setMonitorId(Long monitorId) {
+		this.monitorId = monitorId;
 	}
 
 	

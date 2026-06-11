@@ -257,15 +257,6 @@ if (periodoFim && periodoFim < hoje) {
                 )}
               </label>
             </div>
-            {arquivoNome && (
-              <button 
-                type="button" 
-                className="btn-remove-file"
-                onClick={() => { setArquivo(null); setArquivoNome(''); }}
-              >
-                ✕ Remover arquivo
-              </button>
-            )}
           </div>
 
           {/* Status (só para editar) */}

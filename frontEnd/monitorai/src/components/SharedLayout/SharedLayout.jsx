@@ -88,7 +88,10 @@ function SharedLayout() {
         <div className="sidebar-top-wrapper">
           <div className="sidebar-header">
             {!collapsed && (
-              <div className="logo-area">
+              <div className="logo-area"
+              onClick={() => navigate('')} 
+            style={{ cursor: 'pointer' }}
+            title="Ir para a Home">
                 <div className="logo-icon">
                   <img src="/icone_chapeu.png" alt="Logo" width="24" height="24" />
                 </div>

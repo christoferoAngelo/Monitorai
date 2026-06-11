@@ -223,16 +223,21 @@ public class MonitoriaService {
         Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
                 .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
-        // VERIFICA SE TROCOU O MONITOR (Bloco corrigido e único)
-        if (monitoria.getMonitor() != null && monitoria.getMonitor().getUsuario() != null) {
-            if (!monitoria.getMonitor().getUsuario().getId().equals(dto.getMonitorId())) {
-                trocarMonitor(id, dto.getMonitorId());
+        // VERIFICA SE TROCOU O MONITOR (Com proteção contra nulos)
+        Long novoMonitorId = dto.getMonitorId();
+        
+        if (novoMonitorId != null) {
+            if (monitoria.getMonitor() != null && monitoria.getMonitor().getUsuario() != null) {
+                // Tem monitor atual. Só troca se o ID enviado pelo frontend for diferente
+                if (!monitoria.getMonitor().getUsuario().getId().equals(novoMonitorId)) {
+                    trocarMonitor(id, novoMonitorId);
+                    monitoria = buscarPorId(id); // Recarrega a entidade após a troca
+                }
+            } else {
+                // Estava sem monitor (ex: após semestre finalizado) e agora recebeu um
+                trocarMonitor(id, novoMonitorId);
                 monitoria = buscarPorId(id);
             }
-        } else {
-            // Se o monitor é null (monitoria inativa ou sem monitor devido ao fim do semestre), atribui o novo monitor
-            trocarMonitor(id, dto.getMonitorId());
-            monitoria = buscarPorId(id);
         }
 	     
         List<Monitoria> conflitos = monitoriaRepository.buscarConflitosDeSalaExcetoId(
@@ -330,7 +335,7 @@ public class MonitoriaService {
         }
 
         com.eva.monitorai.dto.MonitoriaResponseDTO dto = new com.eva.monitorai.dto.MonitoriaResponseDTO();
-        dto.setId(monitoria.getId());
+        dto.setId(monitoria.getId()); // ID da Monitoria (NÃO MEXER)
         dto.setDiaSemana(monitoria.getDiaSemana());
         dto.setHorarioInicio(monitoria.getHorarioInicio());
         dto.setHorarioFim(monitoria.getHorarioFim());
@@ -340,15 +345,15 @@ public class MonitoriaService {
         // Mapeando dados do Monitor
         if (monitoria.getMonitor() != null && monitoria.getMonitor().getUsuario() != null) {
             dto.setMonitorNome(monitoria.getMonitor().getUsuario().getUsername());
+            dto.setMonitorId(monitoria.getMonitor().getUsuario().getId()); // <- Agora sim, usando o setMonitorId correto!
         }
         
         // Mapeando dados da Disciplina
         if (monitoria.getDisciplina() != null) {
             dto.setDisciplinaId(monitoria.getDisciplina().getId());
             dto.setDisciplinaNome(monitoria.getDisciplina().getNome());
-            dto.setDisciplinaCodigo(monitoria.getDisciplina().getCodigo()); // Se existir
-            
-            // Reutilizando o método que você já tinha na entidade Monitoria para pegar os cursos
+            dto.setDisciplinaCodigo(monitoria.getDisciplina().getCodigo()); 
+
             dto.setCursosNomes(monitoria.getCursosNomes()); 
         }
 
