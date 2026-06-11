@@ -193,21 +193,7 @@
     margin-bottom: 12px;
 }
 
-/* SELECTS */
-.filtro-select {
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 15px;
-    background: white;
-    min-width: 250px;
-    cursor: pointer;
-}
 
-.filtro-select:focus {
-    outline: none;
-    border-color: #003b94;
-}
 
 /* RESPONSIVO */
 @media (max-width: 768px) {
@@ -306,14 +292,137 @@
     margin-bottom: 24px;
 }
 
+/* Campo de busca customizado */
 .filtro-admin {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    width: 100%;       
+    max-width: 900px;    
 }
 
 .filtro-admin label {
     font-size: 15px;
     font-weight: 600;
     color: #475569;
+}
+
+/* Container do input com lupa */
+.input-busca-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-busca-wrapper svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.filtro-select {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    background: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filtro-select:focus {
+    outline: none;
+    border-color: #003b94;
+    box-shadow: 0 0 0 3px rgba(0, 59, 148, 0.1);
+}
+
+.dropdown-resultados {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    margin-top: 6px;
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: 0.15s;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #f8fafc;
+}
+
+.dropdown-item strong {
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.dropdown-item span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.dropdown-vazio {
+    padding: 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.tag-selecionada {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #eff6ff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #bfdbfe;
+}
+
+.tag-selecionada .info {
+    display: flex;
+    flex-direction: column;
+}
+
+.tag-selecionada .disciplina {
+    color: #1d4ed8;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tag-selecionada .detalhes {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.tag-selecionada button {
+    background: #1d4ed8;
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
 }

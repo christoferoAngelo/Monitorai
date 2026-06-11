@@ -20,16 +20,18 @@ function AdminDashboard() {
 
   const navigate = useNavigate();
 
-  // Função simplificada para mapear os dados da API (DTO)
-  const formatMonitoria = (m) => ({
-    ...m,
-    id: m.id,
-    // Acessa as propriedades de forma direta e segura
-    disciplina: m.disciplinaNome|| '—',
-    monitor: m.monitorNome || '—',
-    sala: m.sala || '—',
-    ativa: Boolean(m.ativa)
-  });
+  const formatMonitoria = (m) => {
+    const nomeDisciplina = m.disciplina?.nome || '—';
+    const nomeMonitor = m.monitor?.usuario?.username || m.monitor?.nome || '—';
+
+    return {
+      ...m,
+      disciplina: nomeDisciplina,
+      monitor: nomeMonitor,
+      sala: m.sala || '—',
+      ativa: Boolean(m.ativa)
+    };
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -42,10 +44,12 @@ function AdminDashboard() {
 
     async function carregarDados() {
       try {
-        const [resUser, resStats, resMonitorias] = await Promise.all([
+        const [resUser, resStats, resMonitorias, resMateriais, resRelatorios] = await Promise.all([
           api.get('/auth/me'),
           api.get('/usuarios/stats'),
-          api.get('/monitorias')
+          api.get('/monitorias'),
+          api.get('/materiais'),
+          api.get('/relatorios')
         ]);
 
         setUsuario({
@@ -53,22 +57,26 @@ function AdminDashboard() {
           role: resUser.data.role || 'ADMIN'
         });
 
-        const s = resStats.data || {};
         const monitoriasFormatadas = (resMonitorias.data || []).map(formatMonitoria);
+        
+        const s = resStats.data || {};
+
+        const listaMateriais = resMateriais.data || [];
+        const listaRelatorios = resRelatorios.data || [];
 
         setStats({
           totalUsuarios: (Number(s.totalAlunos) || 0) + (Number(s.totalMonitores) || 0) + (Number(s.totalAdmins) || 0),
-          totalMateriais: Number(s.totalMateriais) || 0,
-          totalRelatorios: Number(s.totalRelatorios) || 0
+          totalMateriais: listaMateriais.length,
+          totalRelatorios: listaRelatorios.length
         });
 
         setMonitorias(monitoriasFormatadas);
 
-        // Gerar Alertas
         const inativas = monitoriasFormatadas.filter(m => !m.ativa).length;
+        
         setAlertas([
           inativas > 0 && { type: 'danger', message: `${inativas} monitorias inativas` },
-          Number(s.totalRelatorios) > 0 && { type: 'warning', message: `${s.totalRelatorios} relatórios pendentes` },
+          listaRelatorios.length > 0 && { type: 'warning', message: `${listaRelatorios.length} relatórios cadastrados` },
           { type: 'info', message: 'Sistema online' }
         ].filter(Boolean));
 
@@ -83,7 +91,6 @@ function AdminDashboard() {
     carregarDados();
   }, [navigate]);
 
-  // Uso de useMemo para performance ao filtrar
   const monitoriasFiltradas = useMemo(() => {
     if (!searchTerm) return monitorias;
     const term = searchTerm.toLowerCase();
@@ -118,7 +125,7 @@ function AdminDashboard() {
       case 'Novo Usuário': navigate('/alunos'); break;
       case 'Nova Monitoria': navigate('/monitorias'); break;
       case 'Novo Relatório': navigate('/relatorios/novo'); break;
-            case 'Grade Curricular': navigate('/grade-curricular'); break; 
+      case 'Grade Curricular': navigate('/grade-curricular'); break; 
       case 'Lançar Pagamento': alert('Em breve!'); break;
       default: alert(`Ação "${action}" em desenvolvimento`);
     }
