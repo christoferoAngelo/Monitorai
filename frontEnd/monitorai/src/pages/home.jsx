@@ -187,12 +187,7 @@ export default function Home() {
           <a href="#hero">Início</a>
           
           <div className="dropdown">
-            <a href="#monitorias" className="dropbtn">Monitorias ▾</a>
-            <div className="dropdown-content">
-              <span onClick={() => navigate('/?filtro=curso#monitorias')}>Por Curso</span>
-              <span onClick={() => navigate('/monitorias/semestre')}>Por Semestre</span>
-              <span onClick={() => navigate('/monitorias/disciplina')}>Por Disciplina</span>
-            </div>
+            <a href="#monitorias" className="dropbtn">Monitorias </a>
           </div>
 
           <a href="#editais">Editais</a>
