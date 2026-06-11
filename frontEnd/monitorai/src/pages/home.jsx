@@ -136,24 +136,35 @@ export default function Home() {
   // Lógica de filtro
   
   const monitoriasFiltradas = monitorias.filter(m => {
-    let passaFiltro = true;
-    
-    if (filtroSemestre && m.disciplina?.semestre !== parseInt(filtroSemestre)) {
-      passaFiltro = false;
+
+    const disciplina = disciplinas.find(
+      d => d.id === m.disciplinaId
+    );
+
+    if (!disciplina) return false;
+
+    if (
+      filtroSemestre &&
+      disciplina.semestre !== parseInt(filtroSemestre)
+    ) {
+      return false;
     }
-    
-    if (filtroCurso && !m.disciplina?.cursosIds?.includes(parseInt(filtroCurso))) {
-      passaFiltro = false;
-    } 
-	
-	if (
-	  filtroDisciplina &&
-	  m.disciplina?.id !== parseInt(filtroDisciplina)
-	) {
-	  passaFiltro = false;
-	}
-    
-    return passaFiltro;
+
+    if (
+      filtroCurso &&
+      !disciplina.cursosIds?.includes(parseInt(filtroCurso))
+    ) {
+      return false;
+    }
+
+    if (
+      filtroDisciplina &&
+      disciplina.id !== parseInt(filtroDisciplina)
+    ) {
+      return false;
+    }
+
+    return true;
   });
 
   const editaisVagas = editais.filter(e => e.tipo === 'VAGAS' && e.status === 'ATIVO');
