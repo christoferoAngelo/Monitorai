@@ -134,7 +134,6 @@ export default function Home() {
   
   // Lógica de filtro
   
-
   const monitoriasFiltradas = monitorias.filter(m => {
     let passaFiltro = true;
     
@@ -158,6 +157,7 @@ export default function Home() {
 
   const editaisVagas = editais.filter(e => e.tipo === 'VAGAS' && e.status === 'ATIVO');
   const editaisResultados = editais.filter(e => e.tipo === 'RESULTADO');
+  
 
   return (
     <div className="home-container">
@@ -306,11 +306,11 @@ export default function Home() {
               <div key={monitoria.id} className="monitoria-card">
                 <div className="monitoria-header">
                   <span className="disciplina-badge">
-                    {monitoria.disciplina?.nome || 'Disciplina'}
+                   {monitoria.disciplinaNome || 'Disciplina'}
                   </span>
                 </div>
                 <div className="monitoria-info">
-                  <h3>{monitoria.monitor?.usuario?.username || 'Monitor'}</h3>
+                  <h3>{monitoria.monitorNome || 'Monitor'}</h3>
                   <p className="sala">📍 {monitoria.sala || 'A definir'}</p>
                   <p className="horario">
                     🕐 {monitoria.horarioInicio?.substring(0,5)} - {monitoria.horarioFim?.substring(0,5)}

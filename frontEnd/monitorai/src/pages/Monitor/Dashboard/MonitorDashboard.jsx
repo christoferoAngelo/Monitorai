@@ -16,7 +16,9 @@ function MonitorDashboard() {
       try {
         // Buscando da rota atualizada de monitorias
         const monitoriasRes = await api.get('/monitorias/ativas');
-        
+		// DEBUG
+		console.log("MONITORIAS DO MONITOR:", monitoriasRes.data);
+		
         if (Array.isArray(monitoriasRes.data)) {
           setMonitorias(monitoriasRes.data);
         } else {
