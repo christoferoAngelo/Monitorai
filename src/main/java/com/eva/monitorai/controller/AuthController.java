@@ -132,31 +132,49 @@ public class AuthController {
     }
 
 
-@PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
-    String login = loginRequest.getUsername(); // pode ser email
-    
-    // Se for email, procura o usuário pelo email
-    if (login.contains("@")) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(login);
-        if (usuarioOpt.isPresent()) {
-            login = usuarioOpt.get().getUsername(); // usa o username real
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
+        String login = loginRequest.getUsername(); // pode ser email ou username
+        Optional<Usuario> usuarioOpt;
+
+        // 1. Busca o usuário pelo email ou username
+        if (login.contains("@")) {
+            usuarioOpt = usuarioRepository.findByEmail(login);
+        } else {
+            // Presumindo que você tenha o método findByUsername no repositório
+            usuarioOpt = usuarioRepository.findByUsername(login);
         }
-    }
-    
-    try {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(login, loginRequest.getSenha())
-        );
-    } catch (BadCredentialsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha inválidos");
-    }
 
-    final UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-    final String token = jwtUtil1.gerarToken(userDetails);
+        // 2. Se o usuário não existir, já pode dar erro genérico
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email/Usuário ou senha inválidos");
+        }
 
-    return ResponseEntity.ok(new TokenResponseDTO(token));
-}
+        Usuario usuario = usuarioOpt.get();
+
+        // 3. VERIFICAÇÃO PRINCIPAL: O usuário está ativo?
+        if (Boolean.FALSE.equals(usuario.getAtivo())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sua conta está inativa. Acesso bloqueado.");
+        }
+
+        // Garante que o Spring Security use o username correto para autenticar
+        login = usuario.getUsername(); 
+
+        // 4. Tenta autenticar a senha
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(login, loginRequest.getSenha())
+            );
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email/Usuário ou senha inválidos");
+        }
+
+        // 5. Se deu tudo certo, gera o token
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+        final String token = jwtUtil1.gerarToken(userDetails);
+
+        return ResponseEntity.ok(new TokenResponseDTO(token));
+    }
     
     // DTO para a resposta
     class TokenResponseDTO {

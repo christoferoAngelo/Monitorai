@@ -125,41 +125,52 @@ const handleLogin = async (e) => {
   }
 
   try {
-    const response = await api.post('/auth/login', { username, senha });
-    const tokenGerado = response.data.token;
+      const response = await api.post('/auth/login', { username, senha });
+      const tokenGerado = response.data.token;
 
-    localStorage.setItem('token', tokenGerado);
-    api.defaults.headers.common['Authorization'] = `Bearer ${tokenGerado}`;
+      localStorage.setItem('token', tokenGerado);
+      api.defaults.headers.common['Authorization'] = `Bearer ${tokenGerado}`;
 
-    const userResponse = await api.get('/auth/me/perfil');
-    const userId = userResponse.data.id;
-    
-    const precisa = await verificarRedefinicao(userId);
-    
-    if (precisa) {
-      setSuccess('Você precisa definir uma nova senha.');
-    } else {
-      navigate('/dashboard');
-    }
-  } catch (error) {
-    // Login falhou - verifica situação
-    try {
-      const verif = await api.get(`/usuarios/verificar-solicitacao?termo=${username}`);
-      const dados = verif.data;
+      const userResponse = await api.get('/auth/me/perfil');
+      const userId = userResponse.data.id;
       
-      if (dados.existe && dados.aprovado) {
-        setPrecisaRedefinir(true);
-        setSuccess('Senha incorreta. Você tem autorização para redefinir! Defina uma nova senha.');
-      } else if (dados.existe && dados.temSolicitacao) {
-        setError('Senha incorreta. Sua solicitação está aguardando aprovação.');
+      const precisa = await verificarRedefinicao(userId);
+      
+      if (precisa) {
+        setSuccess('Você precisa definir uma nova senha.');
       } else {
-        setError('Email/Usuário ou senha inválidos');
+        navigate('/dashboard');
       }
-    } catch {
-      setError('Email/Usuário ou senha inválidos');
+    } catch (error) {
+      // NOVA LÓGICA DE CAPTURA DE ERRO AQUI:
+      const status = error.response?.status;
+      const dataMsg = error.response?.data;
+
+      // Se o backend retornou 403 (Forbidden), é porque o usuário está inativo
+      if (status === 403) {
+        setError(typeof dataMsg === 'string' ? dataMsg : 'Sua conta está inativa.');
+        return; // Para a execução aqui, não tenta fazer as validações de senha abaixo
+      }
+
+      // Login falhou por outros motivos (senha errada, etc) - continua sua lógica original
+      try {
+        const verif = await api.get(`/usuarios/verificar-solicitacao?termo=${username}`);
+        const dados = verif.data;
+        
+        if (dados.existe && dados.aprovado) {
+          setPrecisaRedefinir(true);
+          setSuccess('Senha incorreta. Você tem autorização para redefinir! Defina uma nova senha.');
+        } else if (dados.existe && dados.temSolicitacao) {
+          setError('Senha incorreta. Sua solicitação está aguardando aprovação.');
+        } else {
+          setError('Email/Usuário ou senha inválidos');
+        }
+      } catch {
+        // Se a própria requisição da mensagem der erro ou retornar mensagem customizada do backend
+        setError(typeof dataMsg === 'string' ? dataMsg : 'Email/Usuário ou senha inválidos');
+      }
     }
-  }
-};
+  };
 
   // Função de redefinir senha
   const handleRedefinirSenha = async (e) => {

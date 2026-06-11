@@ -55,17 +55,12 @@ export default function Usuarios() {
         setLoading(false);
     }
 
-    function getDadosMonitoriaDoUsuario(usuarioId) {
-        const monitoria = monitorias.find(m => m.monitor?.usuario?.id === usuarioId);
+    // ALTERADO: Agora busca pelo nome (monitorNome) vindo do DTO
+    function getDadosMonitoriaDoUsuario(usuario) {
+        const monitoria = monitorias.find(m => m.monitorNome === usuario.username);
         if (!monitoria) return null;
         
-        return {
-            disciplina: monitoria.disciplina,
-            sala: monitoria.sala,
-            diaSemana: monitoria.diaSemana,
-            horarioInicio: monitoria.horarioInicio,
-            horarioFim: monitoria.horarioFim
-        };
+        return monitoria;
     }
 
     const usuariosFiltrados = usuarios.filter(u => {
@@ -211,7 +206,6 @@ export default function Usuarios() {
                     <p>Cadastre e gerencie alunos e administradores</p>
                 </div>
                 
-                {/* BOTÃO DE PEDIDOS DE SENHA */}
                 <div className="header-actions">
                     <button 
                         className="btn-pedidos" 
@@ -346,13 +340,14 @@ export default function Usuarios() {
                                     );
                                 }
 
+                                // ALTERADO: Mapeamento de propriedades ajustado ao MonitoriaResponseDTO
                                 if (aba === 'monitores') {
-                                    const monitoria = getDadosMonitoriaDoUsuario(u.id);
+                                    const monitoria = getDadosMonitoriaDoUsuario(u);
                                     return (
                                         <tr key={u.id} className={!isAtivo ? 'row-inactive' : ''}>
                                             <td><strong>{u.username}</strong></td>
                                             <td>{u.email}</td>
-                                            <td>{monitoria?.disciplina?.nome || '—'}</td>
+                                            <td>{monitoria?.disciplinaNome || '—'}</td>
                                             <td>{monitoria?.diaSemana || '—'}</td>
                                             <td>{monitoria ? `${monitoria.horarioInicio.substring(0,5)} às ${monitoria.horarioFim.substring(0,5)}` : '—'}</td>
                                             <td>{monitoria?.sala || '—'}</td>
@@ -412,18 +407,8 @@ export default function Usuarios() {
                                             </span>
                                         </div>
                                         <div className="pedido-actions">
-                                            <button 
-                                                className="btn-autorizar"
-                                                onClick={() => autorizarPedido(p)}
-                                            >
-                                                ✓ Autorizar
-                                            </button>
-                                            <button 
-                                                className="btn-negar"
-                                                onClick={() => negarPedido(p)}
-                                            >
-                                                ✕ Negar
-                                            </button>
+                                            <button className="btn-autorizar" onClick={() => autorizarPedido(p)}>✓ Autorizar</button>
+                                            <button className="btn-negar" onClick={() => negarPedido(p)}>✕ Negar</button>
                                         </div>
                                     </div>
                                 ))}
