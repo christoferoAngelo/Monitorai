@@ -63,4 +63,5 @@ public interface MonitoriaRepository extends JpaRepository<Monitoria, Long> {
             "JOIN mon.usuario u " +
             "WHERE u.id = :usuarioId")
     List<Monitoria> findByUsuarioId(@Param("usuarioId") Long usuarioId);
+    Optional<Monitoria> findTopByOrderByIdDesc();
 }

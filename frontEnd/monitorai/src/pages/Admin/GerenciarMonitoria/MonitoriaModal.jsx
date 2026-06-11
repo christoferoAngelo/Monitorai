@@ -35,28 +35,31 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
 
   useEffect(() => {
     if (monitoramento) {
-      const disciplina = monitoramento.disciplina;
-      let cursoId = "";
-      
-      if (disciplina?.cursosIds && disciplina.cursosIds.length > 0) {
-        cursoId = String(disciplina.cursosIds[0]);
-      } else if (disciplina?.cursos && disciplina.cursos.length > 0) {
-        const primeiroCurso = disciplina.cursos[0];
-        cursoId = typeof primeiroCurso === 'object' ? String(primeiroCurso.id) : String(primeiroCurso);
-      }
-      
-      setCursoSelecionado(cursoId);
-      setMonitorSelecionado(monitoramento.monitor?.usuario);
-      
+      console.log("Monitoramento recebido no modal:", monitoramento);
+
       setForm({
-        disciplinaId: String(disciplina?.id || ""),
+        disciplinaId: monitoramento.disciplinaId ? String(monitoramento.disciplinaId) : "",
         diaSemana: monitoramento.diaSemana || "",
         horarioInicio: monitoramento.horarioInicio || "",
         horarioFim: monitoramento.horarioFim || "",
         sala: monitoramento.sala || "",
       });
+
+      if (monitoramento.disciplinaId && disciplinas.length > 0) {
+        const discEncontrada = disciplinas.find(d => d.id === monitoramento.disciplinaId);
+        if (discEncontrada && discEncontrada.cursosIds && discEncontrada.cursosIds.length > 0) {
+          setCursoSelecionado(String(discEncontrada.cursosIds[0]));
+        }
+      }
+
+      if (monitoramento.monitorNome || monitoramento.monitor) {
+        setMonitorSelecionado({
+          id: monitoramento.monitorId || monitoramento.monitor,
+          username: monitoramento.monitorNome || monitoramento.monitor
+        });
+      }
     }
-  }, [monitoramento]);
+  }, [monitoramento, disciplinas]);
 
   useEffect(() => {
     if (!cursoSelecionado) {
@@ -71,7 +74,6 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
     if (!busca.trim() || busca.length < 2) return;
     try {
       const r = await api.get(`/usuarios?search=${busca}`);
-      // Filtra só alunos (ou quem ainda não é monitor)
       const alunos = r.data.filter(u => u.role === 'ALUNO' || u.role === 'USER');
       setResultadosBusca(alunos);
       setMostrarBusca(true);
@@ -100,7 +102,7 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
     
     try {
       const payload = {
-        monitorId: monitorSelecionado.id,
+        monitorId: monitorSelecionado.id || monitorSelecionado,
         disciplinaId: parseInt(form.disciplinaId),
         diaSemana: form.diaSemana,
         horarioInicio: form.horarioInicio,
@@ -108,13 +110,12 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
         sala: form.sala,
       };
 
-      console.log("Salvando monitoria:", payload);  // DEBUG
-
       if (isEditing) {
         await api.put(`/monitorias/${monitoramento.id}`, payload);
+        alert("Monitoria atualizada com sucesso!");
       } else {
-        const res = await api.post("/monitorias", payload);
-        console.log("Resposta:", res.data);  // DEBUG
+        await api.post("/monitorias", payload);
+        alert("Monitoria criada com sucesso!");
       }
       onSave();
     } catch (error) {
@@ -135,7 +136,6 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
         </div>
 
         <form onSubmit={salvar}>
-        {/* Se NÃO tem monitor selecionado, mostra o campo de busca */}
           {!monitorSelecionado && (
             <div className="form-group">
               <label>Buscar Monitor *</label>
@@ -151,7 +151,7 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
                   {resultadosBusca.map(u => (
                     <div key={u.id} className="search-item" onClick={() => {
                       setMonitorSelecionado(u);
-                      setBusca(""); // Limpa o texto da busca
+                      setBusca(""); 
                       setMostrarBusca(false);
                     }}>
                       <strong>{u.username}</strong>
@@ -163,13 +163,11 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
             </div>
           )}
 
-          {/* Se TEM monitor, mostra o badge com opção de remover */}
           {monitorSelecionado && (
             <div className="form-group">
               <label>Monitor Selecionado</label>
               <div className="selected-badge" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>✓ {monitorSelecionado.username}</span>
-                {/* Botão para trocar o monitor */}
                 <button 
                   type="button" 
                   onClick={() => setMonitorSelecionado(null)}

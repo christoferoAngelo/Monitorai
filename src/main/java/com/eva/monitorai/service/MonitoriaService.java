@@ -37,15 +37,30 @@ public class MonitoriaService {
     @Autowired
     private AtuacaoMonitoriaRepository atuacaoRepository;
 
-    // =========================================
-    // FUNÇÃO AUXILIAR: CALCULAR SEMESTRE
-    // =========================================
-    private String calcularSemestreAtual() {
-        LocalDate hoje = LocalDate.now();
-        int ano = hoje.getYear();
-        int semestre = hoje.getMonthValue() <= 6 ? 1 : 2;
-        return ano + "/" + semestre;
+    public String calcularProximoSemestreAutomatico() {
+        // Busca a última monitoria registrada no banco para ver qual foi o último semestre usado
+        return monitoriaRepository.findTopByOrderByIdDesc()
+            .map(ultima -> {
+                String ultimoSemestre = ultima.getSemestreReferencia(); // Ex: "2026/1"
+                String[] partes = ultimoSemestre.split("/");
+                int ano = Integer.parseInt(partes[0]);
+                int semestre = Integer.parseInt(partes[1]);
+
+                // Se era semestre 1, o próximo é o semestre 2 do mesmo ano
+                if (semestre == 1) {
+                    return ano + "/2";
+                } else {
+                    // Se era semestre 2, o próximo é o semestre 1 do ano seguinte
+                    return (ano + 1) + "/1";
+                }
+            })
+            .orElseGet(() -> {
+                // Fallback caso o banco esteja vazio: usa o ano atual
+                java.time.LocalDate hoje = java.time.LocalDate.now();
+                return hoje.getYear() + "/1";
+            });
     }
+
 
  // =========================================
     // CRIAR MONITORIA
@@ -115,14 +130,11 @@ public class MonitoriaService {
         monitoria.setHorarioFim(dto.getHorarioFim());
         monitoria.setSala(dto.getSala());
         
-        // 🛑 REGRA 3: Semestre Automático
-        monitoria.setSemestreReferencia(calcularSemestreAtual());
+        monitoria.setSemestreReferencia(calcularProximoSemestreAutomatico());
         monitoria.setAtiva(true);
 
-        // Salva a monitoria primeiro
         monitoria = monitoriaRepository.save(monitoria);
         
-        // CRIA A ATUAÇÃO
         AtuacaoMonitoria atuacao = new AtuacaoMonitoria();
         atuacao.setMonitoria(monitoria);
         atuacao.setMonitor(monitor);

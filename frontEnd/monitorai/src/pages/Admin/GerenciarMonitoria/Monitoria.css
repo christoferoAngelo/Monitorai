@@ -32,7 +32,6 @@ body {
     margin-top: 8px;
 }
 
-/* BOTÃO NOVO */
 .btn-new {
     background: linear-gradient(90deg, #003b94, #0f4fc2);
     color: white;
@@ -73,12 +72,12 @@ body {
 .stat-box.verde { border-color: #22c55e; }
 .stat-box.vermelho { border-color: #dc2626; }
 
-/* NÚMEROS DO CARD - A CORREÇÃO ESTÁ AQUI */
+
 .stat-number {
     display: block;
     font-size: 34px;
     font-weight: 700;
-    color: #0f172a !important; /* O !important garante que nada deixe esse número branco */
+    color: #0f172a !important; 
     margin-bottom: 10px;
 }
 
@@ -597,7 +596,7 @@ body {
 
 .footer-actions {
     display: flex;
-    justify-content: flex-end; /* Alinha o conteúdo à direita */
-    margin-top: 32px;         /* Espaçamento em relação à lista acima */
-    padding-bottom: 20px;     /* Espaçamento extra para não colar no rodapé da página */
+    justify-content: flex-end;
+    margin-top: 32px;         
+    padding-bottom: 20px;    
 }

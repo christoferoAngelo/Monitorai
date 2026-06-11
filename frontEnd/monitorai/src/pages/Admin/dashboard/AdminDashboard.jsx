@@ -6,6 +6,7 @@ import StatCard from '../components/StatCard';
 import MonitoriasTable from '../components/MonitoriasTable';
 import QuickActions from '../components/QuickActions';
 import AlertsPanel from "../components/AlertsPanel";
+import MonitoriaModal from '../GerenciarMonitoria/MonitoriaModal'; 
 import AdminSearch from '../../../components/GlobalSearch/AdminSearch';
 
 import './AdminDashboard.css';
@@ -18,11 +19,15 @@ function AdminDashboard() {
   const [alertas, setAlertas] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const [modalAberto, setModalAberto] = useState(false);
+  const [monitoriaEditando, setMonitoriaEditando] = useState(null);
+
   const navigate = useNavigate();
 
-  const formatMonitoria = (m) => {
-    const nomeDisciplina = m.disciplina?.nome || '—';
-    const nomeMonitor = m.monitor?.usuario?.username || m.monitor?.nome || '—';
+const formatMonitoria = (m) => {
+    // Pega direto do DTO (m.disciplinaNome) ou faz o fallback caso venha aninhado
+    const nomeDisciplina = m.disciplinaNome || m.disciplina?.nome || '—';
+    const nomeMonitor = m.monitorNome || m.monitor?.usuario?.username || m.monitor?.nome || '—';
 
     return {
       ...m,
@@ -92,12 +97,15 @@ function AdminDashboard() {
   }, [navigate]);
 
   const monitoriasFiltradas = useMemo(() => {
-    if (!searchTerm) return monitorias;
+    const ativas = monitorias.filter(m => m.ativa);
+
+    if (!searchTerm) return ativas;
+    
     const term = searchTerm.toLowerCase();
-    return monitorias.filter(m => 
-      m.disciplina.toLowerCase().includes(term) ||
-      m.monitor.toLowerCase().includes(term) ||
-      m.sala.toLowerCase().includes(term)
+    return ativas.filter(m => 
+      (m.disciplinaNome || '').toLowerCase().includes(term) ||
+      (m.monitorNome || '').toLowerCase().includes(term) ||
+      (m.sala || '').toLowerCase().includes(term)
     );
   }, [monitorias, searchTerm]);
 
@@ -132,12 +140,19 @@ function AdminDashboard() {
   };
 
   const handleEditMonitoria = (monitoria) => {
-    const confirmar = window.confirm(
-      `Deseja editar a monitoria de ${monitoria.disciplina}?\n\nMonitor: ${monitoria.monitor}\nSala: ${monitoria.sala}`
-    );
-    if (confirmar) {
-      alert(`Abrir modal de edição da monitoria ID: ${monitoria.id}\n(Em desenvolvimento)`);
-    }
+    setMonitoriaEditando(monitoria);
+    setModalAberto(true);
+  };
+
+  const handleFecharModal = () => {
+    setModalAberto(false);
+    setMonitoriaEditando(null);
+  };
+
+  const handleSalvarModal = () => {
+    setModalAberto(false);
+    setMonitoriaEditando(null);
+    window.location.reload();
   };
 
   const handleNovaMonitoria = () => {
@@ -185,6 +200,13 @@ function AdminDashboard() {
           </div>
         </section>
       </main>
+      {modalAberto && (
+        <MonitoriaModal 
+          monitoramento={monitoriaEditando} 
+          onClose={handleFecharModal} 
+          onSave={handleSalvarModal} 
+        />
+      )}
     </div>
   );
 }
