@@ -145,6 +145,13 @@ export default function Usuarios() {
 
     async function toggleAtivo(usuario) {
         const isAtivo = usuario.ativo !== false;
+
+        // NOVA VALIDAÇÃO: Impede inativar se for o último admin ativo
+        if (isAtivo && usuario.role === 'ADMIN' && totalAdmins <= 1) {
+            alert("Ação negada: O sistema deve ter pelo menos um administrador ativo.");
+            return; // Interrompe a função aqui
+        }
+
         const msg = isAtivo 
             ? `Inativar o usuário ${usuario.username}?`
             : `Ativar o usuário ${usuario.username}?`;
