@@ -35,7 +35,7 @@ function SharedLayout() {
 
   const menuItems = [];
 
-  // NOVO: Botão de pesquisa fixo para todos (inserido antes dos outros)
+  // Botão de pesquisa fixo para todos (inserido antes dos outros)
   menuItems.push({
     id: 'Pesquisar',
     label: 'Pesquisar',

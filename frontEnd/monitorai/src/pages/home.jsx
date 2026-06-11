@@ -19,6 +19,8 @@ export default function Home() {
   // Estados de Filtro
   const [filtroCurso, setFiltroCurso] = useState("");
   const [filtroSemestre, setFiltroSemestre] = useState("");
+  const [filtroDisciplina, setFiltroDisciplina] = useState("");
+
   
   // Estado para controlar qual editable tem o PDF aberto (inline)
   const [editalPdfExpandido, setEditalPdfExpandido] = useState(null);
@@ -107,8 +109,32 @@ export default function Home() {
     setFiltroCurso("");
     setFiltroSemestre("");
   }
+  
+  
+  
+  //DISCIPLINAS
+  const disciplinasFiltradas = disciplinas.filter(d => {
 
+    if (
+      filtroSemestre &&
+      d.semestre !== parseInt(filtroSemestre)
+    ) {
+      return false;
+    }
+
+    if (
+      filtroCurso &&
+      !d.cursosIds?.includes(parseInt(filtroCurso))
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+  
   // Lógica de filtro
+  
+
   const monitoriasFiltradas = monitorias.filter(m => {
     let passaFiltro = true;
     
@@ -119,6 +145,13 @@ export default function Home() {
     if (filtroCurso && !m.disciplina?.cursosIds?.includes(parseInt(filtroCurso))) {
       passaFiltro = false;
     } 
+	
+	if (
+	  filtroDisciplina &&
+	  m.disciplina?.id !== parseInt(filtroDisciplina)
+	) {
+	  passaFiltro = false;
+	}
     
     return passaFiltro;
   });
@@ -144,7 +177,7 @@ export default function Home() {
           <div className="dropdown">
             <a href="#monitorias" className="dropbtn">Monitorias ▾</a>
             <div className="dropdown-content">
-              <span onClick={() => navigate('/monitorias/curso')}>Por Curso</span>
+              <span onClick={() => navigate('/?filtro=curso#monitorias')}>Por Curso</span>
               <span onClick={() => navigate('/monitorias/semestre')}>Por Semestre</span>
               <span onClick={() => navigate('/monitorias/disciplina')}>Por Disciplina</span>
             </div>
@@ -232,6 +265,25 @@ export default function Home() {
                 <option value="">Todos os Semestres</option>
                 {semestres.map(s => <option key={s} value={s}>{s}º Semestre</option>)}
             </select>
+			
+			<select
+			  value={filtroDisciplina}
+			  onChange={e => setFiltroDisciplina(e.target.value)}
+			  style={{
+			    padding: '10px',
+			    borderRadius: '6px',
+			    border: '1px solid #ccc',
+			    outline: 'none'
+			  }}
+			>
+			  <option value="">Todas as Disciplinas</option>
+
+			  {disciplinasFiltradas.map(d => (
+			    <option key={d.id} value={d.id}>
+			      {d.nome}
+			    </option>
+			  ))}
+			</select>
 
             {(filtroCurso || filtroSemestre) && (
                 <button 
