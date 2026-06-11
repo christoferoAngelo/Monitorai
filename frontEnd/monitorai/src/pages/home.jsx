@@ -108,6 +108,7 @@ export default function Home() {
   function limparFiltros() {
     setFiltroCurso("");
     setFiltroSemestre("");
+    setFiltroDisciplina("");
   }
   
   
