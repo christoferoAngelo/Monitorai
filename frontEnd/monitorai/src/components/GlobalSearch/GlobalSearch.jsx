@@ -1,14 +1,28 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './GlobalSearch.css';
 
+// Mapa para traduzir os dias da semana vindos do back-end
+const diasSemanaMap = {
+  'MONDAY': 'Segunda-feira', 'TUESDAY': 'Terça-feira', 'WEDNESDAY': 'Quarta-feira',
+  'THURSDAY': 'Quinta-feira', 'FRIDAY': 'Sexta-feira', 'SATURDAY': 'Sábado', 'SUNDAY': 'Domingo',
+  'SEGUNDA': 'Segunda-feira', 'TERCA': 'Terça-feira', 'QUARTA': 'Quarta-feira',
+  'QUINTA': 'Quinta-feira', 'SEXTA': 'Sexta-feira', 'SABADO': 'Sábado', 'DOMINGO': 'Domingo'
+};
+
+// Utilitário para formatar o LocalTime do Java (ex: "14:00:00" para "14:00")
+const formatarHora = (hora) => {
+  if (!hora) return '';
+  return hora.length > 5 ? hora.substring(0, 5) : hora;
+};
+
 function GlobalSearch({ onClose }) {
   const [termo, setTermo] = useState('');
-  const [disciplinas, setDisciplinas] = useState([]);
   const [monitorias, setMonitorias] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  
   const searchRef = useRef(null);
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -21,28 +35,12 @@ function GlobalSearch({ onClose }) {
   const carregarDados = useCallback(async () => {
     setIsLoading(true);
     try {
-      // 1. Primeiro buscamos as monitorias ativas
-      const monitoriasRes = await api.get('/monitorias/ativas');
-      const monitoriasAtivas = monitoriasRes.data || [];
-      setMonitorias(monitoriasAtivas);
-
-      // 2. Buscamos as disciplinas
-      const disciplinasRes = await api.get('/disciplinas');
-      const todasDisciplinas = disciplinasRes.data || [];
-
-      // 3. Lógica para filtrar APENAS disciplinas que têm monitoria ativa
-      const idsDisciplinasComMonitoria = new Set(
-        monitoriasAtivas.map(m => m.disciplina?.id || m.disciplinaId)
-      );
-      
-      const disciplinasAtivas = todasDisciplinas.filter(d => 
-        idsDisciplinasComMonitoria.has(d.id)
-      );
-      
-      setDisciplinas(disciplinasAtivas);
-      
+      // Como o backend já devolve a lista de MonitoriaResponseDTO, 
+      // basta salvar direto no estado.
+      const response = await api.get('/monitorias/ativas');
+      setMonitorias(response.data || []);
     } catch (error) {
-      console.error('Erro ao carregar dados:', error);
+      console.error('Erro ao carregar monitorias:', error);
     } finally {
       setIsLoading(false);
     }
@@ -84,49 +82,24 @@ function GlobalSearch({ onClose }) {
     };
   }, [showResults, onClose]);
 
-  const disciplinasFiltradas = Array.isArray(disciplinas)
-    ? disciplinas.filter(
-        (disciplina) =>
-          disciplina?.nome?.toLowerCase().includes(termo.toLowerCase()) ||
-          disciplina?.codigo?.toLowerCase().includes(termo.toLowerCase())
-      )
-    : [];
-
-  const monitoriasFiltradas = Array.isArray(monitorias)
-    ? monitorias.filter((monitoria) => {
-        const termoLower = termo.toLowerCase();
-        
-        if (monitoria?.titulo?.toLowerCase().includes(termoLower)) return true;
-        if (monitoria?.descricao?.toLowerCase().includes(termoLower)) return true;
-        if (monitoria?.disciplina?.nome?.toLowerCase().includes(termoLower)) return true;
-        if (monitoria?.disciplina?.codigo?.toLowerCase().includes(termoLower)) return true;
-        
-        if (monitoria?.monitor?.usuario?.nome?.toLowerCase().includes(termoLower)) return true;
-        if (monitoria?.monitor?.usuario?.username?.toLowerCase().includes(termoLower)) return true;
-        if (monitoria?.monitor?.usuario?.email?.toLowerCase().includes(termoLower)) return true;
-        
-        if (monitoria?.sala?.toLowerCase().includes(termoLower)) return true;
-        
-        return false;
-      })
-    : [];
-
-  const handleResultClick = (tipo, item) => {
-    if (onClose) onClose(); 
+  // Filtro otimizado usando os campos exatos da sua DTO Java
+  const monitoriasFiltradas = useMemo(() => {
+    if (!termo) return [];
+    const t = termo.toLowerCase();
     
-    switch (tipo) {
-      case 'disciplina':
-        navigate(`/disciplina/${item.id}`);
-        break;
-      case 'monitoria':
-        if (item?.disciplina?.id) {
-          navigate(`/disciplina/${item.disciplina.id}`);
-        } else if (item?.disciplinaId) {
-          navigate(`/disciplina/${item.disciplinaId}`);
-        }
-        break;
-      default:
-        break;
+    return monitorias.filter((m) => 
+      (m.disciplinaNome && m.disciplinaNome.toLowerCase().includes(t)) ||
+      (m.disciplinaCodigo && m.disciplinaCodigo.toLowerCase().includes(t)) ||
+      (m.monitorNome && m.monitorNome.toLowerCase().includes(t)) ||
+      (m.sala && m.sala.toLowerCase().includes(t))
+    );
+  }, [monitorias, termo]);
+
+  const handleResultClick = (monitoria) => {
+    if (onClose) onClose(); 
+    // Usando o disciplinaId da DTO para o redirecionamento
+    if (monitoria.disciplinaId) {
+      navigate(`/disciplina/${monitoria.disciplinaId}`);
     }
   };
 
@@ -138,7 +111,7 @@ function GlobalSearch({ onClose }) {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      if (monitoriasFiltradas.length > 0 || disciplinasFiltradas.length > 0) {
+      if (monitoriasFiltradas.length > 0) {
         setShowResults(false);
         setTermo('');
         inputRef.current?.blur();
@@ -146,39 +119,21 @@ function GlobalSearch({ onClose }) {
     }
   };
 
-  const getMonitorNome = (monitoria) => {
-    if (monitoria?.monitor?.usuario?.nome) return monitoria.monitor.usuario.nome;
-    if (monitoria?.monitor?.usuario?.username) return monitoria.monitor.usuario.username;
-    if (monitoria?.monitor?.nome) return monitoria.monitor.nome;
-    return null;
-  };
-
-  const hasResults = disciplinasFiltradas.length > 0 || monitoriasFiltradas.length > 0;
-
-  const diasSemanaMap = {
-    'MONDAY': 'Segunda-feira', 'TUESDAY': 'Terça-feira', 'WEDNESDAY': 'Quarta-feira',
-    'THURSDAY': 'Quinta-feira', 'FRIDAY': 'Sexta-feira', 'SATURDAY': 'Sábado', 'SUNDAY': 'Domingo',
-    'SEGUNDA': 'Segunda-feira', 'TERCA': 'Terça-feira', 'QUARTA': 'Quarta-feira',
-    'QUINTA': 'Quinta-feira', 'SEXTA': 'Sexta-feira', 'SABADO': 'Sábado', 'DOMINGO': 'Domingo'
-  };
+  const hasResults = monitoriasFiltradas.length > 0;
 
   return (
     <div className="global-search" ref={searchRef}>
       
-      {/* Wrapper flex para colocar o botão e o input lado a lado */}
       <div className="search-input-wrapper">
-        
-        {/* Botão de voltar/fechar */}
         <button className="close-search-btn" onClick={() => onClose && onClose()} title="Fechar pesquisa">
           <img src="/icone_voltar.png" alt="Voltar" width="20" height="20" />
         </button>
 
-        {/* Container relativo para prender os resultados embaixo do input */}
         <div className="input-and-results-container">
           <input
             ref={inputRef}
             type="text"
-            placeholder="Pesquisar disciplinas ou monitorias ativas..."
+            placeholder="Pesquisar monitorias ativas (disciplina, monitor, sala)..."
             value={termo}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
@@ -194,66 +149,48 @@ function GlobalSearch({ onClose }) {
 
               {!isLoading && (
                 <>
-                  {/* MONITORIAS ATIVAS */}
-                  {monitoriasFiltradas.length > 0 && (
+                  {hasResults && (
                     <>
                       <div className="search-category">
                         MONITORIAS ATIVAS ({monitoriasFiltradas.length})
                       </div>
 
-                      {monitoriasFiltradas.map((monitoria) => {
-                        const monitorNome = getMonitorNome(monitoria);
-                        const disciplinaNome = monitoria?.disciplina?.nome;
-                        const diaSemana = diasSemanaMap[monitoria?.dia_semana] || monitoria?.dia_semana;
-                        const horario = monitoria?.horario_inicio && monitoria?.horario_fim 
-                          ? `${monitoria.horario_inicio} - ${monitoria.horario_fim}` : null;
-                        
+                      {monitoriasFiltradas.map((m) => {
+                        // Tratando a exibição usando a DTO
+                        const diaStr = diasSemanaMap[m.diaSemana] || m.diaSemana;
+                        const horarioStr = m.horarioInicio && m.horarioFim 
+                          ? `${formatarHora(m.horarioInicio)} - ${formatarHora(m.horarioFim)}` 
+                          : null;
+
                         return (
                           <div
-                            key={`monitoria-${monitoria.id}`}
+                            key={`monitoria-${m.id}`}
                             className="search-result-item"
-                            onClick={() => handleResultClick('monitoria', monitoria)}
+                            onClick={() => handleResultClick(m)}
                           >
                             <div className="search-result-title">
-                              <strong>{disciplinaNome || 'Monitoria'}</strong>
+                              <strong>{m.disciplinaNome}</strong>
+                              {m.disciplinaCodigo && <span className="codigo-badge"> {m.disciplinaCodigo}</span>}
                             </div>
-                            {monitorNome && <div className="search-result-monitor">{monitorNome}</div>}
-                            {diaSemana && horario && <div className="search-result-horario">{diaSemana} • {horario}</div>}
-                            {monitoria?.sala && <div className="search-result-local">{monitoria.sala}</div>}
+                            
+                            <div className="search-result-monitor">Monitor(a): {m.monitorNome}</div>
+                            
+                            {diaStr && horarioStr && (
+                              <div className="search-result-horario">
+                                {diaStr} • {horarioStr}
+                              </div>
+                            )}
+                            
+                            {m.sala && <div className="search-result-local">Sala: {m.sala}</div>}
                           </div>
                         );
                       })}
                     </>
                   )}
 
-                  {/* DISCIPLINAS */}
-                  {disciplinasFiltradas.length > 0 && (
-                    <>
-                      <div className="search-category">
-                        DISCIPLINAS COM MONITORIA ({disciplinasFiltradas.length})
-                      </div>
-
-                      {disciplinasFiltradas.map((disciplina) => (
-                        <div
-                          key={`d-${disciplina.id}`}
-                          className="search-result-item"
-                          onClick={() => handleResultClick('disciplina', disciplina)}
-                        >
-                          <div className="search-result-title">
-                             <strong>{disciplina.nome}</strong>
-                          </div>
-                          {disciplina.codigo && (
-                            <div className="search-result-codigo">Código: {disciplina.codigo}</div>
-                          )}
-                        </div>
-                      ))}
-                    </>
-                  )}
-
-                  {/* NENHUM RESULTADO */}
                   {!hasResults && (
                     <div className="search-no-results">
-                      Nenhum resultado encontrado para "{termo}"
+                      Nenhuma monitoria encontrada para "{termo}"
                     </div>
                   )}
                 </>
