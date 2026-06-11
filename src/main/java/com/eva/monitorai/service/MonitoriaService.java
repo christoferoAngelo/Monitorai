@@ -208,7 +208,7 @@ public class MonitoriaService {
         return monitoriaRepository.save(monitoria);
     }
     
-    // =========================================
+ // =========================================
     // ATUALIZAR MONITORIA
     // =========================================
     @Transactional
@@ -223,12 +223,18 @@ public class MonitoriaService {
         Disciplina disciplina = disciplinaRepository.findById(dto.getDisciplinaId())
                 .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
-        // VERIFICA SE TROCOU O MONITOR
-        if (!monitoria.getMonitor().getUsuario().getId().equals(dto.getMonitorId())) {
+        // VERIFICA SE TROCOU O MONITOR (Bloco corrigido e único)
+        if (monitoria.getMonitor() != null && monitoria.getMonitor().getUsuario() != null) {
+            if (!monitoria.getMonitor().getUsuario().getId().equals(dto.getMonitorId())) {
+                trocarMonitor(id, dto.getMonitorId());
+                monitoria = buscarPorId(id);
+            }
+        } else {
+            // Se o monitor é null (monitoria inativa ou sem monitor devido ao fim do semestre), atribui o novo monitor
             trocarMonitor(id, dto.getMonitorId());
             monitoria = buscarPorId(id);
         }
-        
+	     
         List<Monitoria> conflitos = monitoriaRepository.buscarConflitosDeSalaExcetoId(
                 dto.getSala(), 
                 dto.getDiaSemana(), 
@@ -236,6 +242,11 @@ public class MonitoriaService {
                 dto.getHorarioFim(),
                 id
             );
+
+        if (!conflitos.isEmpty()) {
+            throw new RuntimeException("Já existe uma monitoria agendada para a sala " + dto.getSala() + 
+                                       " neste dia e horário.");
+        }
 
         // ATUALIZA DADOS
         monitoria.setDisciplina(disciplina);

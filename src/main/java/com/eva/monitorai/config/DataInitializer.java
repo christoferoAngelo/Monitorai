@@ -50,7 +50,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setAtivo(true); 
             
             Usuario aluno1 = new Usuario();
-            aluno1.setUsername("fulano");
+            aluno1.setUsername("Fulano");
             aluno1.setEmail("fulano@gmail.com");
             // Criptografa a senha antes de salvar
             aluno1.setSenha(passwordEncoder.encode("123"));
@@ -59,7 +59,7 @@ public class DataInitializer implements CommandLineRunner {
             aluno1.setAtivo(true);
 
             Usuario aluno2 = new Usuario();
-            aluno2.setUsername("ciclano");
+            aluno2.setUsername("Ciclano");
             aluno2.setEmail("ciclano@gmail.com");
             // Criptografa a senha antes de salvar
             aluno2.setSenha(passwordEncoder.encode("123"));
@@ -67,24 +67,24 @@ public class DataInitializer implements CommandLineRunner {
             aluno2.setRa("123456789011");
             aluno2.setAtivo(true);
             
-            Usuario monitor = new Usuario();
-            monitor.setUsername("monitorildo");
-            monitor.setEmail("monitorildo@gmail.com");
+            Usuario aluno3 = new Usuario();
+            aluno3.setUsername("Beltrano");
+            aluno3.setEmail("beltraninho@gmail.com");
             // Criptografa a senha antes de salvar
-            monitor.setSenha(passwordEncoder.encode("123"));
-            monitor.setRole("MONITOR"); 
-            monitor.setRa("123456789012");
-            monitor.setAtivo(true);
+            aluno3.setSenha(passwordEncoder.encode("123"));
+            aluno3.setRole("ALUNO"); 
+            aluno3.setRa("123456789012");
+            aluno3.setAtivo(true);
             
             usuarioRepository.save(aluno1);
             usuarioRepository.save(aluno2);
-            usuarioRepository.save(monitor);
+            usuarioRepository.save(aluno3);
             usuarioRepository.save(admin);
             
             System.out.println("Usuário ADMIN criado com sucesso! Login: admin / Senha: admin123"
-            				+ " Usuário monitorildo criado com sucesso! Login: monitorildo / Senha: 123"
-            				+ " Usuário ciclano criado com sucesso! Login: ciclano / Senha: 123"
-            				+ " Usuário fulano criado com sucesso! Login: fulano / Senha: 123");
+            				+ " Usuário beltrado criado com sucesso! Login: Beltrano / Senha: 123"
+            				+ " Usuário ciclano criado com sucesso! Login: Ciclano / Senha: 123"
+            				+ " Usuário fulano criado com sucesso! Login: Fulano / Senha: 123");
             					
         } else {
             System.out.println("Banco de dados já possui usuários. Pulando inicialização.");

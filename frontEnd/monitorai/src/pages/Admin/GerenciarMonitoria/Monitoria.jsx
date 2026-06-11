@@ -230,7 +230,7 @@ const [filtroStatus, setFiltroStatus] = useState("ativas");
         )}
 
        
-      </div>
+      </div>
 
       <div className="footer-actions">
         <button className="btn-finalizar" onClick={finalizarSemestre}>
