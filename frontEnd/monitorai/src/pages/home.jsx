@@ -62,7 +62,7 @@ export default function Home() {
   async function buscarDados() {
     try {
       const [resMonitorias, resEditais, resCursos, resDisciplinas] = await Promise.allSettled([
-        api.get('/monitorias'),
+        api.get('/monitorias/ativas'),
         api.get('/editais'),
         api.get('/cursos'),
         api.get('/disciplinas')
@@ -320,7 +320,7 @@ export default function Home() {
                 <div className="monitoria-actions">
                   <button 
                     className="btn-agendar" 
-                    onClick={() => acessarMonitoria(monitoria.disciplina?.id)}
+                    onClick={() => acessarMonitoria(monitoria.disciplinaid)}
                   >
                     Acessar Materiais
                   </button>
