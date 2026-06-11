@@ -320,7 +320,8 @@ export default function Home() {
                 <div className="monitoria-actions">
                   <button 
                     className="btn-agendar" 
-                    onClick={() => acessarMonitoria(monitoria.disciplinaid)}
+					
+                    onClick={() => acessarMonitoria(monitoria.disciplinaId)}
                   >
                     Acessar Materiais
                   </button>
