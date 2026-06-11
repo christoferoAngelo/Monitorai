@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import "./RegistrarRelatorio.css";
@@ -12,6 +12,11 @@ export default function RegistrarRelatorio() {
     
     const [modo, setModo] = useState('list');
     const [relatorioEditando, setRelatorioEditando] = useState(null);
+    const [buscaMonitoria, setBuscaMonitoria] = useState('');
+    const [dropdownAberto, setDropdownAberto] = useState(false);
+    
+    const wrapperRef = useRef(null);
+    const inputRef = useRef(null);
 
     const [searchParams] = useSearchParams();
     const monitoriaIdFromUrl = searchParams.get('monitoriaId');
@@ -23,6 +28,17 @@ export default function RegistrarRelatorio() {
         data: new Date().toISOString().split('T')[0]
     });
 
+    // Fechar dropdown ao clicar fora
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (wrapperRef && !wrapperRef.current.contains(event.target)) {
+                setDropdownAberto(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -30,7 +46,6 @@ export default function RegistrarRelatorio() {
         api.get("/auth/me").then(res => {
             setUser(res.data);
             
-            // Se veio monitoriaId da URL, usa ele; senão busca normal
             if (monitoriaIdFromUrl) {
                 api.get(`/monitorias/${monitoriaIdFromUrl}`).then(mRes => {
                     setMonitoriaSelecionada(mRes.data);
@@ -45,10 +60,38 @@ export default function RegistrarRelatorio() {
                     }
                 });
             } else {
-                api.get("/monitorias/ativas").then(mRes => setMonitorias(mRes.data));
+                api.get("/monitorias").then(mRes => {
+                    console.log("DEBUG - Primeira monitoria:", mRes.data[0]); 
+                    setMonitorias(mRes.data);
+                });
             }
         });
     }, [monitoriaIdFromUrl]);
+
+    // Filtro da busca
+    const monitoriasFiltradas = useMemo(() => {
+        if (!buscaMonitoria) return monitorias.slice(0, 10); // Mostra até 10 se não buscar
+        const term = buscaMonitoria.toLowerCase();
+        return monitorias.filter(m => 
+            (m.disciplinaNome || '').toLowerCase().includes(term) ||
+            (m.monitorNome || '').toLowerCase().includes(term) ||
+            (m.diaSemana || '').toLowerCase().includes(term)
+        ).slice(0, 10); // Limita a 10 resultados
+    }, [monitorias, buscaMonitoria]);
+
+    function selecionarMonitoria(monitoria) {
+        setMonitoriaSelecionada(monitoria);
+        setBuscaMonitoria(`${monitoria.disciplinaNome} - ${monitoria.monitorNome} (${monitoria.diaSemana})`);
+        setDropdownAberto(false);
+        carregarHistorico(monitoria.id);
+        setModo('list');
+    }
+
+    function limparSelecao() {
+        setMonitoriaSelecionada(null);
+        setBuscaMonitoria('');
+        setHistorico([]);
+    }
 
     async function carregarHistorico(id) {
         if (!id) return;
@@ -130,23 +173,65 @@ export default function RegistrarRelatorio() {
             {/* SELECÃO DE MONITORIA */}
             <div className="selecao-monitoria">
                 {user?.role === 'ADMIN' && !monitoriaIdFromUrl && (
-                    <div className="filtro-admin">
-                        <label>Selecione a Monitoria: </label>
-                        <select className="filtro-select" onChange={(e) => {
-                            const id = parseInt(e.target.value);
-                            const m = monitorias.find(it => it.id === id);
-                            setMonitoriaSelecionada(m || null);
-                            if (m) carregarHistorico(m.id);
-                            setModo('list');
-                        }}
-                         value={monitoriaSelecionada?.id || ""}>
-                            <option value="">--- Selecione ---</option>
-                            {monitorias.map(m => (
-                                <option key={m.id} value={m.id}>
-                                    {m.disciplina?.nome || 'Disciplina'} - {m.monitor?.usuario?.username} ({m.diaSemana})
-                                </option>
-                            ))}
-                        </select>
+                    <div className="filtro-admin" ref={wrapperRef}>
+                        <label>Buscar Monitoria:</label>
+                        
+                        {/* Se já tiver selecionado, mostra tag clicável */}
+                        {monitoriaSelecionada ? (
+                            <div className="tag-selecionada">
+                                <div className="info">
+                                    <span className="disciplina">{monitoriaSelecionada.disciplinaNome}</span>
+                                    <span className="detalhes">{monitoriaSelecionada.monitorNome} • {monitoriaSelecionada.diaSemana}</span>
+                                </div>
+                                <button type="button" onClick={limparSelecao} title="Limpar">✕</button>
+                            </div>
+                        ) : (
+                            <div className="input-busca-wrapper">
+                                {/* Ícone de lupa SVG */}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                
+                                <input 
+                                    ref={inputRef}
+                                    type="text" 
+                                    className="filtro-select"
+                                    placeholder="Digite disciplina, monitor ou dia..."
+                                    value={buscaMonitoria}
+                                    onChange={(e) => {
+                                        setBuscaMonitoria(e.target.value);
+                                        setDropdownAberto(true);
+                                    }}
+                                    onFocus={() => setDropdownAberto(true)}
+                                />
+                                
+                                {/* Dropdown customizado */}
+                                {dropdownAberto && monitoriasFiltradas.length > 0 && (
+                                    <div className="dropdown-resultados">
+                                        {monitoriasFiltradas.map(m => (
+                                            <div 
+                                                key={m.id} 
+                                                className="dropdown-item"
+                                                onClick={() => selecionarMonitoria(m)}
+                                            >
+                                                <strong>{m.disciplinaNome}</strong>
+                                                <span>{m.monitorNome} • {m.diaSemana}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Mostrar se nãoachou resultados */}
+                                {dropdownAberto && monitoriasFiltradas.length === 0 && buscaMonitoria && (
+                                    <div className="dropdown-resultados">
+                                        <div className="dropdown-vazio">
+                                            Nenhuma monitoria encontrada
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -156,7 +241,7 @@ export default function RegistrarRelatorio() {
                     <div className="monitoria-info-card">
                         <div className="monitoria-info-item">
                             <label>Disciplina</label>
-                            <span>{monitoriaSelecionada.disciplina?.nome}</span>
+                            <span>{monitoriaSelecionada.disciplinaNome}</span>
                         </div>
                         <div className="monitoria-info-item">
                             <label>Local</label>
