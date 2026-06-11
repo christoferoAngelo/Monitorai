@@ -82,10 +82,34 @@ public class MaterialController {
     // LISTAR MATERIAIS DO MONITOR LOGADO
     // =========================================
     @GetMapping("/meus")
-    public ResponseEntity<List<Material>> listarMeusMateriais(Authentication auth) {
+    public ResponseEntity<List<Map<String,Object>>> listarMeusMateriais(
+            Authentication auth
+    ) {
+
         String username = auth.getName();
-        List<Material> lista = materialService.listarMateriaisDoMonitor(username);
-        return ResponseEntity.ok(lista);
+
+        List<Material> lista =
+            materialService.listarMateriaisDoMonitor(username);
+
+        List<Map<String,Object>> response =
+            lista.stream()
+                .map(material -> {
+
+                    Map<String,Object> item =
+                        new HashMap<>();
+
+                    item.put("id", material.getId());
+                    item.put("titulo", material.getTitulo());
+                    item.put("conteudo", material.getConteudo());
+                    item.put("tipo", material.getTipo());
+                    item.put("url", material.getUrl());
+
+                    return item;
+
+                })
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     // CURTIR / DESCURTIR
