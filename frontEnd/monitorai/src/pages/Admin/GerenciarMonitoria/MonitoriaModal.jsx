@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "../../../services/api";
+
 
 export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
   const [cursos, setCursos] = useState([]);
   const [disciplinas, setDisciplinas] = useState([]);
   
+  
   const [busca, setBusca] = useState("");
   const [resultadosBusca, setResultadosBusca] = useState([]);
   const [mostrarBusca, setMostrarBusca] = useState(false);
+  const buscaRef = useRef(null);
   
   const [cursoSelecionado, setCursoSelecionado] = useState("");
   const [disciplinaFiltrada, setDisciplinaFiltrada] = useState([]);
   
   const [monitorSelecionado, setMonitorSelecionado] = useState(null);
+
   
   const [form, setForm] = useState({
     disciplinaId: "",
@@ -74,8 +78,21 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
     if (!busca.trim() || busca.length < 2) return;
     try {
       const r = await api.get(`/usuarios?search=${busca}`);
-      const alunos = r.data.filter(u => u.role === 'ALUNO' || u.role === 'USER');
-      setResultadosBusca(alunos);
+	  const alunos = r.data
+	    .filter(u => u.role === 'MONITOR' || u.role === 'ALUNO')
+	    .sort((a, b) => {
+	      const termo = busca.toLowerCase();
+
+	      const aComeca = a.username?.toLowerCase().startsWith(termo);
+	      const bComeca = b.username?.toLowerCase().startsWith(termo);
+
+	      if (aComeca && !bComeca) return -1;
+	      if (!aComeca && bComeca) return 1;
+
+	      return 0;
+	    });
+
+	  setResultadosBusca(alunos);
       setMostrarBusca(true);
     } catch (e) { 
       console.error(e); 
@@ -88,6 +105,29 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
     }, 300);
     return () => clearTimeout(timer);
   }, [busca]);
+  
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        buscaRef.current &&
+        !buscaRef.current.contains(event.target)
+      ) {
+        setMostrarBusca(false);
+      }
+    }
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
 
   async function salvar(e) {
     e.preventDefault();
@@ -137,7 +177,7 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
 
         <form onSubmit={salvar}>
           {!monitorSelecionado && (
-            <div className="form-group">
+            <div className="form-group" ref={buscaRef}>
               <label>Buscar Monitor *</label>
               <input
                 type="text"
@@ -156,6 +196,7 @@ export default function MonitoriaModal({ monitoramento, onClose, onSave }) {
                     }}>
                       <strong>{u.username}</strong>
                       <small>{u.email}</small>
+					  <small>{u.role === "MONITOR" ? " | Monitor" : " | Aluno"}</small> 
                     </div>
                   ))}
                 </div>
